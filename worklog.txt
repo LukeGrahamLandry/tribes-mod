@@ -1,7 +1,8 @@
-<January 30> $10
+<January 30> $25
 10: workspace setup
 20: read through requirements and break up tasks
+45: tribe data structure
 
-TOTAL: $10
+TOTAL: $25
 PAID : $40
 OWED : $0
