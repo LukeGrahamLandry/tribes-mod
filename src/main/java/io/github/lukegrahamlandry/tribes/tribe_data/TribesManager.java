@@ -7,12 +7,10 @@ import com.google.gson.JsonParser;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import net.minecraft.entity.player.PlayerEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class TribesManager {
-    static List<Tribe> tribes = new ArrayList<>();
+    static Map<String, Tribe> tribes = new HashMap<>();
 
     static private List<Tribe> loadSavedTribes() {
         return new ArrayList<>();
@@ -31,42 +29,62 @@ public class TribesManager {
         return addNewTribe(new Tribe(name, player.getUniqueID()));
     }
 
+    public static TribeActionResult joinTribe(String name, PlayerEntity player){
+        if (playerHasTribe(player.getUniqueID())) return TribeActionResult.IN_TRIBE;
+        if (isNameAvailable(name)) return TribeActionResult.INVALID_TRIBE;
+        getTribe(name).addMember(player.getUniqueID());
+
+        return TribeActionResult.SUCCESS;
+    }
+
+    public static TribeActionResult deleteTribe(String name, PlayerEntity player){
+        if (isNameAvailable(name)) return TribeActionResult.INVALID_TRIBE;
+
+        if (!getTribe(name).isLeader(player.getUniqueID())) return TribeActionResult.LOW_RANK;
+
+        tribes.remove(name);
+
+        return TribeActionResult.SUCCESS;
+    }
+
     static public TribeActionResult addNewTribe(Tribe newTribe){
         if (isNameAvailable(newTribe.name)){
-            tribes.add(newTribe);
+            tribes.put(newTribe.name, newTribe);
             return TribeActionResult.SUCCESS;
         } else {
             return TribeActionResult.NAME_TAKEN;
         }
     }
 
-    static private boolean isNameAvailable(String name){
-        boolean validName = true;
-        for (Tribe testTribe : tribes){
-            if (testTribe.getName().equals(name))
-                validName = false;
-        }
+    static public boolean isNameAvailable(String name){
+        return !tribes.containsKey(name);
+    }
 
-        return validName;
+    static public List<Tribe> getTribes(){
+        return new ArrayList<>(tribes.values());
+    }
+
+    public static Tribe getTribe(String name){
+        return tribes.get(name);
     }
 
     public static boolean playerHasTribe(UUID playerID) {
+        return getTribeOf(playerID) != null;
+    }
+
+    public static Tribe getTribeOf(UUID playerID) {
         boolean isInTribe = false;
-        for (Tribe testTribe : tribes){
-            TribesMain.LOGGER.debug("player: " + playerID.toString());
-            TribesMain.LOGGER.debug("members: " + testTribe.getMembers());
+        for (Tribe testTribe :  getTribes()){
             if (testTribe.getMembers().contains(playerID.toString()))
-                isInTribe = true;
+               return testTribe;
         }
 
-        TribesMain.LOGGER.debug(isInTribe);
-
-        return isInTribe;
+        return null;
     }
 
     public static String writeToString() {
         JsonArray tribeListJson = new JsonArray();
-        for (Tribe tribe : tribes){
+        for (Tribe tribe :  getTribes()){
             tribeListJson.add(tribe.write());
         }
 
@@ -76,10 +94,17 @@ public class TribesManager {
     public static void readFromString(String data) {
         JsonArray obj = new JsonParser().parse(data).getAsJsonArray();
 
-        tribes = new ArrayList<>();
+        tribes.clear();
         for (JsonElement e : obj){
             Tribe t = Tribe.fromJson(e.toString());
             addNewTribe(t);
         }
+    }
+
+    public static TribeActionResult leaveTribe(PlayerEntity player) {
+        if (!playerHasTribe(player.getUniqueID())) return TribeActionResult.NOT_IN_TRIBE;
+        Tribe tribe = getTribeOf(player.getUniqueID());
+        tribe.removeMember(player.getUniqueID());
+        return TribeActionResult.SUCCESS;
     }
 }

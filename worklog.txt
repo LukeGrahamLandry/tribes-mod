@@ -4,7 +4,9 @@
 45: tribe data structure
 60: figure out commands and do /tribe create <>
 
+<January 31> $6.65
+20: join, leave, count, delete commands
 
-TOTAL: $45
+TOTAL: $51.65
 PAID : $40
-OWED : $5
+OWED : $11.65

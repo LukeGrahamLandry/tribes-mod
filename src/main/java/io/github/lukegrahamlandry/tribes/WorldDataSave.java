@@ -20,12 +20,14 @@ public class WorldDataSave extends WorldSavedData {
 
     @Override
     public void read(CompoundNBT nbt) {
+        TribesMain.LOGGER.debug("read save data");
         String data = nbt.getString("tribelist");
         TribesManager.readFromString(data);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
+        TribesMain.LOGGER.debug("write save data");
         String data = TribesManager.writeToString();
         compound.putString("tribelist", data);
 

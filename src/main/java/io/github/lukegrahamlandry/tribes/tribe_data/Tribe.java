@@ -31,6 +31,10 @@ public class Tribe {
         return this.members;
     }
 
+    public int getCount() {
+        return getMembers().size();
+    }
+
     public JsonObject write(){
         JsonObject obj = new JsonObject();
         obj.addProperty("name", this.getName());
@@ -58,5 +62,14 @@ public class Tribe {
     @Override
     public String toString() {
         return write().toString();
+    }
+
+    public boolean isLeader(UUID uniqueID) {
+        return uniqueID.equals(owner);
+    }
+
+    public void removeMember(UUID playerID) {
+        this.members.remove(playerID.toString());
+        // TODO: logic for passing on leadership or deleting tribe
     }
 }

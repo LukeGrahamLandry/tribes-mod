@@ -1,7 +1,7 @@
 package io.github.lukegrahamlandry.tribes.init;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
-import io.github.lukegrahamlandry.tribes.commands.CreateTribeCommand;
+import io.github.lukegrahamlandry.tribes.commands.*;
 import net.minecraft.command.Commands;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,10 +13,13 @@ import static io.github.lukegrahamlandry.tribes.TribesMain.MOD_ID;
 public class CommandInit {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event){
-
         event.getDispatcher().register(Commands.literal("tribe")
                 .requires((context) -> context.hasPermissionLevel(0))
-                .then(CreateTribeCommand.register()));
+                .then(CreateTribeCommand.register())
+                .then(JoinTribeCommand.register())
+                .then(CountTribeCommand.register())
+                .then(DeleteTribeCommand.register())
+                .then(LeaveTribeCommand.register()));
 
         TribesMain.LOGGER.debug("registerCommands called");
     }
