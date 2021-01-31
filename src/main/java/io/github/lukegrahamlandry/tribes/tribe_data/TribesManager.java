@@ -20,9 +20,15 @@ public class TribesManager {
 
     public static TribeActionResult createNewTribe(String name, PlayerEntity player){
         if (player.getEntityWorld().isRemote()){
-            TribesMain.LOGGER.error("no on render thread");
+            TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread'");
+            return TribeActionResult.CLIENT;
         }
-        return TribeActionResult.FAIL;
+
+        if (name.length() > 24) return TribeActionResult.LONG_NAME;
+        if (playerHasTribe(player.getUniqueID())) return TribeActionResult.IN_TRIBE;
+
+
+        return addNewTribe(new Tribe(name, player.getUniqueID()));
     }
 
     static public TribeActionResult addNewTribe(Tribe newTribe){

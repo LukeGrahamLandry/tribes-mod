@@ -13,6 +13,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -31,26 +32,5 @@ public class TribesMain {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         BlockInit.BLOCKS.register(eventBus);
         MinecraftForge.EVENT_BUS.register(this);
-    }
-
-
-
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public static class ForgeEvent{
-        static Random rand = new Random();
-
-
-        // TODO: remove this is just for testing
-        @SubscribeEvent
-        public static void onjump(LivingEvent.LivingJumpEvent event){
-            LOGGER.debug("jump");
-            TribeActionResult res = TribesManager.addNewTribe(new Tribe("test", event.getEntity().getUniqueID()));
-            LOGGER.debug(res);
-            String json = TribesManager.writeToString();
-            LOGGER.debug(json);
-            TribesManager.readFromString(json);
-            json = TribesManager.writeToString();
-            LOGGER.debug(json);
-        }
     }
 }
