@@ -4,9 +4,10 @@
 45: tribe data structure
 60: figure out commands and do /tribe create <>
 
-<January 31> $6.65
+<January 31> $16.65
 20: join, leave, count, delete commands
+30: figure out getting world save path and save tribes list in json file
 
-TOTAL: $51.65
+TOTAL: $66.65
 PAID : $40
-OWED : $11.65
+OWED : $26.65

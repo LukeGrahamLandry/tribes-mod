@@ -1,10 +1,14 @@
 package io.github.lukegrahamlandry.tribes;
 
 import io.github.lukegrahamlandry.tribes.init.*;
+import io.github.lukegrahamlandry.tribes.tribe_data.SaveHandler;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
+import net.minecraft.util.WorldOptimizer;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -21,6 +25,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.util.Random;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -36,20 +41,22 @@ public class TribesMain {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    /*
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class ForgeEvent{
+        // TODO: seems to exits in /data /DIM1/data and /DIM-1/data
+        // why does it fire 3 times?
         @SubscribeEvent
-        public static void save(WorldEvent.Save event){
-            WorldDataSave data = WorldDataSave.getInstance((World) event.getWorld());
-            data.markDirty();
+        public static void doLoad(WorldEvent.Load event){
+            if (event.getWorld().isRemote()) return;
+            File dataFile = ((ServerChunkProvider)event.getWorld().getChunkProvider()).getSavedData().folder;
+            SaveHandler.load(dataFile);
         }
 
         @SubscribeEvent
-        public static void load(WorldEvent.Load event){
-            WorldDataSave data = WorldDataSave.getInstance((World) event.getWorld());
+        public static void doSave(WorldEvent.Unload event){
+            if (event.getWorld().isRemote()) return;
+            File dataFile = ((ServerChunkProvider)event.getWorld().getChunkProvider()).getSavedData().folder;
+            SaveHandler.save(dataFile);
         }
     }
-
-     */
 }
