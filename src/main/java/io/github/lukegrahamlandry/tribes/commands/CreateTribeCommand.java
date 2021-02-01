@@ -33,6 +33,7 @@ public class CreateTribeCommand {
 
         PlayerEntity player = source.getSource().asPlayer();
         String name = StringArgumentType.getString(source, "name");
+        TribesMain.LOGGER.debug(name);
 
         TribeActionResult response = TribesManager.createNewTribe(name, player);
         if (response == TribeActionResult.SUCCESS){

@@ -32,9 +32,8 @@ public class TribesManager {
     public static TribeActionResult joinTribe(String name, PlayerEntity player){
         if (playerHasTribe(player.getUniqueID())) return TribeActionResult.IN_TRIBE;
         if (isNameAvailable(name)) return TribeActionResult.INVALID_TRIBE;
-        getTribe(name).addMember(player.getUniqueID());
 
-        return TribeActionResult.SUCCESS;
+        return getTribe(name).addMember(player.getUniqueID());
     }
 
     public static TribeActionResult deleteTribe(String name, PlayerEntity player){
@@ -61,6 +60,10 @@ public class TribesManager {
     }
 
     static public List<Tribe> getTribes(){
+        TribesMain.LOGGER.debug(tribes);
+        if (tribes.isEmpty()){
+            return new ArrayList<>();
+        }
         return new ArrayList<>(tribes.values());
     }
 
@@ -68,13 +71,16 @@ public class TribesManager {
         return tribes.get(name);
     }
 
-    public static boolean playerHasTribe(UUID playerID) {
+    public static boolean playerHasTribe(UUID playerID){
         return getTribeOf(playerID) != null;
     }
 
     public static Tribe getTribeOf(UUID playerID) {
-        boolean isInTribe = false;
-        for (Tribe testTribe :  getTribes()){
+        if (getTribes().size() == 0) {
+            return null;
+        }
+
+        for (Tribe testTribe : getTribes()){
             if (testTribe.getMembers().contains(playerID.toString()))
                return testTribe;
         }
@@ -106,5 +112,15 @@ public class TribesManager {
         Tribe tribe = getTribeOf(player.getUniqueID());
         tribe.removeMember(player.getUniqueID());
         return TribeActionResult.SUCCESS;
+    }
+
+    public static List<Tribe> getBans(PlayerEntity playerToCheck) {
+        List<Tribe> bans = new ArrayList<>();
+        for (Tribe tribe : getTribes()){
+            if (tribe.isBanned(playerToCheck.getUniqueID())){
+                bans.add(tribe);
+            }
+        }
+        return bans;
     }
 }

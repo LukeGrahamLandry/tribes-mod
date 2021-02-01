@@ -8,7 +8,8 @@ public enum TribeActionResult {
     CLIENT,
     INVALID_TRIBE,
     LOW_RANK,
-    NOT_IN_TRIBE;
+    NOT_IN_TRIBE,
+    BANNED;
 
     @Override
     public String toString() {
@@ -21,6 +22,7 @@ public enum TribeActionResult {
             case INVALID_TRIBE: return "FAILURE: that tribe does not exist";
             case LOW_RANK: return "FAILURE: your tribe rank is too low";
             case NOT_IN_TRIBE: return "FAILURE: you are not in a tribe";
+            case BANNED: return "FAILURE: player has been banned";
         }
         return "ERROR: invalid TribeActionResult";
     }

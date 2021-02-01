@@ -19,7 +19,10 @@ public class CommandInit {
                 .then(JoinTribeCommand.register())
                 .then(CountTribeCommand.register())
                 .then(DeleteTribeCommand.register())
-                .then(LeaveTribeCommand.register()));
+                .then(LeaveTribeCommand.register())
+                .then(BanPlayerCommand.register())
+                .then(UnbanPlayerCommand.register())
+                .then(ListBansCommand.register()));
 
         TribesMain.LOGGER.debug("registerCommands called");
     }
