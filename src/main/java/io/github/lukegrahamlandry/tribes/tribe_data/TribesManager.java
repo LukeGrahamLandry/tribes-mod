@@ -2,7 +2,6 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,7 +32,7 @@ public class TribesManager {
         if (playerHasTribe(player.getUniqueID())) return TribeActionResult.IN_TRIBE;
         if (isNameAvailable(name)) return TribeActionResult.INVALID_TRIBE;
 
-        return getTribe(name).addMember(player.getUniqueID());
+        return getTribe(name).addMember(player.getUniqueID(), Tribe.Rank.MEMBER);
     }
 
     public static TribeActionResult deleteTribe(String name, PlayerEntity player){
@@ -108,7 +107,7 @@ public class TribesManager {
     }
 
     public static TribeActionResult leaveTribe(PlayerEntity player) {
-        if (!playerHasTribe(player.getUniqueID())) return TribeActionResult.NOT_IN_TRIBE;
+        if (!playerHasTribe(player.getUniqueID())) return TribeActionResult.YOU_NOT_IN_TRIBE;
         Tribe tribe = getTribeOf(player.getUniqueID());
         tribe.removeMember(player.getUniqueID());
         return TribeActionResult.SUCCESS;

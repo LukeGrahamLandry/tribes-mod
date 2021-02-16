@@ -8,8 +8,10 @@ public enum TribeActionResult {
     CLIENT,
     INVALID_TRIBE,
     LOW_RANK,
-    NOT_IN_TRIBE,
-    BANNED;
+    YOU_NOT_IN_TRIBE,
+    BANNED,
+    RANK_DOESNT_EXIST,
+    THEY_NOT_IN_TRIBE;
 
     @Override
     public String toString() {
@@ -21,8 +23,10 @@ public enum TribeActionResult {
             case CLIENT: return "And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread'. This should never happen, DM the Dev.";
             case INVALID_TRIBE: return "FAILURE: that tribe does not exist";
             case LOW_RANK: return "FAILURE: your tribe rank is too low";
-            case NOT_IN_TRIBE: return "FAILURE: you are not in a tribe";
+            case YOU_NOT_IN_TRIBE: return "FAILURE: you are not in a tribe";
+            case THEY_NOT_IN_TRIBE: return "FAILURE: that player is not in your tribe";
             case BANNED: return "FAILURE: player has been banned";
+            case RANK_DOESNT_EXIST: return "FAILURE: there is no rank greater than leader";
         }
         return "ERROR: invalid TribeActionResult";
     }

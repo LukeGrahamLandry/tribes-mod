@@ -2,35 +2,31 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import com.google.gson.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Tribe {
     String name;
-    UUID owner;
-    List<String> members;
+    HashMap<String, Rank> members;
     List<String> bans;
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
-        this.owner = creater;
         this.bans = new ArrayList<>();
-        this.members = new ArrayList<>();
-        this.addMember(this.owner);
+        this.members = new HashMap<>();
+        this.addMember(creater, Rank.LEADER);
     }
 
-    public TribeActionResult addMember(UUID playerID) {
+    public TribeActionResult addMember(UUID playerID, Rank rank) {
         if (isBanned(playerID)) return TribeActionResult.BANNED;
-        if (TribesManager.playerHasTribe(playerID) || this.members.contains(playerID.toString())) return TribeActionResult.IN_TRIBE;
+        if (TribesManager.playerHasTribe(playerID) || this.getMembers().contains(playerID.toString())) return TribeActionResult.IN_TRIBE;
 
-        this.members.add(playerID.toString());
+        this.members.put(playerID.toString(), rank);
         return TribeActionResult.SUCCESS;
     }
 
     public TribeActionResult banPlayer(UUID playerRunningCommand, UUID playerToBan) {
-        if (!this.isLeader(playerRunningCommand)) return TribeActionResult.LOW_RANK;
+        if (!this.isOfficer(playerRunningCommand)) return TribeActionResult.LOW_RANK;
 
-        if (this.members.contains(playerToBan.toString())){
+        if (this.getMembers().contains(playerToBan.toString())){
            this.removeMember(playerToBan);
         }
 
@@ -40,33 +36,76 @@ public class Tribe {
     }
 
     public TribeActionResult unbanPlayer(UUID playerRunningCommand, UUID playerToUnban) {
-        if (!this.isLeader(playerRunningCommand)) return TribeActionResult.LOW_RANK;
+        if (!this.isOfficer(playerRunningCommand)) return TribeActionResult.LOW_RANK;
 
         this.bans.remove(playerToUnban.toString());
 
         return TribeActionResult.SUCCESS;
     }
 
+    public TribeActionResult promotePlayer(UUID playerRunningCommand, UUID playerToPromote) {
+        if (!this.getMembers().contains(playerToPromote.toString())) return TribeActionResult.THEY_NOT_IN_TRIBE;
+
+        int runRank = this.getRankOf(playerRunningCommand.toString()).asInt();
+        int targetRank = this.getRankOf(playerToPromote.toString()).asInt();
+
+        if ((runRank - 2) < targetRank) return TribeActionResult.LOW_RANK;
+
+        int newRank = targetRank + 1;
+        if (newRank > Rank.LEADER.asInt()) return TribeActionResult.RANK_DOESNT_EXIST;
+        if (newRank == Rank.LEADER.asInt()) {
+            this.setRank(playerRunningCommand, Rank.VICE_LEADER);
+        }
+
+        this.setRank(playerToPromote, Rank.fromInt(newRank));
+
+        return TribeActionResult.SUCCESS;
+    }
+
+    public TribeActionResult demotePlayer(UUID playerRunningCommand, UUID playerToPromote) {
+        if (!this.getMembers().contains(playerToPromote.toString())) return TribeActionResult.THEY_NOT_IN_TRIBE;
+
+        int runRank = this.getRankOf(playerRunningCommand.toString()).asInt();
+        int targetRank = this.getRankOf(playerToPromote.toString()).asInt();
+
+        if (runRank <= targetRank) return TribeActionResult.LOW_RANK;
+
+        int newRank = targetRank - 1;
+        if (newRank < 0) return TribeActionResult.RANK_DOESNT_EXIST;
+        this.setRank(playerToPromote, Rank.fromInt(newRank));
+
+        return TribeActionResult.SUCCESS;
+    }
+
+    private void setRank(UUID player, Rank rank) {
+        this.members.put(player.toString(), rank);
+    }
+
     public String getName() {
         return this.name;
     }
 
-    public List<String> getMembers(){
-        return this.members;
+    public Set<String> getMembers(){
+        return this.members.keySet();
     }
 
     public int getCount() {
         return getMembers().size();
     }
 
+    public Rank getRankOf(String playerID){
+        return this.members.get(playerID);
+    }
+
     public JsonObject write(){
         JsonObject obj = new JsonObject();
 
         obj.addProperty("name", this.getName());
-        obj.addProperty("owner", this.owner.toString());
 
-        JsonArray memberList = new JsonArray();
-        this.getMembers().forEach(memberList::add);
+        JsonObject memberList = new JsonObject();
+        this.getMembers().forEach((uuid) -> {
+            memberList.addProperty(uuid, this.getRankOf(uuid).asString());
+        });
         obj.add("members", memberList);
 
         JsonArray banList = new JsonArray();
@@ -83,9 +122,10 @@ public class Tribe {
         String owner = obj.get("owner").getAsString();
         Tribe t = new Tribe(name, UUID.fromString(owner));
 
-        JsonArray members = obj.get("members").getAsJsonArray();
-        for (JsonElement e : members){
-            t.addMember(UUID.fromString(e.getAsString()));
+        JsonObject members = obj.get("members").getAsJsonObject();
+        for (Map.Entry<String, JsonElement> e : members.entrySet()){
+            Rank r = Rank.fromString(e.getValue().getAsString());
+            t.addMember(UUID.fromString(e.getKey()), r);
         }
 
         JsonArray bans = obj.get("bans").getAsJsonArray();
@@ -102,7 +142,15 @@ public class Tribe {
     }
 
     public boolean isLeader(UUID uniqueID) {
-        return uniqueID.equals(owner);
+        return this.getRankOf(uniqueID.toString()).asInt() >= 3;
+    }
+
+    public boolean isViceLeader(UUID uniqueID) {
+        return this.getRankOf(uniqueID.toString()).asInt() >= 2;
+    }
+
+    public boolean isOfficer(UUID uniqueID) {
+        return this.getRankOf(uniqueID.toString()).asInt() >= 1;
     }
 
     public void removeMember(UUID playerID) {
@@ -112,5 +160,65 @@ public class Tribe {
 
     public boolean isBanned(UUID uniqueID) {
         return this.bans.contains(uniqueID.toString());
+    }
+
+
+    public enum Rank {
+        MEMBER,
+        OFFICER,
+        VICE_LEADER,
+        LEADER;
+
+        static Rank fromString(String s){
+            switch (s){
+                default:
+                    return MEMBER;
+                case "officer":
+                    return OFFICER;
+                case "vice leader":
+                    return VICE_LEADER;
+                case "leader":
+                    return LEADER;
+            }
+        }
+
+        public String asString(){
+            switch (this){
+                default:
+                    return "member";
+                case OFFICER:
+                    return "officer";
+                case VICE_LEADER:
+                    return "vice leader";
+                case LEADER:
+                    return "leader";
+            }
+        }
+
+        static Rank fromInt(int s){
+            switch (s){
+                default:
+                    return MEMBER;
+                case 1:
+                    return OFFICER;
+                case 2:
+                    return VICE_LEADER;
+                case 3:
+                    return LEADER;
+            }
+        }
+
+        public int asInt(){
+            switch (this){
+                default:
+                    return 0;
+                case OFFICER:
+                    return 1;
+                case VICE_LEADER:
+                    return 2;
+                case LEADER:
+                    return 3;
+            }
+        }
     }
 }

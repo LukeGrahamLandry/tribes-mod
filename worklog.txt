@@ -10,6 +10,9 @@
 25: ban, unban, bans commands
 15: debug null pointer command BS
 
-TOTAL: $75
-PAID : $40
-OWED : $35
+<Febuary 15>
+30: ranks: promote and demote commands
+
+TOTAL: $85
+PAID : $75
+OWED : $10
