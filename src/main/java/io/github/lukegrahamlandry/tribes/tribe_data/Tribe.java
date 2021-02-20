@@ -6,12 +6,14 @@ import java.util.*;
 
 public class Tribe {
     String name;
-    HashMap<String, Rank> members;
+    HashMap<String, Rank> members;  // key is player uuid
     List<String> bans;
+    HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
         this.bans = new ArrayList<>();
         this.members = new HashMap<>();
+        this.relationToOtherTribes = new HashMap<>();
         this.addMember(creater, Rank.LEADER);
     }
 
@@ -77,6 +79,18 @@ public class Tribe {
         return TribeActionResult.SUCCESS;
     }
 
+    public TribeActionResult setRelation(UUID player, Tribe otherTribe, Relation relation) {
+        if (!this.isViceLeader(player)) return TribeActionResult.LOW_RANK;
+
+        if (relation == Relation.NONE && this.relationToOtherTribes.containsKey(otherTribe.name)){
+            this.relationToOtherTribes.remove(otherTribe.name);
+        } else {
+            this.relationToOtherTribes.put(otherTribe.name, relation);
+        }
+
+        return TribeActionResult.SUCCESS;
+    }
+
     private void setRank(UUID player, Rank rank) {
         this.members.put(player.toString(), rank);
     }
@@ -112,6 +126,12 @@ public class Tribe {
         this.bans.forEach(banList::add);
         obj.add("bans", banList);
 
+        JsonObject relationsList = new JsonObject();
+        this.relationToOtherTribes.forEach((name, relation) -> {
+            relationsList.addProperty(name, relation.asString());
+        });
+        obj.add("relations", relationsList);
+
         return obj;
     }
 
@@ -131,6 +151,13 @@ public class Tribe {
         JsonArray bans = obj.get("bans").getAsJsonArray();
         for (JsonElement e : bans){
             t.banPlayer(UUID.fromString(owner), UUID.fromString(e.getAsString()));
+        }
+
+        JsonObject relations = obj.get("relations").getAsJsonObject();
+        for (Map.Entry<String, JsonElement> e : relations.entrySet()){
+            Relation r = Relation.fromString(e.getValue().getAsString());
+            String otherTribeName = e.getKey();
+            t.relationToOtherTribes.put(otherTribeName, r);
         }
 
         return t;
@@ -161,7 +188,6 @@ public class Tribe {
     public boolean isBanned(UUID uniqueID) {
         return this.bans.contains(uniqueID.toString());
     }
-
 
     public enum Rank {
         MEMBER,
@@ -218,6 +244,34 @@ public class Tribe {
                     return 2;
                 case LEADER:
                     return 3;
+            }
+        }
+    }
+
+    public enum Relation {
+        ALLY,
+        ENEMY,
+        NONE;
+
+        static Relation fromString(String s) {
+            switch (s) {
+                default:
+                    return ALLY;
+                case "enemy":
+                    return ENEMY;
+                case "none":
+                    return NONE;
+            }
+        }
+
+        public String asString() {
+            switch (this) {
+                default:
+                    return "ally";
+                case ENEMY:
+                    return "enemy";
+                case NONE:
+                    return "none";
             }
         }
     }

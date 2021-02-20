@@ -22,7 +22,12 @@ public class CommandInit {
                 .then(LeaveTribeCommand.register())
                 .then(BanPlayerCommand.register())
                 .then(UnbanPlayerCommand.register())
-                .then(ListBansCommand.register()));
+                .then(ListBansCommand.register())
+                .then(PromotePlayerCommand.register())
+                .then(DemotePlayerCommand.register())
+                .then(AllyTribeCommand.register())
+                .then(EnemyTribeCommand.register())
+                .then(NeutralTribeCommand.register()));
 
         TribesMain.LOGGER.debug("registerCommands called");
     }
