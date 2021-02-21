@@ -1,16 +1,22 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import com.google.gson.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.*;
 
 public class Tribe {
     String name;
+    String initials;
     HashMap<String, Rank> members;  // key is player uuid
     List<String> bans;
     HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
+        this.initials = Character.toString(tribeName.charAt(0)) + tribeName.charAt(1) + tribeName.charAt(2);
         this.bans = new ArrayList<>();
         this.members = new HashMap<>();
         this.relationToOtherTribes = new HashMap<>();
@@ -26,7 +32,7 @@ public class Tribe {
     }
 
     public TribeActionResult banPlayer(UUID playerRunningCommand, UUID playerToBan) {
-        if (!this.isOfficer(playerRunningCommand)) return TribeActionResult.LOW_RANK;
+        if (this.getRankOf(playerRunningCommand.toString()).asInt() <= this.getRankOf(playerToBan.toString()).asInt()) return TribeActionResult.LOW_RANK;
 
         if (this.getMembers().contains(playerToBan.toString())){
            this.removeMember(playerToBan);
@@ -91,6 +97,17 @@ public class Tribe {
         return TribeActionResult.SUCCESS;
     }
 
+    public TribeActionResult trySetInitials(String str, UUID player) {
+        if (!this.isViceLeader(player)) return TribeActionResult.LOW_RANK;
+
+        this.initials = str;
+        return TribeActionResult.SUCCESS;
+    }
+
+    public String getInitials() {
+        return this.initials;
+    }
+
     private void setRank(UUID player, Rank rank) {
         this.members.put(player.toString(), rank);
     }
@@ -111,10 +128,20 @@ public class Tribe {
         return this.members.get(playerID);
     }
 
+    public void broadcastMessage(String message, ServerWorld world){
+        for (String uuid : this.getMembers()){
+            PlayerEntity player = world.getPlayerByUuid(UUID.fromString(uuid));
+            if (player != null){
+                player.sendStatusMessage(new StringTextComponent(message), false);
+            }
+        }
+    }
+
     public JsonObject write(){
         JsonObject obj = new JsonObject();
 
         obj.addProperty("name", this.getName());
+        obj.addProperty("initials", this.getInitials());
 
         JsonObject memberList = new JsonObject();
         this.getMembers().forEach((uuid) -> {
@@ -140,27 +167,29 @@ public class Tribe {
 
         String name = obj.get("name").getAsString();
         String owner = obj.get("owner").getAsString();
-        Tribe t = new Tribe(name, UUID.fromString(owner));
+        Tribe tribe = new Tribe(name, UUID.fromString(owner));
 
         JsonObject members = obj.get("members").getAsJsonObject();
         for (Map.Entry<String, JsonElement> e : members.entrySet()){
             Rank r = Rank.fromString(e.getValue().getAsString());
-            t.addMember(UUID.fromString(e.getKey()), r);
+            tribe.addMember(UUID.fromString(e.getKey()), r);
         }
 
         JsonArray bans = obj.get("bans").getAsJsonArray();
         for (JsonElement e : bans){
-            t.banPlayer(UUID.fromString(owner), UUID.fromString(e.getAsString()));
+            tribe.banPlayer(UUID.fromString(owner), UUID.fromString(e.getAsString()));
         }
 
         JsonObject relations = obj.get("relations").getAsJsonObject();
         for (Map.Entry<String, JsonElement> e : relations.entrySet()){
             Relation r = Relation.fromString(e.getValue().getAsString());
             String otherTribeName = e.getKey();
-            t.relationToOtherTribes.put(otherTribeName, r);
+            tribe.relationToOtherTribes.put(otherTribeName, r);
         }
 
-        return t;
+        tribe.initials = obj.get("initials").getAsString();
+
+        return tribe;
     }
 
     @Override

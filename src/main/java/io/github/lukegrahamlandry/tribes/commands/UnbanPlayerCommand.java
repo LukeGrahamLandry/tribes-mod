@@ -12,6 +12,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.server.ServerWorld;
 
 public class UnbanPlayerCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -38,7 +39,8 @@ public class UnbanPlayerCommand {
             TribeActionResult response = tribe.unbanPlayer(playerBanning.getUniqueID(), playerToUnban.getUniqueID());
 
             if (response == TribeActionResult.SUCCESS){
-                source.getSource().sendFeedback(new StringTextComponent("You successfully unbanned: " + playerToUnban.getName().getString()), true);
+                // source.getSource().sendFeedback(new StringTextComponent("You successfully unbanned: " + playerToUnban.getName().getString()), true);
+                tribe.broadcastMessage( playerToUnban.getName().getString() + " has been unbanned", (ServerWorld) playerBanning.getEntityWorld());
             } else {
                 source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
             }

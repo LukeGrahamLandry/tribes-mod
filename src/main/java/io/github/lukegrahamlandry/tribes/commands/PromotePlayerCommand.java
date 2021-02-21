@@ -12,6 +12,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.server.ServerWorld;
 
 public class PromotePlayerCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -40,7 +41,8 @@ public class PromotePlayerCommand {
             if (response == TribeActionResult.SUCCESS){
                 String name = playerTarget.getName().getString();
                 String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
-                source.getSource().sendFeedback(new StringTextComponent("You successfully promoted " + name + " to " + rank), true);
+                // source.getSource().sendFeedback(new StringTextComponent("You successfully promoted " + name + " to " + rank), true);
+                tribe.broadcastMessage(name + " has been promoted to " + rank, (ServerWorld) playerRunning.getEntityWorld());
             } else {
                 source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
             }

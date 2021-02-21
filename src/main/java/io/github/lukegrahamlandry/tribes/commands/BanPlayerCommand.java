@@ -13,6 +13,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.server.ServerWorld;
 
 public class BanPlayerCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -39,7 +40,8 @@ public class BanPlayerCommand {
             TribeActionResult response = tribe.banPlayer(playerBanning.getUniqueID(), playerToBan.getUniqueID());
 
             if (response == TribeActionResult.SUCCESS){
-                source.getSource().sendFeedback(new StringTextComponent("You successfully banned: " + playerToBan.getName().getString()), true);
+                // source.getSource().sendFeedback(new StringTextComponent("You successfully banned: " + playerToBan.getName().getString()), true);
+                tribe.broadcastMessage(playerToBan.getName().getString() + " has been banned from your tribe", (ServerWorld) playerBanning.getEntityWorld());
             } else {
                 source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
             }

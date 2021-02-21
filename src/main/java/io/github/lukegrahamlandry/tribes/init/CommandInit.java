@@ -27,7 +27,9 @@ public class CommandInit {
                 .then(DemotePlayerCommand.register())
                 .then(AllyTribeCommand.register())
                 .then(EnemyTribeCommand.register())
-                .then(NeutralTribeCommand.register()));
+                .then(NeutralTribeCommand.register())
+                .then(SetInitialsCommand.register())
+                .then(WhichTribeCommand.register()));
 
         TribesMain.LOGGER.debug("registerCommands called");
     }

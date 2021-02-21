@@ -9,8 +9,10 @@ A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissione
     - count <name>
     - leave
     - delete <name> (leader only)
-    - ban <player> (officers only)
-    - unban <player> (officers only)
+    - ban <player> (must be 1 rank higher)
+    - unban <player> (officers+)
     - promote <player> (must be 2 ranks higher)
     - demote <player> (must be 1 rank higher)
-    - <ally, enemy, neutral> <name> (vice leader only)
+    - <ally, enemy, neutral> <name> (vice leader+)
+    - who <player>
+    - initials <string> (vice leader+)
