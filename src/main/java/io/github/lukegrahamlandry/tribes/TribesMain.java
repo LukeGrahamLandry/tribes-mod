@@ -1,5 +1,6 @@
 package io.github.lukegrahamlandry.tribes;
 
+import io.github.lukegrahamlandry.tribes.config.Config;
 import io.github.lukegrahamlandry.tribes.init.*;
 import io.github.lukegrahamlandry.tribes.tribe_data.SaveHandler;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
@@ -16,13 +17,16 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +42,15 @@ public class TribesMain {
 
     public TribesMain() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        //Registering of both Client and Server Configs
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.client_config);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.server_config);
+
+        //Loading of both Client and Server Config Files
+        Config.loadConfig(Config.client_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-client.toml").toString());
+        Config.loadConfig(Config.server_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-server.toml").toString());
+
         BlockInit.BLOCKS.register(eventBus);
         MinecraftForge.EVENT_BUS.register(this);
     }
