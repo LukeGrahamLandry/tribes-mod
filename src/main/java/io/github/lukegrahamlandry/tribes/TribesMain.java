@@ -51,6 +51,7 @@ public class TribesMain {
         Config.loadConfig(Config.client_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-client.toml").toString());
         Config.loadConfig(Config.server_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-server.toml").toString());
 
+        ItemInit.init(eventBus);
         BlockInit.BLOCKS.register(eventBus);
         MinecraftForge.EVENT_BUS.register(this);
     }
