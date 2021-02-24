@@ -20,22 +20,22 @@ public class TribesConfig {
                 .push("server");
         numTribes = server
                 .comment("Maximum Number of Tribes: ")
-                .defineInRange("numberOfTribes", 10, 1, 20);
+                .defineInRange("numberOfTribes", 10, 1, 999);
         effectChangeDays = server
                 .comment("Days between Effect Change: ")
-                .defineInRange("daysBetweenEffectChange", 10, 1, 20);
+                .defineInRange("daysBetweenEffectChange", 10, 0, 999);
         tribeRequired = server
                 .comment("Tribe Required: ")
                 .define("tribesRequired", true);
         tierThresholds = server
                 .comment("I:Tier Thresholds: ")
-                .defineList("tier_thresholds", Arrays.asList(4,12),i -> (int)i>=0 && (int)i<=20);
+                .defineList("tier_thresholds", Arrays.asList(4,12),i -> (int)i>=0);
         tierNegEffects = server
                 .comment("I:Tier Negative Effects: ")
-                .defineList("tier_negative_effects", Arrays.asList(1,1,0),i -> (int)i>=0 && (int)i<=1);
+                .defineList("tier_negative_effects", Arrays.asList(1,1,0),i -> (int)i>=0);
         tierPosEffects = server
                 .comment("I:Tier Positive Effects: ")
-                .defineList("tier_positive_effects", Arrays.asList(1,2,3),i -> (int)i>=0 && (int)i<=3);
+                .defineList("tier_positive_effects", Arrays.asList(1,2,3),i -> (int)i>=0);
         server.pop();
     }
 

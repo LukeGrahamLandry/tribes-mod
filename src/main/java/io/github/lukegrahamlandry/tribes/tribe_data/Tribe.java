@@ -141,11 +141,14 @@ public class Tribe {
         JsonObject obj = new JsonObject();
 
         obj.addProperty("name", this.getName());
-        obj.addProperty("initials", this.getInitials());
 
         JsonObject memberList = new JsonObject();
         this.getMembers().forEach((uuid) -> {
-            memberList.addProperty(uuid, this.getRankOf(uuid).asString());
+            if (this.getRankOf(uuid) == Rank.LEADER){
+                obj.addProperty("owner", uuid);
+            } else {
+                memberList.addProperty(uuid, this.getRankOf(uuid).asString());
+            }
         });
         obj.add("members", memberList);
 
@@ -158,6 +161,8 @@ public class Tribe {
             relationsList.addProperty(name, relation.asString());
         });
         obj.add("relations", relationsList);
+
+        obj.addProperty("initials", this.getInitials());
 
         return obj;
     }
