@@ -2,6 +2,7 @@ package io.github.lukegrahamlandry.tribes;
 
 import io.github.lukegrahamlandry.tribes.config.Config;
 import io.github.lukegrahamlandry.tribes.init.*;
+import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.tribe_data.SaveHandler;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
@@ -42,6 +43,8 @@ public class TribesMain {
 
     public TribesMain() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        //Common Setup Listener
+        eventBus.addListener(this::setup);
 
         //Registering of both Client and Server Configs
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.client_config);
@@ -51,9 +54,16 @@ public class TribesMain {
         Config.loadConfig(Config.client_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-client.toml").toString());
         Config.loadConfig(Config.server_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-server.toml").toString());
 
+        //Initialize Items
         ItemInit.init(eventBus);
+
         BlockInit.BLOCKS.register(eventBus);
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    //Common Setup Event
+    private void setup(final FMLCommonSetupEvent event) {
+        NetworkHandler.registerMessages();
     }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)

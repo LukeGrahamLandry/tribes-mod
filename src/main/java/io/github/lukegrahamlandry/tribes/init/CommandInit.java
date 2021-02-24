@@ -13,7 +13,7 @@ import static io.github.lukegrahamlandry.tribes.TribesMain.MOD_ID;
 public class CommandInit {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event){
-        event.getDispatcher().register(Commands.literal("tribe")
+        event.getDispatcher().register(Commands.literal("tribes")
                 .requires((context) -> context.hasPermissionLevel(0))
                 .then(CreateTribeCommand.register())
                 .then(JoinTribeCommand.register())
