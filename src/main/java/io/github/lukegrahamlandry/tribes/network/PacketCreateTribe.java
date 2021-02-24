@@ -9,11 +9,11 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketCreateTribe {
-    String tribeName;
+    private String tribeName;
 
     //Read tribe name from PacketBuffer
     public PacketCreateTribe(PacketBuffer buf) {
-        this.tribeName = buf.readString();
+        this.tribeName = buf.readString(24);
     }
 
     //Write tribe name to PacketBuffer
