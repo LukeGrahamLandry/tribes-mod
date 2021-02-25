@@ -3,6 +3,7 @@ package io.github.lukegrahamlandry.tribes.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketCreateTribe;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -67,14 +68,14 @@ public class CreateTribeScreen extends Screen {
 
         //Initialization of the textbox
         this.nameField = new TextFieldWidget(this.font, this.guiLeft + 13, (this.height - this.ySize + 50) / 2, 150, 20, this.nameField, new TranslationTextComponent("selectWorld.search"));
-        this.nameField.setMaxStringLength(24);
+        this.nameField.setMaxStringLength(TribesConfig.getMaxTribeNameLength());
         this.children.add(this.nameField);
         this.setFocusedDefault(this.nameField);
         this.nameField.setResponder((tribeNameIn) -> {
             this.tribeName = tribeNameIn;
-            this.btnCreateTribe.active = !this.nameField.getText().isEmpty();
+            this.btnCreateTribe.active = isValidName();
         });
-        this.btnCreateTribe.active = !this.nameField.getText().isEmpty();
+        this.btnCreateTribe.active = isValidName();
         super.init();
     }
 
@@ -88,5 +89,10 @@ public class CreateTribeScreen extends Screen {
         this.font.func_243248_b(matrixStack, this.title, (float)this.titleX, (float)this.titleY, 4210752);
         this.nameField.render(matrixStack, mouseX, mouseY, partialTicks);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+    }
+
+    private boolean isValidName(){
+        // max length check is handled by the text field
+        return !this.nameField.getText().isEmpty();
     }
 }

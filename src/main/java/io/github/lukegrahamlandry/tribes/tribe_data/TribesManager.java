@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.*;
@@ -21,7 +22,7 @@ public class TribesManager {
             return TribeActionResult.CLIENT;
         }
 
-        if (name.length() > 24) return TribeActionResult.LONG_NAME;
+        if (name.length() > TribesConfig.getMaxTribeNameLength()) return TribeActionResult.LONG_NAME;  // should be caught by the create GUI
         if (playerHasTribe(player.getUniqueID())) return TribeActionResult.IN_TRIBE;
 
 

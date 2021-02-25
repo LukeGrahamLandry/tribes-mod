@@ -66,4 +66,8 @@ public class TribesConfig {
     public static List<? extends Integer> getTierPositiveEffects(){
         return tierPosEffects.get();
     }
+
+    public static int getMaxTribeNameLength(){
+        return 24;
+    }
 }

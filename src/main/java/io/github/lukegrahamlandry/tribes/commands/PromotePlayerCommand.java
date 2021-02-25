@@ -42,7 +42,7 @@ public class PromotePlayerCommand {
                 String name = playerTarget.getName().getString();
                 String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
                 // source.getSource().sendFeedback(new StringTextComponent("You successfully promoted " + name + " to " + rank), true);
-                tribe.broadcastMessage(name + " has been promoted to " + rank, (ServerWorld) playerRunning.getEntityWorld());
+                tribe.broadcastMessage(name + " has been promoted to " + rank, playerRunning);
             } else {
                 source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
             }

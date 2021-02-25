@@ -40,7 +40,7 @@ public class UnbanPlayerCommand {
 
             if (response == TribeActionResult.SUCCESS){
                 // source.getSource().sendFeedback(new StringTextComponent("You successfully unbanned: " + playerToUnban.getName().getString()), true);
-                tribe.broadcastMessage( playerToUnban.getName().getString() + " has been unbanned", (ServerWorld) playerBanning.getEntityWorld());
+                tribe.broadcastMessage( playerToUnban.getName().getString() + " has been unbanned", playerBanning);
             } else {
                 source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
             }

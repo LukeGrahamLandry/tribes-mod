@@ -16,7 +16,7 @@ public class Tribe {
     HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
-        this.initials = Character.toString(tribeName.charAt(0)) + tribeName.charAt(1) + tribeName.charAt(2);
+        this.initials = Character.toString(tribeName.charAt(0));
         this.bans = new ArrayList<>();
         this.members = new HashMap<>();
         this.relationToOtherTribes = new HashMap<>();
@@ -128,11 +128,18 @@ public class Tribe {
         return this.members.get(playerID);
     }
 
-    public void broadcastMessage(String message, ServerWorld world){
+    // CANNOT be called from the client side
+    public void broadcastMessage(String message, PlayerEntity playerRunningCommand){
+        ServerWorld world = (ServerWorld) playerRunningCommand.getEntityWorld();
+
+        // show which player ran the command that caused the broadcast
+        String name = playerRunningCommand.getName().getString();
+        String fullMessage = "<" + name + "> " + message;
+
         for (String uuid : this.getMembers()){
             PlayerEntity player = world.getPlayerByUuid(UUID.fromString(uuid));
             if (player != null){
-                player.sendStatusMessage(new StringTextComponent(message), false);
+                player.sendStatusMessage(new StringTextComponent(fullMessage), false);
             }
         }
     }

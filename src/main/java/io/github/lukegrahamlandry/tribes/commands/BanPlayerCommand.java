@@ -41,7 +41,7 @@ public class BanPlayerCommand {
 
             if (response == TribeActionResult.SUCCESS){
                 // source.getSource().sendFeedback(new StringTextComponent("You successfully banned: " + playerToBan.getName().getString()), true);
-                tribe.broadcastMessage(playerToBan.getName().getString() + " has been banned from your tribe", (ServerWorld) playerBanning.getEntityWorld());
+                tribe.broadcastMessage(playerToBan.getName().getString() + " has been banned from your tribe", playerBanning);
             } else {
                 source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
             }

@@ -42,7 +42,7 @@ public class DemotePlayerCommand {
                 String name = playerTarget.getName().getString();
                 String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
                 // source.getSource().sendFeedback(new StringTextComponent("You successfully demoted " + name + " to " + rank), true);
-                tribe.broadcastMessage(name + " has been demoted to " + rank, (ServerWorld) playerRunning.getEntityWorld());
+                tribe.broadcastMessage(name + " has been demoted to " + rank, playerRunning);
             } else {
                 source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
             }
