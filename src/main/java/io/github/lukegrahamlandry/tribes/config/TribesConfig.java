@@ -1,7 +1,11 @@
 package io.github.lukegrahamlandry.tribes.config;
 
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,5 +73,42 @@ public class TribesConfig {
 
     public static int getMaxTribeNameLength(){
         return 24;
+    }
+
+
+    // might change based on config later
+    public static List<Effect> getGoodEffects(){
+        ArrayList<Effect> theEffects = new ArrayList<>();
+
+        for (Field field : Effects.class.getFields()){
+            try {
+                if (field.get(null) instanceof Effect){
+                    Effect toCheck = (Effect) field.get(null);
+                    if (toCheck.isBeneficial()){
+                        theEffects.add(toCheck);
+                    }
+                }
+            } catch (IllegalAccessException ignored) {}
+        }
+
+        return theEffects;
+    }
+
+    // might change based on config later
+    public static List<Effect> getBadEffects(){
+        ArrayList<Effect> theEffects = new ArrayList<>();
+
+        for (Field field : Effects.class.getFields()){
+            try {
+                if (field.get(null) instanceof Effect){
+                    Effect toCheck = (Effect) field.get(null);
+                    if (!toCheck.isBeneficial()){
+                        theEffects.add(toCheck);
+                    }
+                }
+            } catch (IllegalAccessException ignored) {}
+        }
+
+        return theEffects;
     }
 }
