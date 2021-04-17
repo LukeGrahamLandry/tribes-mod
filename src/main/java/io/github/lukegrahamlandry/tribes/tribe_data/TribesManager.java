@@ -123,4 +123,14 @@ public class TribesManager {
         }
         return bans;
     }
+
+    public static Tribe getChunkOwner(long chunk) {
+        for (Tribe tribe : getTribes()){
+            for (Long testChunk : tribe.getClaimedChunks()){
+                if (testChunk == chunk) return tribe;
+            }
+        }
+
+        return null;
+    }
 }

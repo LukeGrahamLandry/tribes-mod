@@ -1,6 +1,7 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import com.google.gson.*;
+import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,12 +16,14 @@ public class Tribe {
     HashMap<String, Rank> members;  // key is player uuid
     List<String> bans;
     HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
+    List<Long> chunks;
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
         this.initials = Character.toString(tribeName.charAt(0));
         this.bans = new ArrayList<>();
         this.members = new HashMap<>();
         this.relationToOtherTribes = new HashMap<>();
+        this.chunks = new ArrayList<>();
         this.addMember(creater, Rank.LEADER);
     }
 
@@ -147,7 +150,7 @@ public class Tribe {
     }
 
     public int getTribeTier(){
-        List<Integer> membersRequired = (List<Integer>) TribesConfig.getTierThresholds();
+        List<Integer> membersRequired = TribesConfig.getTierThresholds();
         for (int i=membersRequired.size()-1;i>=0;i--){
             if (getCount() >= membersRequired.get(i)) return i+2;
         }
@@ -182,6 +185,10 @@ public class Tribe {
 
         obj.addProperty("initials", this.getInitials());
 
+        JsonArray chunksList = new JsonArray();
+        this.chunks.forEach(chunksList::add);
+        obj.add("chunks", chunksList);
+
         return obj;
     }
 
@@ -212,6 +219,11 @@ public class Tribe {
 
         tribe.initials = obj.get("initials").getAsString();
 
+        JsonArray claimedChunks = obj.get("chunks").getAsJsonArray();
+        for (JsonElement e : claimedChunks){
+            tribe.chunks.add(e.getAsLong());
+        }
+
         return tribe;
     }
 
@@ -239,6 +251,37 @@ public class Tribe {
 
     public boolean isBanned(UUID uniqueID) {
         return this.bans.contains(uniqueID.toString());
+    }
+
+    public TribeActionResult claimChunk(long chunk, UUID player) {
+        if (!this.isOfficer(player)) return TribeActionResult.LOW_RANK;
+        if (TribesManager.getChunkOwner(chunk) != null) return TribeActionResult.ALREADY_CLAIMED;
+
+        if (this.getClaimedChunks().size() >= TribesConfig.getMaxChunksClaimed().get(this.getTribeTier()-1)) return TribeActionResult.CONFIG;
+
+        this.chunks.add(chunk);
+
+        return TribeActionResult.SUCCESS;
+    }
+
+    public TribeActionResult unclaimChunk(long chunk, UUID player) {
+        if (!this.isOfficer(player)) return TribeActionResult.LOW_RANK;
+        if (!TribesManager.getChunkOwner(chunk).getName().equals(this.getName())) return TribeActionResult.ALREADY_CLAIMED;
+
+        this.chunks.remove(chunk);
+
+        return TribeActionResult.SUCCESS;
+    }
+
+    public List<Long> getClaimedChunks(){
+        return this.chunks;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Tribe){
+            return this.getName().equals(((Tribe) obj).getName());
+        }
+        return false;
     }
 
     public enum Rank {

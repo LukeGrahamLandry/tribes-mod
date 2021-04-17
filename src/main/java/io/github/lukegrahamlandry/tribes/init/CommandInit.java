@@ -29,7 +29,8 @@ public class CommandInit {
                 .then(EnemyTribeCommand.register())
                 .then(NeutralTribeCommand.register())
                 .then(SetInitialsCommand.register())
-                .then(WhichTribeCommand.register()));
+                .then(WhichTribeCommand.register())
+                .then(ChunkClaimCommand.register()));
 
         TribesMain.LOGGER.debug("Tribe commands registerd");
     }

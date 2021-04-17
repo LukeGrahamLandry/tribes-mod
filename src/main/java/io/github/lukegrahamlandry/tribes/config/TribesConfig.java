@@ -16,6 +16,7 @@ public class TribesConfig {
 
     private static ForgeConfigSpec.BooleanValue friendlyFire;
     private static ForgeConfigSpec.IntValue tierForClaiming;
+    private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> maxChunksClaimed;
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
@@ -40,11 +41,14 @@ public class TribesConfig {
                 .comment("I:Tier Positive Effects: ")
                 .defineList("tier_positive_effects", Arrays.asList(1,2,3),i -> (int)i>=0);
         friendlyFire = server
-                .comment("whether players should be able to harm other members of their tribe: ")
+                .comment("Whether players should be able to harm other members of their tribe: ")
                 .define("tribesRequired", false);
         tierForClaiming = server
                 .comment("Minimum tribe tier to claim land: ")
                 .defineInRange("numberOfTribes", 2, 0, 2);
+        maxChunksClaimed = server
+                .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
+                .defineList("tier_positive_effects", Arrays.asList(1,4,10,20,30),i -> (int)i>=0);
         server.pop();
     }
 
@@ -59,16 +63,16 @@ public class TribesConfig {
     //Getter Method for the number of days between effects change
     public static int getDaysBetweenEffects(){ return effectChangeDays.get(); }
 
-    public static List<? extends Integer> getTierThresholds(){
-        return tierThresholds.get();
+    public static List<Integer> getTierThresholds(){
+        return (List<Integer>) tierThresholds.get();
     }
 
-    public static List<? extends Integer> getTierNegativeEffects(){
-        return tierNegEffects.get();
+    public static List<Integer> getTierNegativeEffects(){
+        return (List<Integer>) tierNegEffects.get();
     }
 
-    public static List<? extends Integer> getTierPositiveEffects(){
-        return tierPosEffects.get();
+    public static List<Integer> getTierPositiveEffects(){
+        return (List<Integer>) tierPosEffects.get();
     }
 
     public static boolean getFriendlyFireEnabled(){
@@ -81,5 +85,9 @@ public class TribesConfig {
 
     public static int getMinTierToClaimLand(){
         return tierForClaiming.get();
+    }
+
+    public static List<Integer> getMaxChunksClaimed() {
+        return (List<Integer>) maxChunksClaimed.get();
     }
 }

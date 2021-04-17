@@ -17,6 +17,7 @@ public class ClaimedLandBlocker {
         if (event.getPlayer().getEntityWorld().isRemote()) return;
         if (!canAccessLand(event.getPlayer(), event.getPos())){
             event.setCanceled(true);
+            // TODO: return placed block to the player
         }
     }
 
@@ -31,9 +32,16 @@ public class ClaimedLandBlocker {
 
     private static boolean canAccessLand(PlayerEntity placer, BlockPos position){
         Tribe placerTribe = TribesManager.getTribeOf(placer.getUniqueID());
+
+        long chunk = placer.getEntityWorld().getChunkAt(position).getPos().asLong();
+        Tribe chunkOwner = TribesManager.getChunkOwner(chunk);
+        if (chunkOwner != null && !chunkOwner.equals(placerTribe)) return false;
+
+
         if (position.getZ() > -500 && position.getZ() < 500) return true;
 
-        // TODO: take in to account hemisphere access as well as chunk claiming
+
+        // TODO: take in to account hemisphere access
 
         return false;
     }

@@ -13,7 +13,8 @@ public enum TribeActionResult {
     RANK_DOESNT_EXIST,
     THEY_NOT_IN_TRIBE,
     SAME_TRIBE,
-    CONFIG;
+    CONFIG,
+    ALREADY_CLAIMED;
 
     @Override
     public String toString() {
@@ -31,6 +32,7 @@ public enum TribeActionResult {
             case RANK_DOESNT_EXIST: return "FAILURE: there is no rank greater than leader";
             case SAME_TRIBE: return "FAILURE: that's your own tribe";
             case CONFIG: return "FAILURE: that action is not allowed by the current config (ie hit tribes/members limit)";
+            case ALREADY_CLAIMED: return "FAILURE: that area has been claimed";
         }
         return "ERROR: invalid TribeActionResult";
     }
