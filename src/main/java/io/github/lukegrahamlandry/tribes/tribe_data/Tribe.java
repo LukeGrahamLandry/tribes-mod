@@ -1,6 +1,7 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import com.google.gson.*;
+import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
@@ -87,6 +88,7 @@ public class Tribe {
 
     public TribeActionResult setRelation(UUID player, Tribe otherTribe, Relation relation) {
         if (!this.isViceLeader(player)) return TribeActionResult.LOW_RANK;
+        if (this.getName().equals(otherTribe.getName())) return TribeActionResult.SAME_TRIBE;
 
         if (relation == Relation.NONE && this.relationToOtherTribes.containsKey(otherTribe.name)){
             this.relationToOtherTribes.remove(otherTribe.name);
@@ -134,7 +136,7 @@ public class Tribe {
 
         // show which player ran the command that caused the broadcast
         String name = playerRunningCommand.getName().getString();
-        String fullMessage = "<" + name + "> " + message;
+        String fullMessage = "<" + name + ">: " + message;
 
         for (String uuid : this.getMembers()){
             PlayerEntity player = world.getPlayerByUuid(UUID.fromString(uuid));
@@ -142,6 +144,15 @@ public class Tribe {
                 player.sendStatusMessage(new StringTextComponent(fullMessage), false);
             }
         }
+    }
+
+    public int getTribeTier(){
+        List<Integer> membersRequired = (List<Integer>) TribesConfig.getTierThresholds();
+        for (int i=membersRequired.size()-1;i>=0;i--){
+            if (getCount() >= membersRequired.get(i)) return i+2;
+        }
+
+        return 1;
     }
 
     public JsonObject write(){

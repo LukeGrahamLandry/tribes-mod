@@ -24,7 +24,7 @@ public class TribesManager {
 
         if (name.length() > TribesConfig.getMaxTribeNameLength()) return TribeActionResult.LONG_NAME;  // should be caught by the create GUI
         if (playerHasTribe(player.getUniqueID())) return TribeActionResult.IN_TRIBE;
-
+        if (getTribes().size() >= TribesConfig.getMaxNumberOfTribes()) return TribeActionResult.CONFIG;
 
         return addNewTribe(new Tribe(name, player.getUniqueID()));
     }

@@ -37,6 +37,7 @@ public class EnemyTribeCommand {
         TribeActionResult response = yourTribe.setRelation(player.getUniqueID(), otherTribe, Tribe.Relation.ENEMY);
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Your tribe is now enemies with " + name), true);
+            yourTribe.broadcastMessage(name + " (" + otherTribe.getInitials() + ") is now your enemy", player);
         } else {
             source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
         }

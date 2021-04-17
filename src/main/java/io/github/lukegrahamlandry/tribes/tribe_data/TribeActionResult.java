@@ -11,7 +11,9 @@ public enum TribeActionResult {
     YOU_NOT_IN_TRIBE,
     BANNED,
     RANK_DOESNT_EXIST,
-    THEY_NOT_IN_TRIBE;
+    THEY_NOT_IN_TRIBE,
+    SAME_TRIBE,
+    CONFIG;
 
     @Override
     public String toString() {
@@ -27,6 +29,8 @@ public enum TribeActionResult {
             case THEY_NOT_IN_TRIBE: return "FAILURE: that player is not in your tribe";
             case BANNED: return "FAILURE: player has been banned";
             case RANK_DOESNT_EXIST: return "FAILURE: there is no rank greater than leader";
+            case SAME_TRIBE: return "FAILURE: that's your own tribe";
+            case CONFIG: return "FAILURE: that action is not allowed by the current config (ie hit tribes/members limit)";
         }
         return "ERROR: invalid TribeActionResult";
     }

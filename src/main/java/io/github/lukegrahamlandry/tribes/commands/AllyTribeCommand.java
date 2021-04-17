@@ -37,6 +37,7 @@ public class AllyTribeCommand {
         TribeActionResult response = yourTribe.setRelation(player.getUniqueID(), otherTribe, Tribe.Relation.ALLY);
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Your tribe is now allies with " + name), true);
+            yourTribe.broadcastMessage(name + " (" + otherTribe.getInitials() + ") is now your ally", player);
         } else {
             source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
         }

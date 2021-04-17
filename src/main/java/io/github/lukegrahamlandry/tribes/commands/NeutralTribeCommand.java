@@ -37,6 +37,7 @@ public class NeutralTribeCommand {
         TribeActionResult response = yourTribe.setRelation(player.getUniqueID(), otherTribe, Tribe.Relation.NONE);
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Your tribe is now neutral with: " + name), true);
+            yourTribe.broadcastMessage(name + " (" + otherTribe.getInitials() + ") is now neutral", player);
         } else {
             source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
         }

@@ -14,6 +14,9 @@ public class TribesConfig {
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierNegEffects;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierPosEffects;
 
+    private static ForgeConfigSpec.BooleanValue friendlyFire;
+    private static ForgeConfigSpec.IntValue tierForClaiming;
+
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
         server.comment("Server configuration settings")
@@ -36,15 +39,19 @@ public class TribesConfig {
         tierPosEffects = server
                 .comment("I:Tier Positive Effects: ")
                 .defineList("tier_positive_effects", Arrays.asList(1,2,3),i -> (int)i>=0);
+        friendlyFire = server
+                .comment("whether players should be able to harm other members of their tribe: ")
+                .define("tribesRequired", false);
+        tierForClaiming = server
+                .comment("Minimum tribe tier to claim land: ")
+                .defineInRange("numberOfTribes", 2, 0, 2);
         server.pop();
     }
 
-    //Getter Method for the max number of tribes
     public static int getMaxNumberOfTribes(){
         return numTribes.get();
     }
 
-    //Getter Method for the whether or not tribes are required
     public static boolean getTribesRequired(){
         return tribeRequired.get();
     }
@@ -52,22 +59,27 @@ public class TribesConfig {
     //Getter Method for the number of days between effects change
     public static int getDaysBetweenEffects(){ return effectChangeDays.get(); }
 
-    //Getter Method for tier thresholds
     public static List<? extends Integer> getTierThresholds(){
         return tierThresholds.get();
     }
 
-    //Getter Method for tier negative effects
     public static List<? extends Integer> getTierNegativeEffects(){
         return tierNegEffects.get();
     }
 
-    //Getter Method for tier positive effects
     public static List<? extends Integer> getTierPositiveEffects(){
         return tierPosEffects.get();
     }
 
+    public static boolean getFriendlyFireEnabled(){
+        return friendlyFire.get();
+    }
+
     public static int getMaxTribeNameLength(){
         return 24;
+    }
+
+    public static int getMinTierToClaimLand(){
+        return tierForClaiming.get();
     }
 }
