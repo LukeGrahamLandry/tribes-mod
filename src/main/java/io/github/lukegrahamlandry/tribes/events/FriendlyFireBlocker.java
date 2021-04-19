@@ -24,8 +24,7 @@ public class FriendlyFireBlocker {
             Tribe targetTribe = TribesManager.getTribeOf(target.getUniqueID());
 
             if (sourceTribe != null && targetTribe != null){
-                boolean sameTribe = sourceTribe.getName().equals(targetTribe.getName());
-                if (sameTribe) event.setAmount(0);
+                if (sourceTribe.equals(targetTribe)) event.setAmount(0);
             }
         }
     }

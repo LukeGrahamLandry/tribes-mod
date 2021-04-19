@@ -3,7 +3,8 @@
 A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissioned by Khaki.
 
 ## Features
-- config
+- config at saves/world_name/serverconfig/tribes-server.toml
+- tribe data stored at saves/world_name/data/tribes.json
 - /tribe 
     - create <name>
     - join <name>
@@ -17,8 +18,11 @@ A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissione
     - <ally, enemy, neutral> <name> (vice leader+)
     - who <player>
     - initials <string> (vice leader+)
+    - chunk <claim, unclaim> (officers+)
 - GUIs
-    - create
+    - create tribe
+    - shows owner of current chunk in top left
 
 ## Credits
-- Prometheus Software ([Luke Graham Landry](https://github.com/LukeGrahamLandry) & [GreenOne](https://github.com/TheGreenOne))
+- [Luke Graham Landry](https://github.com/LukeGrahamLandry)
+- [GreenOne](https://github.com/TheGreenOne)

@@ -36,10 +36,10 @@ public class TribesManager {
         return getTribe(name).addMember(player.getUniqueID(), Tribe.Rank.MEMBER);
     }
 
-    public static TribeActionResult deleteTribe(String name, PlayerEntity player){
+    public static TribeActionResult deleteTribe(String name, UUID playerID){
         if (isNameAvailable(name)) return TribeActionResult.INVALID_TRIBE;
 
-        if (!getTribe(name).isLeader(player.getUniqueID())) return TribeActionResult.LOW_RANK;
+        if (!getTribe(name).isLeader(playerID)) return TribeActionResult.LOW_RANK;
 
         tribes.remove(name);
 

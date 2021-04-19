@@ -17,10 +17,10 @@ import net.minecraft.util.text.StringTextComponent;
 public class ChunkClaimCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("chunk")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermissionLevel(0))
                 .then(claim())
-                .then(unclaim())
-                .then(who());
+                .then(unclaim());
+                // .then(who());  // done in ShowLandOwnerUI
     }
 
     private static ArgumentBuilder<CommandSource, ?> claim() {

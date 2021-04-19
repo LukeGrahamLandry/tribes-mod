@@ -30,7 +30,7 @@ public class DeleteTribeCommand {
         PlayerEntity player = source.getSource().asPlayer();
         String name = StringArgumentType.getString(source, "name");
 
-        TribeActionResult response = TribesManager.deleteTribe(name, player);
+        TribeActionResult response = TribesManager.deleteTribe(name, player.getUniqueID());
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Tribe successfully deleted: " + name), true);
         } else {

@@ -19,7 +19,8 @@ public class NetworkHandler {
         //Initialization of new Network Instance
         INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(TribesMain.MOD_ID, "tribes"), () -> "1.0", s -> true, s -> true);
 
-        //Register Create Tribe Packet
+        // Register Create Tribe Packet
         INSTANCE.registerMessage(nextID(), PacketCreateTribe.class, PacketCreateTribe::toBytes, PacketCreateTribe::new, PacketCreateTribe::handle);
+        INSTANCE.registerMessage(nextID(), LandOwnerPacket.class, LandOwnerPacket::encode, LandOwnerPacket::decode, LandOwnerPacket::handle);
     }
 }

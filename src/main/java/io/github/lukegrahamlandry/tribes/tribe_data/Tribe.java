@@ -246,7 +246,35 @@ public class Tribe {
 
     public void removeMember(UUID playerID) {
         this.members.remove(playerID.toString());
-        // TODO: logic for passing on leadership or deleting tribe
+
+        if (this.members.size() == 0){
+            TribesManager.deleteTribe(this.getName(), playerID);
+            return;
+        }
+
+        if (isLeader(playerID)){
+            UUID toPromote = null;
+
+            // if there's a vice leader pick them, otherwise officer
+            // should use a list instead of set to select the person who joined the tribe first
+            for (String testPlayer : getMembers()){
+                UUID id = UUID.fromString(testPlayer);
+                if (isViceLeader(id)){
+                    toPromote = id;
+                    break;
+                } else if (toPromote == null && isOfficer(id)){
+                    toPromote = id;
+                }
+            }
+
+            // no vice leaders or officer (can't be nobody in tribe cause that would be caught earlier and just delete the tribe)
+            if (toPromote == null){
+                toPromote = UUID.fromString(getMembers().iterator().next());
+            }
+
+            this.setRank(toPromote, Rank.LEADER);
+            // TODO broadcast message but needs world
+        }
     }
 
     public boolean isBanned(UUID uniqueID) {

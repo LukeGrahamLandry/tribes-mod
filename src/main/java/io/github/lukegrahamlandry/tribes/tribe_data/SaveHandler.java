@@ -19,6 +19,8 @@ public class SaveHandler {
     public static void save(File worldDir) {
         TribesMain.LOGGER.debug("saving");
         File dataFile = new File(worldDir, "tribes.json");
+        if (dataFile.getAbsolutePath().contains("DIM")) return;
+
         String tribesData = TribesManager.writeToString();
         try{
             // file.createNewFile();
@@ -38,7 +40,9 @@ public class SaveHandler {
         File dataFile = new File(worldDir, "tribes.json"); // .getIntegratedServer().getFile("tribes.json");
 
         if (!dataFile.exists()) return;
+        if (dataFile.getAbsolutePath().contains("DIM")) return;
         TribesMain.LOGGER.debug(dataFile.getAbsolutePath());
+
         String tribesData = "";
 
         try {
