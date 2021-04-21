@@ -4,6 +4,7 @@ package io.github.lukegrahamlandry.tribes.events;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.network.LandOwnerPacket;
 import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
+import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.entity.Entity;
@@ -25,27 +26,6 @@ public class TickHandler {
         if (event.player.getEntityWorld().isRemote() || rand.nextInt(10) != 0) return;
 
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
-                new LandOwnerPacket(event.player.getUniqueID(), getLandOwnerDisplay(event.player)));
-    }
-
-    private static String getLandOwnerDisplay(PlayerEntity player){
-        long chunk = player.getEntityWorld().getChunkAt(player.getPosition()).getPos().asLong();
-        Tribe chunkOwner = TribesManager.getChunkOwner(chunk);
-
-        if (chunkOwner != null){
-            return chunkOwner.getName() + " claimed chunk";
-        }
-
-
-        if (player.getPosition().getZ() < -500) {
-            return "Northern Hemisphere";
-        } else if (player.getPosition().getZ() > 500) {
-            return "Southern Hemisphere";
-        } else {
-            return "No Man's Land";
-        }
-
-        // TODO: congig for north vs east & middle width
-        // TODO: take in to account hemisphere access
+                new LandOwnerPacket(event.player.getUniqueID(), LandClaimHelper.getOwnerDisplayFor(event.player)));
     }
 }

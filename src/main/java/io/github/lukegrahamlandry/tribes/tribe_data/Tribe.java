@@ -283,11 +283,12 @@ public class Tribe {
 
     public TribeActionResult claimChunk(long chunk, UUID player) {
         if (!this.isOfficer(player)) return TribeActionResult.LOW_RANK;
-        if (TribesManager.getChunkOwner(chunk) != null) return TribeActionResult.ALREADY_CLAIMED;
+        if (LandClaimHelper.getChunkOwner(chunk) != null) return TribeActionResult.ALREADY_CLAIMED;
 
         if (this.getClaimedChunks().size() >= TribesConfig.getMaxChunksClaimed().get(this.getTribeTier()-1)) return TribeActionResult.CONFIG;
 
         this.chunks.add(chunk);
+        LandClaimHelper.setChunkOwner(chunk, this);
 
         return TribeActionResult.SUCCESS;
     }
@@ -297,6 +298,7 @@ public class Tribe {
         if (!TribesManager.getChunkOwner(chunk).getName().equals(this.getName())) return TribeActionResult.ALREADY_CLAIMED;
 
         this.chunks.remove(chunk);
+        LandClaimHelper.setChunkOwner(chunk, null);
 
         return TribeActionResult.SUCCESS;
     }

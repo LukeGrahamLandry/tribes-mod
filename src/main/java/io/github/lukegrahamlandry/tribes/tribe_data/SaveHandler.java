@@ -55,6 +55,7 @@ public class SaveHandler {
         }
 
         TribesManager.readFromString(tribesData);
+        LandClaimHelper.setup();
         TribesMain.LOGGER.debug("loaded");
     }
 }
