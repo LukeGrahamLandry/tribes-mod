@@ -295,7 +295,7 @@ public class Tribe {
 
     public TribeActionResult unclaimChunk(long chunk, UUID player) {
         if (!this.isOfficer(player)) return TribeActionResult.LOW_RANK;
-        if (!TribesManager.getChunkOwner(chunk).getName().equals(this.getName())) return TribeActionResult.ALREADY_CLAIMED;
+        if (!LandClaimHelper.getChunkOwner(chunk).equals(this)) return TribeActionResult.ALREADY_CLAIMED;
 
         this.chunks.remove(chunk);
         LandClaimHelper.setChunkOwner(chunk, null);
@@ -308,6 +308,7 @@ public class Tribe {
     }
 
     public boolean equals(Object obj) {
+        if (obj == null) return false;
         if (obj instanceof Tribe){
             return this.getName().equals(((Tribe) obj).getName());
         }

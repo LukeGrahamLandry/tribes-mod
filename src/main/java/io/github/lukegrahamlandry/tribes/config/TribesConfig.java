@@ -17,6 +17,8 @@ public class TribesConfig {
     private static ForgeConfigSpec.BooleanValue friendlyFire;
     private static ForgeConfigSpec.IntValue tierForClaiming;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> maxChunksClaimed;
+    private static ForgeConfigSpec.BooleanValue useNorthSouthHemisphereDirection;
+    private static ForgeConfigSpec.IntValue halfNoMansLandWidth;
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
@@ -48,7 +50,13 @@ public class TribesConfig {
                 .defineInRange("numberOfTribes", 2, 0, 2);
         maxChunksClaimed = server
                 .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
-                .defineList("tier_positive_effects", Arrays.asList(1,4,10,20,30),i -> (int)i>=0);
+                .defineList("max_claimed_chunks", Arrays.asList(1,4,10,20,30),i -> (int)i>=0);
+        useNorthSouthHemisphereDirection = server
+                .comment("true for north/south or false for east/west: ")
+                .define("useNorthSouthHemisphereDirection", true);
+        halfNoMansLandWidth = server
+                .comment("The distance from zero to the edge of a hemisphere, half the width of no mans land : ")
+                .defineInRange("halfNoMansLandWidth", 500, 0, Integer.MAX_VALUE);
         server.pop();
     }
 
@@ -89,5 +97,13 @@ public class TribesConfig {
 
     public static List<Integer> getMaxChunksClaimed() {
         return (List<Integer>) maxChunksClaimed.get();
+    }
+
+    public static boolean getUseNorthSouthHemisphereDirection(){
+        return useNorthSouthHemisphereDirection.get();
+    }
+
+    public static int getHalfNoMansLandWidth(){
+        return halfNoMansLandWidth.get();
     }
 }
