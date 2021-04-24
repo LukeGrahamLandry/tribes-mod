@@ -17,21 +17,7 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class CreateTribeScreen extends Screen {
-    /** Texture location for background. */
-    private static final ResourceLocation guiTexture = new ResourceLocation(TribesMain.MOD_ID,"textures/gui/create_tribe.png");
-    /** Starting X position for the Gui. Inconsistent use for Gui backgrounds. */
-    protected int guiLeft;
-    /** Starting Y position for the Gui. Inconsistent use for Gui backgrounds. */
-    protected int guiTop;
-    /** The X size of the inventory window in pixels. */
-    protected int xSize = 176;
-    /** The Y size of the inventory window in pixels. */
-    protected int ySize = 88;
-    /** Starting X position for Title String. */
-    protected int titleX = 0;
-    /** Starting Y position for Title String. */
-    protected int titleY = 0;
+public class CreateTribeScreen extends TribeScreen {
     /** TextBox for name input. */
     protected TextFieldWidget nameField;
     /** Button for creating tribe. */
@@ -40,8 +26,9 @@ public class CreateTribeScreen extends Screen {
     private String tribeName;
 
     public CreateTribeScreen() {
-        super(new TranslationTextComponent(TribesMain.MOD_ID+".createTribeScreen"));
+        super(".createTribeScreen", "textures/gui/create_tribe.png", 176, 88);
     }
+
 
     @Override
     public void tick() {
@@ -82,13 +69,8 @@ public class CreateTribeScreen extends Screen {
     //Rendering of background, textbox, and title
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(guiTexture);
-        this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        this.font.func_243248_b(matrixStack, this.title, (float)this.titleX, (float)this.titleY, 4210752);
-        this.nameField.render(matrixStack, mouseX, mouseY, partialTicks);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.nameField.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     private boolean isValidName(){

@@ -2,6 +2,7 @@ package io.github.lukegrahamlandry.tribes.init;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.client.CreateTribeScreen;
+import io.github.lukegrahamlandry.tribes.client.TribeEffectScreen;
 import io.github.lukegrahamlandry.tribes.item.GUIItem;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -15,6 +16,7 @@ public class ItemInit {
 
     public static void init(IEventBus eventBus){
         ITEMS.register("create_gui_item", () -> new GUIItem(CreateTribeScreen::new));
+        ITEMS.register("effect_gui_item", () -> new GUIItem(TribeEffectScreen::new));
 
         ITEMS.register(eventBus);
     }
