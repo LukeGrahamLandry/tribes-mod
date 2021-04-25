@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
@@ -85,7 +86,7 @@ public class ChunkClaimCommand {
     public static int handleWho(CommandContext<CommandSource> source) throws CommandSyntaxException {
         PlayerEntity player = source.getSource().asPlayer();
 
-        Tribe owner = TribesManager.getChunkOwner(getChunk(player));
+        Tribe owner = LandClaimHelper.getChunkOwner(getChunk(player));
         int x = (int) getChunk(player);
         int z = (int) (getChunk(player) >> 32);
 

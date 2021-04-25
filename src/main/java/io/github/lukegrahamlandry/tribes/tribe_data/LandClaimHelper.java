@@ -1,14 +1,17 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 
 // can only be used on the server side
 public class LandClaimHelper {
-    private static HashMap<Long, Tribe> claimedChunks;
+    private static final HashMap<Long, Tribe> claimedChunks = new HashMap<>();
     private static Tribe negativeHemisphereOwner;  // north or west
     private static Tribe positiveHemisphereOwner;  // south or east
 
@@ -44,12 +47,24 @@ public class LandClaimHelper {
         int limit = TribesConfig.getHalfNoMansLandWidth();
         String ownerDisplay = getHemisphereOwner(player.getPosition()) == null ? " unclaimed" : " claimed by " + getHemisphereOwner(player.getPosition()).getName();
         if (coord < -limit) {
-            return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Northern" : "Western") + " Hemisphere" + ownerDisplay;
+            return getHemiName(player.getPosition()) + ownerDisplay;
         } else if (coord > limit) {
-            return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Southern" : "Eastern") + " Hemisphere" + ownerDisplay;
+            return getHemiName(player.getPosition()) + ownerDisplay;
         } else {
             return "No Man's Land";
         }
+    }
+
+    private static String getHemiName(BlockPos pos){
+        int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? pos.getZ() : pos.getX();
+        int limit = TribesConfig.getHalfNoMansLandWidth();
+        if (coord < -limit) {
+            return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Northern" : "Western") + " Hemisphere";
+        } else if (coord > limit) {
+            return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Southern" : "Eastern") + " Hemisphere";
+        }
+
+        return "";
     }
 
     public static boolean canAccessLandAt(PlayerEntity player, BlockPos position){
@@ -76,6 +91,7 @@ public class LandClaimHelper {
     public static Tribe getHemisphereOwner(BlockPos pos){
         int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? pos.getZ() : pos.getX();
         int limit = TribesConfig.getHalfNoMansLandWidth();
+
         if (coord < -limit) {
             return negativeHemisphereOwner;
         } else if (coord > limit) {
@@ -83,5 +99,27 @@ public class LandClaimHelper {
         } else {
             return null;
         }
+    }
+
+    public static void onAlterPlaced(World worldIn, BlockPos pos, LivingEntity placer) {
+        Tribe tribe = TribesManager.getTribeOf(placer.getUniqueID());
+        if (tribe == null || getHemisphereOwner(pos) != null || worldIn.isRemote()) return;
+        // TODO: check needs leader config and placer rank
+
+        int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? pos.getZ() : pos.getX();
+        int limit = TribesConfig.getHalfNoMansLandWidth();
+        if (coord < -limit) {
+            setNegativeHemisphereOwner(tribe);
+        } else if (coord > limit) {
+            setPositiveHemisphereOwner(tribe);
+        } else {
+            return;
+        }
+
+        tribe.broadcastMessage("Your tribe has claimed the " + getHemiName(pos), (PlayerEntity) placer);
+    }
+
+    public static void onAlterBroken(World worldIn, BlockPos pos, Entity breaker) {
+        // figure out if thats the last alter and remove claim
     }
 }
