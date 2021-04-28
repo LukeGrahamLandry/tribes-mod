@@ -17,6 +17,11 @@ public class Tribe {
     List<String> bans;
     HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
     List<Long> chunks;
+
+    public int claimDisableTime = 0;
+    public int deathIndex = 0;
+    public boolean deathWasPVP = false;
+
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
         this.initials = Character.toString(tribeName.charAt(0));

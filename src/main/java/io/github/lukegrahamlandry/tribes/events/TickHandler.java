@@ -20,12 +20,27 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class TickHandler {
-    private static Random rand = new Random();
+    private static int timer = 0;
+    static int ONE_MINUTE = 60 * 20;
     @SubscribeEvent
     public static void updateLandOwner(TickEvent.PlayerTickEvent event){
-        if (event.player.getEntityWorld().isRemote() || rand.nextInt(10) != 0) return;
+        timer++;
+        if (event.player.getEntityWorld().isRemote() || timer % 10 != 0) return;
 
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
                 new LandOwnerPacket(event.player.getUniqueID(), LandClaimHelper.getOwnerDisplayFor(event.player)));
+
+        if (timer >= ONE_MINUTE){
+            timer = 0;
+            for (Tribe tribe : TribesManager.getTribes()){
+                if (tribe.claimDisableTime > 0){
+                    tribe.claimDisableTime -= 1;
+                    if (tribe.claimDisableTime < 0){
+                        tribe.deathWasPVP = false;
+                        tribe.deathIndex = 0;
+                    }
+                }
+            }
+        }
     }
 }

@@ -19,6 +19,9 @@ public class TribesConfig {
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> maxChunksClaimed;
     private static ForgeConfigSpec.BooleanValue useNorthSouthHemisphereDirection;
     private static ForgeConfigSpec.IntValue halfNoMansLandWidth;
+    private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> nonpvpDeathPunishTimes;
+    private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> pvpDeathPunishTimes;
+
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
@@ -57,6 +60,12 @@ public class TribesConfig {
         halfNoMansLandWidth = server
                 .comment("The distance from zero to the edge of a hemisphere, half the width of no mans land : ")
                 .defineInRange("halfNoMansLandWidth", 500, 0, Integer.MAX_VALUE);
+        nonpvpDeathPunishTimes = server
+                .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
+                .defineList("pvpDeathPunishTimes", Arrays.asList(5, 60, 360),i -> (int)i>=0);
+        pvpDeathPunishTimes = server
+                .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
+                .defineList("nonpvpDeathPunishTimes", Arrays.asList(10, 120, 720),i -> (int)i>=0);
         server.pop();
     }
 
@@ -105,5 +114,11 @@ public class TribesConfig {
 
     public static int getHalfNoMansLandWidth(){
         return halfNoMansLandWidth.get();
+    }
+
+    public static int getDeathClaimDisableTime(int index, boolean deathWasPVP) {
+        List<Integer> punishments = (List<Integer>) (deathWasPVP ? pvpDeathPunishTimes.get() : nonpvpDeathPunishTimes.get());
+        index = Math.min(index, punishments.size() - 1);
+        return punishments.get(index);
     }
 }

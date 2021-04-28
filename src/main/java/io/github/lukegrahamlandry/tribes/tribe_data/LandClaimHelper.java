@@ -67,13 +67,14 @@ public class LandClaimHelper {
         return "";
     }
 
+    // considers chunk claims, hemisphere, death punishments
     public static boolean canAccessLandAt(PlayerEntity player, BlockPos position){
         Tribe interactingTribe = TribesManager.getTribeOf(player.getUniqueID());  // could be null
 
         // claimed chunk
         long chunk = player.getEntityWorld().getChunkAt(position).getPos().asLong();
         Tribe chunkOwner = getChunkOwner(chunk);
-        if (chunkOwner != null && !chunkOwner.equals(interactingTribe)) return false;
+        if (chunkOwner != null && !chunkOwner.equals(interactingTribe) && chunkOwner.claimDisableTime <= 0) return false;
 
         // no mans land
         int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? player.getPosition().getZ() : player.getPosition().getX();
@@ -81,8 +82,10 @@ public class LandClaimHelper {
         if (coord > -limit && coord < limit) return true;
 
         // hemisphere
+        // unclaimed means nobody can access not everyone can access
+        // TODO: allow place alter anyway
         Tribe hemiOwner = getHemisphereOwner(position);
-        return hemiOwner == null || hemiOwner.equals(interactingTribe);
+        return hemiOwner.equals(interactingTribe) || hemiOwner.claimDisableTime >= 0;
     }
 
     public static void setNegativeHemisphereOwner(Tribe tribe){ negativeHemisphereOwner = tribe; }
