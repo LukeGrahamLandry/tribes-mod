@@ -13,6 +13,7 @@ public class TribeScreen extends Screen {
      * Texture location for background.
      */
     private ResourceLocation guiTexture;
+    private ResourceLocation guiTexture2;
     /**
      * Starting X position for the Gui. Inconsistent use for Gui backgrounds.
      */
@@ -37,12 +38,25 @@ public class TribeScreen extends Screen {
      * Starting Y position for Title String.
      */
     protected int titleY = 0;
+    protected boolean renderTitle;
+    protected boolean largeGUI = false;
 
-    protected TribeScreen(String translationKey, String guiTextureIn, int xSizeIn, int ySizeIn) {
+    protected TribeScreen(String translationKey, String guiTextureIn, int xSizeIn, int ySizeIn, boolean renderTitleIn) {
         super(new TranslationTextComponent(TribesMain.MOD_ID + translationKey));
         this.guiTexture = new ResourceLocation(TribesMain.MOD_ID, guiTextureIn);
         this.xSize = xSizeIn;
         this.ySize = ySizeIn;
+        this.renderTitle = renderTitleIn;
+    }
+
+    protected TribeScreen(String translationKey, String guiTexture1In, String guiTexture2In, int xSizeIn, int ySizeIn, boolean renderTitleIn) {
+        super(new TranslationTextComponent(TribesMain.MOD_ID + translationKey));
+        this.guiTexture = new ResourceLocation(TribesMain.MOD_ID, guiTexture1In);
+        this.guiTexture2 = new ResourceLocation(TribesMain.MOD_ID, guiTexture2In);
+        this.xSize = xSizeIn;
+        this.ySize = ySizeIn;
+        this.renderTitle = renderTitleIn;
+        this.largeGUI = true;
     }
 
     public ResourceLocation getGuiTexture() {
@@ -51,8 +65,9 @@ public class TribeScreen extends Screen {
 
     @Override
     protected void init() {
+
         // Setting positions based on background and window sizes
-        this.guiLeft = (this.width - this.xSize) / 2;
+        this.guiLeft = !largeGUI ? (this.width - this.xSize) / 2 : (this.width - 2 * this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
 
         //Setting title positions based on background, window, and text sizes
@@ -67,9 +82,16 @@ public class TribeScreen extends Screen {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(guiTexture);
-        this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        this.font.func_243248_b(matrixStack, this.title, (float) this.titleX, (float) this.titleY, 4210752);
+        if(largeGUI){
+            this.minecraft.getTextureManager().bindTexture(guiTexture);
+            this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, 2*this.xSize, this.ySize);
+            this.minecraft.getTextureManager().bindTexture(guiTexture2);
+            this.blit(matrixStack, this.guiLeft+xSize, this.guiTop, 0, 0, 2*this.xSize, this.ySize);
+        }else {
+            this.minecraft.getTextureManager().bindTexture(guiTexture);
+            this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+        }
+        if(renderTitle) this.font.func_243248_b(matrixStack, this.title, (float) this.titleX, (float) this.titleY, 4210752);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 }

@@ -26,7 +26,7 @@ public class CreateTribeScreen extends TribeScreen {
     private String tribeName;
 
     public CreateTribeScreen() {
-        super(".createTribeScreen", "textures/gui/create_tribe.png", 176, 88);
+        super(".createTribeScreen", "textures/gui/create_tribe.png", 176, 88, true);
     }
 
 

@@ -137,7 +137,7 @@ public class TribesManager {
     public static int getNumberOfBadEffects(PlayerEntity player){
         if (player.getEntityWorld().isRemote()) {
             TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not use tribe commands on the render thread' Pls use a packet or something");
-            int a = 0/0; // BREAK :)
+            //int a = 0/0; // BREAK :)
         }
 
         // later i'll do logic for doing it based on config / tribe level but for now its hard-coded
