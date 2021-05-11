@@ -11,6 +11,7 @@ import net.minecraft.world.server.ServerWorld;
 import java.util.*;
 
 public class Tribe {
+    public LandClaimHelper.Hemi hemiAccess;
     String name;
     String initials;
     HashMap<String, Rank> members;  // key is player uuid
@@ -30,6 +31,7 @@ public class Tribe {
         this.relationToOtherTribes = new HashMap<>();
         this.chunks = new ArrayList<>();
         this.addMember(creater, Rank.LEADER);
+        this.hemiAccess = LandClaimHelper.Hemi.NONE;
     }
 
     public TribeActionResult addMember(UUID playerID, Rank rank) {
@@ -194,6 +196,14 @@ public class Tribe {
         this.chunks.forEach(chunksList::add);
         obj.add("chunks", chunksList);
 
+        if (this.hemiAccess == LandClaimHelper.Hemi.NEGATIVE){
+            obj.addProperty("hemi", 0);
+        } else if (this.hemiAccess == LandClaimHelper.Hemi.NONE || this.hemiAccess == null){
+            obj.addProperty("hemi", 1);
+        } else if (this.hemiAccess == LandClaimHelper.Hemi.POSITIVE){
+            obj.addProperty("hemi", 2);
+        }
+
         return obj;
     }
 
@@ -228,6 +238,16 @@ public class Tribe {
         for (JsonElement e : claimedChunks){
             tribe.chunks.add(e.getAsLong());
         }
+
+        int hemi = obj.get("hemi").getAsInt();
+        if (hemi == 0){
+            tribe.hemiAccess = LandClaimHelper.Hemi.NEGATIVE;
+        } else if (hemi == 1){
+            tribe.hemiAccess = LandClaimHelper.Hemi.NONE;
+        } else if (hemi == 2){
+            tribe.hemiAccess = LandClaimHelper.Hemi.POSITIVE;
+        }
+
 
         return tribe;
     }
@@ -318,6 +338,27 @@ public class Tribe {
             return this.getName().equals(((Tribe) obj).getName());
         }
         return false;
+    }
+
+    public TribeActionResult selectHemi(PlayerEntity player, String side) {
+        int runRank = this.getRankOf(player.getUniqueID().toString()).asInt();
+        if (runRank < TribesConfig.rankToChooseHemi()) return TribeActionResult.LOW_RANK;
+        if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeActionResult.HAVE_HEMI;
+        if (this.getTribeTier() < TribesConfig.getMinTierToClaimLand()) return TribeActionResult.WEAK_TRIBE;
+        if (TribesConfig.getUseNorthSouthHemisphereDirection()){
+            if (!side.equals("north") && !side.equals("west")) return TribeActionResult.INVALID_ARG;
+        } else {
+            if (!side.equals("east") && !side.equals("south")) return TribeActionResult.INVALID_ARG;
+        }
+
+        if (side.equals("east") || side.equals("south")) this.hemiAccess = LandClaimHelper.Hemi.POSITIVE;
+        else this.hemiAccess = LandClaimHelper.Hemi.NEGATIVE;
+        LandClaimHelper.hemispheres.get(this.hemiAccess).add(this);
+
+        broadcastMessage("Your tribe has claimed the " + side + " hemisphere", player);
+
+        return TribeActionResult.SUCCESS;
+
     }
 
     public enum Rank {

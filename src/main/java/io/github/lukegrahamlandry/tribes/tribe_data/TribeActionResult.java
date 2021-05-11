@@ -14,7 +14,10 @@ public enum TribeActionResult {
     THEY_NOT_IN_TRIBE,
     SAME_TRIBE,
     CONFIG,
-    ALREADY_CLAIMED;
+    ALREADY_CLAIMED,
+    HAVE_HEMI,
+    INVALID_ARG,
+    WEAK_TRIBE;
 
     @Override
     public String toString() {
@@ -25,7 +28,7 @@ public enum TribeActionResult {
             case LONG_NAME: return "FAILURE: name too long";
             case CLIENT: return "And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread'. This should never happen, DM the Dev.";
             case INVALID_TRIBE: return "FAILURE: that tribe does not exist";
-            case LOW_RANK: return "FAILURE: your tribe rank is too low";
+            case LOW_RANK: return "FAILURE: your rank in your tribe is too low";
             case YOU_NOT_IN_TRIBE: return "FAILURE: you are not in a tribe";
             case THEY_NOT_IN_TRIBE: return "FAILURE: that player is not in your tribe";
             case BANNED: return "FAILURE: player has been banned";
@@ -33,6 +36,9 @@ public enum TribeActionResult {
             case SAME_TRIBE: return "FAILURE: that's your own tribe";
             case CONFIG: return "FAILURE: that action is not allowed by the current config (ie hit tribes/members limit)";
             case ALREADY_CLAIMED: return "FAILURE: that area has been claimed";
+            case HAVE_HEMI: return "FAILURE: you have already claimed a hemisphere";
+            case INVALID_ARG: return "FAILURE: invalid argument";
+            case WEAK_TRIBE: return "FAILURE: your tribe has too few members";
         }
         return "ERROR: invalid TribeActionResult";
     }

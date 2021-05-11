@@ -30,8 +30,9 @@ public class CommandInit {
                 .then(NeutralTribeCommand.register())
                 .then(SetInitialsCommand.register())
                 .then(WhichTribeCommand.register())
-                .then(ChunkClaimCommand.register()));
+                .then(ChunkClaimCommand.register())
+                .then(HemiAccessCommand.register()));
 
-        TribesMain.LOGGER.debug("Tribe commands registerd");
+        TribesMain.LOGGER.debug("Tribe commands registered");
     }
 }

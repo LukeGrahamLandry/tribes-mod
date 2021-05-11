@@ -2,25 +2,29 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 // can only be used on the server side
 public class LandClaimHelper {
     private static final HashMap<Long, Tribe> claimedChunks = new HashMap<>();
-    private static Tribe negativeHemisphereOwner;  // north or west
-    private static Tribe positiveHemisphereOwner;  // south or east
+    public static HashMap<Hemi, List<Tribe>> hemispheres = new HashMap<>();
 
-    // important to call this whenever
+    // important to call this whenever tribes load
     public static void setup(){
+        hemispheres.put(Hemi.POSITIVE, new ArrayList<>());
+        hemispheres.put(Hemi.NEGATIVE, new ArrayList<>());
+
         for (Tribe tribe : TribesManager.getTribes()){
             for (Long chunk : tribe.getClaimedChunks()){
                 claimedChunks.put(chunk, tribe);
             }
+            hemispheres.get(tribe.hemiAccess).add(tribe);
         }
     }
 
@@ -43,29 +47,19 @@ public class LandClaimHelper {
             return chunkOwner.getName() + " claimed chunk";
         }
 
-        int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? player.getPosition().getZ() : player.getPosition().getX();
-        int limit = TribesConfig.getHalfNoMansLandWidth();
-        String ownerDisplay = getHemisphereOwner(player.getPosition()) == null ? " unclaimed" : " claimed by " + getHemisphereOwner(player.getPosition()).getName();
-        if (coord < -limit) {
-            return getHemiName(player.getPosition()) + ownerDisplay;
-        } else if (coord > limit) {
-            return getHemiName(player.getPosition()) + ownerDisplay;
-        } else {
-            return "No Man's Land";
-        }
-    }
-
-    private static String getHemiName(BlockPos pos){
-        int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? pos.getZ() : pos.getX();
-        int limit = TribesConfig.getHalfNoMansLandWidth();
-        if (coord < -limit) {
-            return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Northern" : "Western") + " Hemisphere";
-        } else if (coord > limit) {
-            return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Southern" : "Eastern") + " Hemisphere";
+        Hemi currentHemi = getHemiAt(player.getPosition());
+        switch (currentHemi){
+            case NEGATIVE:
+                return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Northern" : "Western") + " Hemisphere";
+            case POSITIVE:
+                return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Southern" : "Eastern") + " Hemisphere";
+            case NONE:
+                return "No Man's Land";
         }
 
-        return "";
+        return "error";
     }
+
 
     // considers chunk claims, hemisphere, death punishments
     public static boolean canAccessLandAt(PlayerEntity player, BlockPos position){
@@ -76,53 +70,35 @@ public class LandClaimHelper {
         Tribe chunkOwner = getChunkOwner(chunk);
         if (chunkOwner != null && !chunkOwner.equals(interactingTribe) && chunkOwner.claimDisableTime <= 0) return false;
 
+        Hemi currentHemi = getHemiAt(position);
+
         // no mans land
-        int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? player.getPosition().getZ() : player.getPosition().getX();
-        int limit = TribesConfig.getHalfNoMansLandWidth();
-        if (coord > -limit && coord < limit) return true;
+        if (currentHemi == Hemi.NONE) return true;
 
         // hemisphere
-        // unclaimed means nobody can access not everyone can access
-        // TODO: allow place alter anyway
-        Tribe hemiOwner = getHemisphereOwner(position);
-        return hemiOwner.equals(interactingTribe) || hemiOwner.claimDisableTime >= 0;
-    }
-
-    public static void setNegativeHemisphereOwner(Tribe tribe){ negativeHemisphereOwner = tribe; }
-    public static void setPositiveHemisphereOwner(Tribe tribe){ positiveHemisphereOwner = tribe; }
-
-    public static Tribe getHemisphereOwner(BlockPos pos){
-        int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? pos.getZ() : pos.getX();
-        int limit = TribesConfig.getHalfNoMansLandWidth();
-
-        if (coord < -limit) {
-            return negativeHemisphereOwner;
-        } else if (coord > limit) {
-            return positiveHemisphereOwner;
-        } else {
-            return null;
+        // TODO: hemiOwner.claimDisableTime >= 0
+        if (TribesConfig.getRequireHemiAccess()){
+            return hemispheres.get(currentHemi).contains(interactingTribe);
         }
+
+        return true;
     }
 
-    public static void onAlterPlaced(World worldIn, BlockPos pos, LivingEntity placer) {
-        Tribe tribe = TribesManager.getTribeOf(placer.getUniqueID());
-        if (tribe == null || getHemisphereOwner(pos) != null || worldIn.isRemote()) return;
-        // TODO: check needs leader config and placer rank
-
+    private static Hemi getHemiAt(BlockPos pos){
         int coord = TribesConfig.getUseNorthSouthHemisphereDirection() ? pos.getZ() : pos.getX();
         int limit = TribesConfig.getHalfNoMansLandWidth();
         if (coord < -limit) {
-            setNegativeHemisphereOwner(tribe);
+            return Hemi.NEGATIVE;
         } else if (coord > limit) {
-            setPositiveHemisphereOwner(tribe);
+            return Hemi.POSITIVE;
         } else {
-            return;
+            return Hemi.NONE;
         }
-
-        tribe.broadcastMessage("Your tribe has claimed the " + getHemiName(pos), (PlayerEntity) placer);
     }
 
-    public static void onAlterBroken(World worldIn, BlockPos pos, Entity breaker) {
-        // figure out if thats the last alter and remove claim
+    enum Hemi {
+        POSITIVE, // south or east
+        NEGATIVE,  // north or west
+        NONE;
     }
 }

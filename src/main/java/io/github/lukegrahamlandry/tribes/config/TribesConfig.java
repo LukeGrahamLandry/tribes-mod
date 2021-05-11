@@ -15,12 +15,19 @@ public class TribesConfig {
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierPosEffects;
 
     private static ForgeConfigSpec.BooleanValue friendlyFire;
+
+    // land claiming
+    private static ForgeConfigSpec.BooleanValue requireHemiAccess;
     private static ForgeConfigSpec.IntValue tierForClaiming;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> maxChunksClaimed;
     private static ForgeConfigSpec.BooleanValue useNorthSouthHemisphereDirection;
     private static ForgeConfigSpec.IntValue halfNoMansLandWidth;
+    private static ForgeConfigSpec.IntValue rankToChooseHemi;
+
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> nonpvpDeathPunishTimes;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> pvpDeathPunishTimes;
+
+
 
 
     //Initialization of the config files and their respective variables
@@ -49,8 +56,11 @@ public class TribesConfig {
                 .comment("Whether players should be able to harm other members of their tribe: ")
                 .define("tribesRequired", false);
         tierForClaiming = server
-                .comment("Minimum tribe tier to claim land: ")
-                .defineInRange("numberOfTribes", 2, 0, 2);
+                .comment("Minimum tribe tier to claim chunks and access a hemisphere: ")
+                .defineInRange("numberOfTribes", 2, 0, 10);
+        requireHemiAccess = server
+                .comment("Whether player's tribe must select a hemisphere to access it: ")
+                .define("requireHemiAccess", true);
         maxChunksClaimed = server
                 .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
                 .defineList("max_claimed_chunks", Arrays.asList(1,4,10,20,30),i -> (int)i>=0);
@@ -66,7 +76,11 @@ public class TribesConfig {
         pvpDeathPunishTimes = server
                 .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
                 .defineList("nonpvpDeathPunishTimes", Arrays.asList(10, 120, 720),i -> (int)i>=0);
+        rankToChooseHemi = server
+                .comment("a member must have equal greater than thus rank to select a hemisphere for thier tribe [member, officer, vice leader, leader]: ")
+                .defineInRange("rankToChooseHemi", 2, 0, 3);
         server.pop();
+
     }
 
     public static int getMaxNumberOfTribes(){
@@ -100,6 +114,10 @@ public class TribesConfig {
         return 24;
     }
 
+    public static boolean getRequireHemiAccess(){
+        return requireHemiAccess.get();
+    }
+
     public static int getMinTierToClaimLand(){
         return tierForClaiming.get();
     }
@@ -115,6 +133,10 @@ public class TribesConfig {
     public static int getHalfNoMansLandWidth(){
         return halfNoMansLandWidth.get();
     }
+    public static int rankToChooseHemi(){
+        return rankToChooseHemi.get();
+    }
+
 
     public static int getDeathClaimDisableTime(int index, boolean deathWasPVP) {
         List<Integer> punishments = (List<Integer>) (deathWasPVP ? pvpDeathPunishTimes.get() : nonpvpDeathPunishTimes.get());
