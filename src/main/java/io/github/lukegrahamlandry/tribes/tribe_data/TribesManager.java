@@ -144,13 +144,13 @@ public class TribesManager {
         return 1;
     }
 
-    public static TribeActionResult setTribeEffects(PlayerEntity player, ArrayList<Effect> good, ArrayList<Effect> bad){
+    public static TribeActionResult setTribeEffects(PlayerEntity player, Map<Effect, Integer> good, Map<Effect, Integer> bad){
         if (player.getEntityWorld().isRemote()) {
             TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread' Pls use a packet or something");
             return TribeActionResult.CLIENT;
         }
 
-        if (bad.size() != getNumberOfBadEffects(player) || bad.size() != getNumberOfBadEffects(player)){
+        if (good.size() != getNumberOfBadEffects(player) || bad.size() != getNumberOfBadEffects(player)){
             return TribeActionResult.INVALID_INT;
         }
 
