@@ -39,6 +39,7 @@ public class TribeScreen extends Screen {
      */
     protected int titleY = 0;
     protected boolean renderTitle;
+    // Boolean for if GUI size exceeds 256x256
     protected boolean largeGUI = false;
 
     protected TribeScreen(String translationKey, String guiTextureIn, int xSizeIn, int ySizeIn, boolean renderTitleIn) {

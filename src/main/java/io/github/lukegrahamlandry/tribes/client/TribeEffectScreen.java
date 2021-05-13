@@ -23,13 +23,18 @@ import java.util.List;
 import java.util.Map;
 
 public class TribeEffectScreen extends TribeScreen {
+    // Confirmation button
     private ConfirmButton confirmButton;
+    // List of all positive and negative effects
     public static List<Effect> posEffects = TribesConfig.getGoodEffects();
     public static List<Effect> negEffects = TribesConfig.getBadEffects();
+    // Map of selected effects and their amplifiers
     private static Map<Effect, Integer> selGoodEffects = new HashMap<>();
     private static Map<Effect, Integer> selBadEffects = new HashMap<>();
+    // Maximum number of effects that can be selected; Both good and bad
     private static int maxGoodEffects = TribesManager.getNumberOfGoodEffects(Minecraft.getInstance().player);
     private static int maxBadEffects = TribesManager.getNumberOfBadEffects(Minecraft.getInstance().player);
+    // Current number of selected effects
     private static int numSelectedGood;
     private static int numSelectedBad;
 
@@ -48,6 +53,7 @@ public class TribeEffectScreen extends TribeScreen {
         this.confirmButton = this.addButton(new ConfirmButton(this,this.guiLeft + (this.xSize - 11), (this.ySize/2 - 11), this.ySize));
         int i=0;
         int k=0;
+        // Iteration through effects to create three buttons for three tiers of each effect
         for(Effect effect : posEffects){
             EffectButton tribeeffect$effectbutton;
             i=(k>=154) ? 82 : i;
@@ -55,6 +61,7 @@ public class TribeEffectScreen extends TribeScreen {
             for(int j=1; j<=3;j++){
                 tribeeffect$effectbutton = new EffectButton(this, this.guiLeft + 11 + i, this.guiTop + 36 + k, ySize, effect, j);
                 this.addButton(tribeeffect$effectbutton);
+                // Make button inactive if already selected
                 if(selGoodEffects.containsKey(effect)){
                     tribeeffect$effectbutton.active=false;
                 }
@@ -72,6 +79,7 @@ public class TribeEffectScreen extends TribeScreen {
             for(int j=1; j<=3;j++){
                 tribeeffect$effectbutton = new EffectButton(this, this.guiLeft + this.xSize + 16 + i, this.guiTop + 36 + k, ySize, effect, j);
                 this.addButton(tribeeffect$effectbutton);
+                // Make button inactive if already selected
                 if(selBadEffects.containsKey(effect)){
                     tribeeffect$effectbutton.active=false;
                 }
@@ -91,28 +99,33 @@ public class TribeEffectScreen extends TribeScreen {
                 this.font.drawString(matrixStack, String.valueOf(((EffectButton)button).getAmplifier()), (float)(button.x+2), (float)(button.y+2), 0xffffff);
             }
         });
+        this.font.drawString(matrixStack, "Benefits: " + selGoodEffects.size()+"/"+maxGoodEffects, this.guiLeft + 15, this.guiTop + 20, 0x5d5d5d);
+        this.font.drawString(matrixStack, "Drawbacks: " + selBadEffects.size()+"/"+maxBadEffects, this.guiLeft + 20 + xSize, this.guiTop + 20, 0x5d5d5d);
     }
 
+    // Add effect to selected list
     private void addEffect(Effect effect, int amplifier, boolean isGood){
         if(isGood){
             selGoodEffects.put(effect, amplifier);
-            numSelectedGood++;
+            numSelectedGood = selGoodEffects.size();
         }else{
             selBadEffects.put(effect, amplifier);
-            numSelectedBad++;
+            numSelectedBad = selBadEffects.size();
         }
     }
 
+    // Remove effect from selected list
     private void removeEffect(Effect effect, int amplifier, boolean isGood){
         if(isGood){
             selGoodEffects.remove(effect, amplifier);
-            numSelectedGood--;
+            numSelectedGood = selGoodEffects.size();
         }else{
             selBadEffects.remove(effect, amplifier);
-            numSelectedBad--;
+            numSelectedBad = selBadEffects.size();
         }
     }
 
+    // Confirmation Button(Check Button)
     @OnlyIn(Dist.CLIENT)
     class ConfirmButton extends GuiButton.SpriteButton {
         TribeScreen screen;
@@ -133,6 +146,7 @@ public class TribeEffectScreen extends TribeScreen {
         }
     }
 
+    // Effect Button
     @OnlyIn(Dist.CLIENT)
     class EffectButton extends GuiButton {
         private final TribeEffectScreen screen;
@@ -150,6 +164,7 @@ public class TribeEffectScreen extends TribeScreen {
             this.amplifier = amplifierIn;
         }
 
+        // Get the name of the effect based on the amplifier
         private ITextComponent getEffectName(Effect effect) {
             IFormattableTextComponent iformattabletextcomponent = new TranslationTextComponent(effect.getName());
             if (this.getAmplifier() == 1) {
@@ -190,7 +205,7 @@ public class TribeEffectScreen extends TribeScreen {
         }
 
         public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
-            screen.renderTooltip(matrixStack, this.effectName, mouseX, mouseY);
+            screen.renderTooltip(matrixStack, getEffectName(this.effect), mouseX, mouseY);
         }
 
         public int getAmplifier(){

@@ -16,6 +16,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+// Generic Button for GUI screens
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiButton extends AbstractButton {
     private boolean selected;
@@ -54,6 +55,7 @@ public abstract class GuiButton extends AbstractButton {
         this.selected = selectedIn;
     }
 
+    // Button that utilizes a sprite such as the effects sprite
     @OnlyIn(Dist.CLIENT)
     abstract static class SpriteButton extends GuiButton {
         private final int u;
