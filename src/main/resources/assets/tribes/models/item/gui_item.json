@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "tribes:item/gui_item"
+    "layer0": "tribes:items/gui_item"
   }
 }

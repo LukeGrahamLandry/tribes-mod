@@ -22,5 +22,6 @@ public class NetworkHandler {
         // Register Create Tribe Packet
         INSTANCE.registerMessage(nextID(), PacketCreateTribe.class, PacketCreateTribe::toBytes, PacketCreateTribe::new, PacketCreateTribe::handle);
         INSTANCE.registerMessage(nextID(), LandOwnerPacket.class, LandOwnerPacket::encode, LandOwnerPacket::decode, LandOwnerPacket::handle);
+        INSTANCE.registerMessage(nextID(), CompassChunkPacket.class, CompassChunkPacket::encode, CompassChunkPacket::decode, CompassChunkPacket::handle);
     }
 }

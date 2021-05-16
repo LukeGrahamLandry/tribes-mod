@@ -2,5 +2,6 @@
   "tribes.createTribeScreen": "Name Your Tribe",
   "tribes.createTribeButton": "Create Tribe",
 
-  "item.tribes.gui_item": "GUI Item"
+  "item.tribes.gui_item": "GUI Item",
+  "item.tribes.tribe_compass": "Tribe Compass"
 }

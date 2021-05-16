@@ -68,8 +68,7 @@ public class TribesMain {
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class ForgeEvent{
-        // TODO: seems to exits in /data /DIM1/data and /DIM-1/data
-        // why does it fire 3 times?
+        // note: fires 3 times, /data /DIM1/data and /DIM-1/data
         @SubscribeEvent
         public static void doLoad(WorldEvent.Load event){
             if (event.getWorld().isRemote()) return;

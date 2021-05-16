@@ -2,6 +2,8 @@ package io.github.lukegrahamlandry.tribes.events;
 
 
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
+import io.github.lukegrahamlandry.tribes.item.TribeCompass;
+import io.github.lukegrahamlandry.tribes.network.CompassChunkPacket;
 import io.github.lukegrahamlandry.tribes.network.LandOwnerPacket;
 import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
@@ -10,12 +12,17 @@ import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
+import java.util.List;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -29,6 +36,23 @@ public class TickHandler {
 
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
                 new LandOwnerPacket(event.player.getUniqueID(), LandClaimHelper.getOwnerDisplayFor(event.player)));
+
+        if (event.player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof TribeCompass){
+            BlockPos posToLook = null;
+            ChunkPos start = new ChunkPos(event.player.getPosition().getX() >> 4, event.player.getPosition().getZ() >> 4);
+
+            List<Long> chunks = LandClaimHelper.getClaimedChunksOrdered(start);
+            if (chunks.size() > 0){
+                long face = chunks.get(0);  // replace with loop that knows your tribe and chunks set to blacklist on compass
+                if (face != start.asLong()) {
+                    ChunkPos lookchunk = new ChunkPos(face);
+                    posToLook = new BlockPos((lookchunk.x << 4) + 7, 63 , (lookchunk.z << 4) + 7);
+                }
+            }
+
+            NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
+                    new CompassChunkPacket(event.player.getUniqueID(), posToLook));
+        }
 
         if (timer >= ONE_MINUTE){
             timer = 0;

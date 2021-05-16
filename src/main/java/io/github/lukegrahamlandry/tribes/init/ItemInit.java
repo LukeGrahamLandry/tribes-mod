@@ -3,6 +3,7 @@ package io.github.lukegrahamlandry.tribes.init;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.client.CreateTribeScreen;
 import io.github.lukegrahamlandry.tribes.item.GUIItem;
+import io.github.lukegrahamlandry.tribes.item.TribeCompass;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -14,7 +15,7 @@ public class ItemInit {
 
     public static void init(IEventBus eventBus){
         ITEMS.register("create_gui_item", () -> new GUIItem(CreateTribeScreen::new));
-        ITEMS.register("alter", () -> new BlockItem(BlockInit.ALTER.get(), new Item.Properties()));
+        ITEMS.register("tribe_compass", () -> new TribeCompass(new Item.Properties()));
 
         ITEMS.register(eventBus);
     }

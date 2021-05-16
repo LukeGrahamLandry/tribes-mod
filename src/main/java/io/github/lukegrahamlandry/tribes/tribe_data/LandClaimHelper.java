@@ -4,11 +4,11 @@ import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 // can only be used on the server side
 public class LandClaimHelper {
@@ -19,6 +19,7 @@ public class LandClaimHelper {
     public static void setup(){
         hemispheres.put(Hemi.POSITIVE, new ArrayList<>());
         hemispheres.put(Hemi.NEGATIVE, new ArrayList<>());
+        hemispheres.put(Hemi.NONE, new ArrayList<>());  // never actaully used but would crash without unless add a check
 
         for (Tribe tribe : TribesManager.getTribes()){
             for (Long chunk : tribe.getClaimedChunks()){
@@ -37,6 +38,8 @@ public class LandClaimHelper {
     public static void setChunkOwner(Long chunk, Tribe tribe){
         if (tribe == null) claimedChunks.remove(chunk);
         else claimedChunks.put(chunk, tribe);
+
+        //TODO cant claim chunk in hemi you cant access
     }
 
     public static String getOwnerDisplayFor(PlayerEntity player){
@@ -54,7 +57,7 @@ public class LandClaimHelper {
             case POSITIVE:
                 return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Southern" : "Eastern") + " Hemisphere";
             case NONE:
-                return "No Man's Land";
+                return "Wilderness";
         }
 
         return "error";
@@ -100,5 +103,20 @@ public class LandClaimHelper {
         POSITIVE, // south or east
         NEGATIVE,  // north or west
         NONE;
+    }
+
+    public static List<Long> getClaimedChunksOrdered(ChunkPos start){
+        List<Long> chunks = new ArrayList<>(claimedChunks.keySet());
+        chunks.sort((o1, o2) -> {
+            ChunkPos a = new ChunkPos(o1);
+            ChunkPos b = new ChunkPos(o2);
+
+            double distA = Math.sqrt(Math.pow(start.x - a.x, 2) + Math.pow(start.z - a.z, 2));
+            double distB = Math.sqrt(Math.pow(start.x - b.x, 2) + Math.pow(start.z - b.z, 2));
+
+            return (int) (distA - distB);
+        });
+
+        return chunks;
     }
 }
