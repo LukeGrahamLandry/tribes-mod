@@ -3,6 +3,7 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 import com.google.gson.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effect;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
 
@@ -14,12 +15,14 @@ public class Tribe {
     HashMap<String, Rank> members;  // key is player uuid
     List<String> bans;
     HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
+    public HashMap<Effect, Integer> effects;
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
         this.initials = Character.toString(tribeName.charAt(0));
         this.bans = new ArrayList<>();
         this.members = new HashMap<>();
         this.relationToOtherTribes = new HashMap<>();
+        this.effects = new HashMap<>();
         this.addMember(creater, Rank.LEADER);
     }
 
