@@ -1,5 +1,6 @@
 package io.github.lukegrahamlandry.tribes.network;
 
+import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
@@ -11,15 +12,16 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SaveEffectsPacket {
-    private final HashMap<Effect, Integer> good;
-    private final HashMap<Effect, Integer> bad;
+    private final Map<Effect, Integer> good;
+    private final Map<Effect, Integer> bad;
 
     // send this from the client (effect screen) to save the chosen effects on the server
-    public SaveEffectsPacket(HashMap<Effect, Integer> good, HashMap<Effect, Integer> bad){
+    public SaveEffectsPacket(Map<Effect, Integer> good, Map<Effect, Integer> bad){
         this.good = good;
         this.bad = bad;
     }
@@ -69,6 +71,7 @@ public class SaveEffectsPacket {
                 tribe.effects.clear();
                 this.good.forEach((effect, level) -> tribe.effects.put(effect, level));
                 this.bad.forEach((effect, level) -> tribe.effects.put(effect, level));
+                TribesMain.LOGGER.debug("Effects Received: " + tribe.effects);
             }
         });
         ctx.get().setPacketHandled(true);

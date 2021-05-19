@@ -2,7 +2,8 @@ package io.github.lukegrahamlandry.tribes.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
+import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
+import io.github.lukegrahamlandry.tribes.network.SaveEffectsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.screen.Screen;
@@ -29,17 +30,29 @@ public class TribeEffectScreen extends TribeScreen {
     public static List<Effect> posEffects = TribesConfig.getGoodEffects();
     public static List<Effect> negEffects = TribesConfig.getBadEffects();
     // Map of selected effects and their amplifiers
-    private static Map<Effect, Integer> selGoodEffects = new HashMap<>();
-    private static Map<Effect, Integer> selBadEffects = new HashMap<>();
+    private static Map<Effect, Integer> selGoodEffects;
+    private static Map<Effect, Integer> selBadEffects;
     // Maximum number of effects that can be selected; Both good and bad
-    private static int maxGoodEffects = TribesManager.getNumberOfGoodEffects(Minecraft.getInstance().player);
-    private static int maxBadEffects = TribesManager.getNumberOfBadEffects(Minecraft.getInstance().player);
+    private int maxGoodEffects;
+    private int maxBadEffects;
     // Current number of selected effects
     private static int numSelectedGood;
     private static int numSelectedBad;
 
-    public TribeEffectScreen() {
+    public TribeEffectScreen(int numGoodAllowed, int numBadAllowed, HashMap<Effect, Integer> currentEffects) {
         super(".tribeEffectScreen", "textures/gui/tribe_effects_left.png", "textures/gui/tribe_effects_right.png", 175, 219, false);
+
+        // all this stuff is sent from the server by PacketOpenEffectGUI
+
+        this.maxGoodEffects = numGoodAllowed;
+        this.maxBadEffects = numBadAllowed;
+
+        selGoodEffects = new HashMap<>();
+        selBadEffects = new HashMap<>();
+        currentEffects.forEach((effect, level) -> {
+            if (posEffects.contains(effect)) selGoodEffects.put(effect, level);
+            if (negEffects.contains(effect)) selBadEffects.put(effect, level);
+        });
     }
 
     @Override
@@ -135,7 +148,7 @@ public class TribeEffectScreen extends TribeScreen {
         }
 
         public void onPress() {
-            TribesManager.setTribeEffects(Minecraft.getInstance().player, selGoodEffects, selBadEffects);
+            NetworkHandler.INSTANCE.sendToServer(new SaveEffectsPacket(selGoodEffects, selBadEffects));
             selBadEffects.clear();
             selGoodEffects.clear();
             TribeEffectScreen.this.minecraft.displayGuiScreen(null);

@@ -22,5 +22,6 @@ public class NetworkHandler {
         //Register Create Tribe Packet
         INSTANCE.registerMessage(nextID(), PacketCreateTribe.class, PacketCreateTribe::toBytes, PacketCreateTribe::new, PacketCreateTribe::handle);
         INSTANCE.registerMessage(nextID(), SaveEffectsPacket.class, SaveEffectsPacket::toBytes, SaveEffectsPacket::new, SaveEffectsPacket::handle);
+        INSTANCE.registerMessage(nextID(), PacketOpenEffectGUI.class, PacketOpenEffectGUI::encode, PacketOpenEffectGUI::decode, PacketOpenEffectGUI::handle);
     }
 }

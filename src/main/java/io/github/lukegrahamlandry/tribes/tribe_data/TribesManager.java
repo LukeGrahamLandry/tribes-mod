@@ -61,7 +61,6 @@ public class TribesManager {
     }
 
     static public List<Tribe> getTribes(){
-        TribesMain.LOGGER.debug(tribes);
         if (tribes.isEmpty()){
             return new ArrayList<>();
         }
@@ -126,34 +125,12 @@ public class TribesManager {
     }
 
     public static int getNumberOfGoodEffects(PlayerEntity player){
-        if (player.getEntityWorld().isRemote()) {
-            TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not use tribe commands on the render thread' Pls use a packet or something");
-        }
-
         // later i'll do logic for doing it based on config / tribe level but for now its hard-coded
         return 2;
     }
 
-    public static int getNumberOfBadEffects(PlayerEntity player){
-        if (player.getEntityWorld().isRemote()) {
-            TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not use tribe commands on the render thread' Pls use a packet or something");
-            //int a = 0/0; // BREAK :)
-        }
-
+    public static int getNumberOfBadEffects(PlayerEntity player) {
         // later i'll do logic for doing it based on config / tribe level but for now its hard-coded
         return 1;
-    }
-
-    public static TribeActionResult setTribeEffects(PlayerEntity player, Map<Effect, Integer> good, Map<Effect, Integer> bad){
-        if (player.getEntityWorld().isRemote()) {
-            TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread' Pls use a packet or something");
-            return TribeActionResult.CLIENT;
-        }
-
-        if (good.size() != getNumberOfBadEffects(player) || bad.size() != getNumberOfBadEffects(player)){
-            return TribeActionResult.INVALID_INT;
-        }
-
-        return TribeActionResult.SUCCESS;
     }
 }

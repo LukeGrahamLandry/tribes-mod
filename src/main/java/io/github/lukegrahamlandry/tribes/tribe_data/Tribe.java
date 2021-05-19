@@ -211,11 +211,13 @@ public class Tribe {
 
         tribe.initials = obj.get("initials").getAsString();
 
-        JsonObject effectMap = obj.get("effects").getAsJsonObject();
-        for (Map.Entry<String, JsonElement> e : effectMap.entrySet()){
-            int id = new Integer(e.getKey());
-            Effect effect = Effect.get(id);
-            tribe.effects.put(effect, e.getValue().getAsInt());
+        if (obj.has("effects")){
+            JsonObject effectMap = obj.get("effects").getAsJsonObject();
+            for (Map.Entry<String, JsonElement> e : effectMap.entrySet()){
+                int id = new Integer(e.getKey());
+                Effect effect = Effect.get(id);
+                tribe.effects.put(effect, e.getValue().getAsInt());
+            }
         }
 
         return tribe;

@@ -16,7 +16,6 @@ public class ItemInit {
 
     public static void init(IEventBus eventBus){
         ITEMS.register("create_gui_item", () -> new GUIItem(CreateTribeScreen::new));
-        ITEMS.register("effect_gui_item", () -> new GUIItem(TribeEffectScreen::new));
 
         ITEMS.register(eventBus);
     }
