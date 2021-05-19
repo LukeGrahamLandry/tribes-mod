@@ -12,6 +12,7 @@ import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -37,16 +38,22 @@ public class TickHandler {
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
                 new LandOwnerPacket(event.player.getUniqueID(), LandClaimHelper.getOwnerDisplayFor(event.player)));
 
-        if (event.player.getHeldItem(Hand.MAIN_HAND).getItem() instanceof TribeCompass){
+        ItemStack stack = event.player.getHeldItem(Hand.MAIN_HAND);
+        if (stack.getItem() instanceof TribeCompass){
             BlockPos posToLook = null;
             ChunkPos start = new ChunkPos(event.player.getPosition().getX() >> 4, event.player.getPosition().getZ() >> 4);
 
-            List<Long> chunks = LandClaimHelper.getClaimedChunksOrdered(start);
+            List<Long> chunks = LandClaimHelper.getClaimedChunksOrdered(start);  // closest first
             if (chunks.size() > 0){
-                long face = chunks.get(0);  // replace with loop that knows your tribe and chunks set to blacklist on compass
-                if (face != start.asLong()) {
-                    ChunkPos lookchunk = new ChunkPos(face);
+                for (long chunk : chunks){
+                    if (TribeCompass.isChunkIgnored(stack, chunk)) continue;
+
+                    // spin if you're in the chunk to point to
+                    if (chunk == start.asLong()) break;
+
+                    ChunkPos lookchunk = new ChunkPos(chunk);
                     posToLook = new BlockPos((lookchunk.x << 4) + 7, 63 , (lookchunk.z << 4) + 7);
+                    break;
                 }
             }
 

@@ -43,25 +43,25 @@ public class TribesMain {
 
     public TribesMain() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        //Common Setup Listener
+        // Common Setup Listener
         eventBus.addListener(this::setup);
 
-        //Registering of both Client and Server Configs
+        // Registering of both Client and Server Configs
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.client_config);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.server_config);
 
-        //Loading of both Client and Server Config Files
+        // Loading of both Client and Server Config Files
         Config.loadConfig(Config.client_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-client.toml").toString());
         Config.loadConfig(Config.server_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-server.toml").toString());
 
-        //Initialize Items
-        ItemInit.init(eventBus);
+        // Initialize Items
+        ItemInit.ITEMS.register(eventBus);
 
         BlockInit.BLOCKS.register(eventBus);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    //Common Setup Event
+    // Common Setup Event
     private void setup(final FMLCommonSetupEvent event) {
         NetworkHandler.registerMessages();
     }
