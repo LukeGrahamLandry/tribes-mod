@@ -174,6 +174,13 @@ public class Tribe {
 
         obj.addProperty("initials", this.getInitials());
 
+        JsonObject effectMap = new JsonObject();
+        this.effects.forEach((effect, level) -> {
+            String key = String.valueOf(Effect.getId(effect));
+            effectMap.addProperty(key, level);
+        });
+        obj.add("effects", effectMap);
+
         return obj;
     }
 
@@ -203,6 +210,13 @@ public class Tribe {
         }
 
         tribe.initials = obj.get("initials").getAsString();
+
+        JsonObject effectMap = obj.get("effects").getAsJsonObject();
+        for (Map.Entry<String, JsonElement> e : effectMap.entrySet()){
+            int id = new Integer(e.getKey());
+            Effect effect = Effect.get(id);
+            tribe.effects.put(effect, e.getValue().getAsInt());
+        }
 
         return tribe;
     }
