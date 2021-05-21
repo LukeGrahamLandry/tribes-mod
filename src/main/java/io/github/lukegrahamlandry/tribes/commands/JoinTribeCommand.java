@@ -6,12 +6,16 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
+import io.github.lukegrahamlandry.tribes.network.PacketOpenEffectGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class JoinTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -20,11 +24,10 @@ public class JoinTribeCommand {
                 .then(Commands.argument("name", StringArgumentType.word())
                         .executes(JoinTribeCommand::handleJoin)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to join"), false);
-                            return 0;
-                        }
-                );
-
+                    ServerPlayerEntity player = ctx.getSource().asPlayer();
+                    NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenEffectGUI(player));
+                    return Command.SINGLE_SUCCESS;
+                });
     }
 
     public static int handleJoin(CommandContext<CommandSource> source) throws CommandSyntaxException {

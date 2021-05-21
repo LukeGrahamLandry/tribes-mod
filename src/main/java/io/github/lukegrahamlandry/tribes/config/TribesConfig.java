@@ -49,7 +49,7 @@ public class TribesConfig {
     }
 
     //Getter Method for the whether or not tribes are required
-    public static boolean getTribesRequired(){
+    public static boolean isTribeRequired(){
         return tribeRequired.get();
     }
 

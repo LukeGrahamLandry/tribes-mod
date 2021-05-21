@@ -5,6 +5,7 @@ import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketCreateTribe;
+import io.github.lukegrahamlandry.tribes.network.PacketJoinTribe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -33,6 +34,8 @@ public class JoinTribeScreen extends TribeScreen {
     public void tick() {
 
     }
+
+    // TODO: add a help button for new players
 
     final int ROWS_OF_BUTTONS = 3;
     @Override
@@ -82,22 +85,11 @@ public class JoinTribeScreen extends TribeScreen {
         int x = i > ROWS_OF_BUTTONS ? this.guiLeft + 13 : this.guiLeft + 26 + buttonWidth;
         int y = ((this.height - this.ySize + 110) / 2) + ((buttonHeight + 10) * i);
 
-        this.addButton(new JoinTribeButton(name, members, x, y, buttonWidth, buttonHeight, (p_214318_1_) -> {
-            // send join packet (this.name)
+        this.addButton(new Button(x, y, buttonWidth, buttonHeight, new StringTextComponent(name), (p_214318_1_) -> {
+            NetworkHandler.INSTANCE.sendToServer(new PacketJoinTribe(name));
             this.closeScreen();
         }, (p_238659_1_, p_238659_2_, p_238659_3_, p_238659_4_) -> {
-            this.renderTooltip(p_238659_2_, Minecraft.getInstance().fontRenderer.trimStringToWidth(new StringTextComponent(name), Math.max(width / 2 - 43, 170)), p_238659_3_, p_238659_4_);
+            this.renderTooltip(p_238659_2_, Minecraft.getInstance().fontRenderer.trimStringToWidth(new StringTextComponent(String.valueOf(members)), Math.max(width / 2 - 43, 170)), p_238659_3_, p_238659_4_);
         }));
-    }
-
-    class JoinTribeButton extends Button {
-        private final String name;
-        private final int members;
-
-        public JoinTribeButton(String tribe, int members, int x, int y, int width, int height, IPressable pressedAction, Button.ITooltip tip) {
-            super(x, y, width, height, new StringTextComponent(tribe), pressedAction, tip);
-            this.name = tribe;
-            this.members = members;
-        }
     }
 }
