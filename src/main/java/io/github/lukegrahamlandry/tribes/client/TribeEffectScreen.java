@@ -53,6 +53,8 @@ public class TribeEffectScreen extends TribeScreen {
             if (posEffects.contains(effect)) selGoodEffects.put(effect, level);
             if (negEffects.contains(effect)) selBadEffects.put(effect, level);
         });
+        numSelectedGood = selGoodEffects.size();
+        numSelectedBad = selBadEffects.size();
     }
 
     @Override
@@ -120,18 +122,18 @@ public class TribeEffectScreen extends TribeScreen {
                 this.font.drawString(matrixStack, String.valueOf(((EffectButton)button).getAmplifier()), (float)(button.x+2), (float)(button.y+2), 0xffffff);
             }
         });
-        this.font.drawString(matrixStack, "Benefits: " + selGoodEffects.size()+"/"+maxGoodEffects, this.guiLeft + 15, this.guiTop + 20, 0x5d5d5d);
-        this.font.drawString(matrixStack, "Drawbacks: " + selBadEffects.size()+"/"+maxBadEffects, this.guiLeft + 20 + xSize, this.guiTop + 20, 0x5d5d5d);
+        this.font.drawString(matrixStack, "Benefits: " + numSelectedGood+"/"+maxGoodEffects, this.guiLeft + 15, this.guiTop + 20, 0x5d5d5d);
+        this.font.drawString(matrixStack, "Drawbacks: " + numSelectedBad+"/"+maxBadEffects, this.guiLeft + 20 + xSize, this.guiTop + 20, 0x5d5d5d);
     }
 
     // Add effect to selected list
     private void addEffect(Effect effect, int amplifier, boolean isGood){
         if(isGood){
             selGoodEffects.put(effect, amplifier);
-            numSelectedGood = selGoodEffects.size();
+            numSelectedGood += amplifier;
         }else{
             selBadEffects.put(effect, amplifier);
-            numSelectedBad = selBadEffects.size();
+            numSelectedBad += amplifier;
         }
     }
 
@@ -139,10 +141,10 @@ public class TribeEffectScreen extends TribeScreen {
     private void removeEffect(Effect effect, int amplifier, boolean isGood){
         if(isGood){
             selGoodEffects.remove(effect, amplifier);
-            numSelectedGood = selGoodEffects.size();
+            numSelectedGood -= amplifier;
         }else{
             selBadEffects.remove(effect, amplifier);
-            numSelectedBad = selBadEffects.size();
+            numSelectedBad -= amplifier;
         }
     }
 
@@ -205,15 +207,19 @@ public class TribeEffectScreen extends TribeScreen {
             if (!this.isSelected()) {
                 if (this.isGood) {
                     // Are the maximum number of effects selected?
-                    if(TribeEffectScreen.this.selGoodEffects.size() < TribeEffectScreen.this.maxGoodEffects) TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
+                    if(TribeEffectScreen.this.selGoodEffects.size() < TribeEffectScreen.this.maxGoodEffects && (numSelectedGood + amplifier <= maxGoodEffects)){
+                        TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
+                    }
                     // Are you selecting a different level of a selected effect?
-                    if(TribeEffectScreen.this.selGoodEffects.containsKey(effect)){
+                    if(TribeEffectScreen.this.selGoodEffects.containsKey(effect) && (numSelectedGood + amplifier <= maxGoodEffects)){
                         TribeEffectScreen.this.removeEffect(effect, TribeEffectScreen.this.selGoodEffects.get(effect), isGood);
                         TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
                     }
                 } else if(!this.isGood){
-                    if(TribeEffectScreen.this.selBadEffects.size() < TribeEffectScreen.this.maxBadEffects) TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
-                    if(TribeEffectScreen.this.selBadEffects.containsKey(effect)){
+                    if(TribeEffectScreen.this.selBadEffects.size() < TribeEffectScreen.this.maxBadEffects && (numSelectedBad + amplifier <= maxBadEffects)) {
+                        TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
+                    }
+                    if(TribeEffectScreen.this.selBadEffects.containsKey(effect) && (numSelectedBad + amplifier <= maxBadEffects)){
                         TribeEffectScreen.this.removeEffect(effect, TribeEffectScreen.this.selBadEffects.get(effect), isGood);
                         TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
                     }
