@@ -30,8 +30,8 @@ public class TribeEffectScreen extends TribeScreen {
     public static List<Effect> posEffects = TribesConfig.getGoodEffects();
     public static List<Effect> negEffects = TribesConfig.getBadEffects();
     // Map of selected effects and their amplifiers
-    private static Map<Effect, Integer> selGoodEffects;
-    private static Map<Effect, Integer> selBadEffects;
+    private Map<Effect, Integer> selGoodEffects;
+    private Map<Effect, Integer> selBadEffects;
     // Maximum number of effects that can be selected; Both good and bad
     private int maxGoodEffects;
     private int maxBadEffects;
@@ -63,6 +63,11 @@ public class TribeEffectScreen extends TribeScreen {
     @Override
     protected void init() {
         super.init();
+        addButtons();
+    }
+
+    public void addButtons(){
+        // Declare confirm button
         this.confirmButton = this.addButton(new ConfirmButton(this,this.guiLeft + (this.xSize - 11), (this.ySize/2 - 11), this.ySize));
         int i=0;
         int k=0;
@@ -72,11 +77,13 @@ public class TribeEffectScreen extends TribeScreen {
             i=(k>=154) ? 82 : i;
             k=(k>=154) ? 0 : k;
             for(int j=1; j<=3;j++){
-                tribeeffect$effectbutton = new EffectButton(this, this.guiLeft + 11 + i, this.guiTop + 36 + k, ySize, effect, j);
+                tribeeffect$effectbutton = new EffectButton(this, this.guiLeft + 11 + i, this.guiTop + 36 + k, this.ySize, effect, true, j);
                 this.addButton(tribeeffect$effectbutton);
-                // Make button inactive if already selected
-                if(selGoodEffects.containsKey(effect)){
-                    tribeeffect$effectbutton.active=false;
+                // Is the effect selected already?
+                if(selGoodEffects.containsKey(effect) && selGoodEffects.get(effect)==j){
+                    tribeeffect$effectbutton.setSelected(true);
+                }else {
+                    tribeeffect$effectbutton.setSelected(false);
                 }
                 i+=22;
             }
@@ -90,11 +97,12 @@ public class TribeEffectScreen extends TribeScreen {
             i=(k>=154) ? 82 : i;
             k=(k>=154) ? 0 : k;
             for(int j=1; j<=3;j++){
-                tribeeffect$effectbutton = new EffectButton(this, this.guiLeft + this.xSize + 16 + i, this.guiTop + 36 + k, ySize, effect, j);
+                tribeeffect$effectbutton = new EffectButton(this, this.guiLeft + this.xSize + 16 + i, this.guiTop + 36 + k, ySize, effect, false, j);
                 this.addButton(tribeeffect$effectbutton);
-                // Make button inactive if already selected
-                if(selBadEffects.containsKey(effect)){
-                    tribeeffect$effectbutton.active=false;
+                if(selBadEffects.containsKey(effect) && selBadEffects.get(effect)==j){
+                    tribeeffect$effectbutton.setSelected(true);
+                }else {
+                    tribeeffect$effectbutton.setSelected(false);
                 }
                 i+=22;
             }
@@ -164,13 +172,15 @@ public class TribeEffectScreen extends TribeScreen {
     class EffectButton extends GuiButton {
         private final TribeEffectScreen screen;
         private final Effect effect;
+        private final boolean isGood;
         private final TextureAtlasSprite effectSprite;
         private final ITextComponent effectName;
         private final int amplifier;
 
-        public EffectButton(TribeScreen screen, int x, int y, int ySizeIn, Effect p_i50827_4_, int amplifierIn) {
+        public EffectButton(TribeScreen screen, int x, int y, int ySizeIn, Effect p_i50827_4_, boolean isGoodIn, int amplifierIn) {
             super(screen, x, y, ySizeIn);
             this.effect = p_i50827_4_;
+            this.isGood = isGoodIn;
             this.effectSprite = Minecraft.getInstance().getPotionSpriteUploader().getSprite(p_i50827_4_);
             this.effectName = this.getEffectName(p_i50827_4_);
             this.screen = (TribeEffectScreen) screen;
@@ -192,27 +202,27 @@ public class TribeEffectScreen extends TribeScreen {
         }
 
         public void onPress() {
-            if(posEffects.contains(effect)){
-                if(numSelectedGood < maxGoodEffects){
-                    if(!isSelected()){
-                        screen.addEffect(effect, getAmplifier(), true);
-                        System.out.println(effectName.getString() + " " + this.getAmplifier());
-                    }else{
-                        screen.removeEffect(effect, getAmplifier(), true);
-                        System.out.println(effectName.getString() + " " + this.getAmplifier());
+            if (!this.isSelected()) {
+                if (this.isGood) {
+                    // Are the maximum number of effects selected?
+                    if(TribeEffectScreen.this.selGoodEffects.size() < TribeEffectScreen.this.maxGoodEffects) TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
+                    // Are you selecting a different level of a selected effect?
+                    if(TribeEffectScreen.this.selGoodEffects.containsKey(effect)){
+                        TribeEffectScreen.this.removeEffect(effect, TribeEffectScreen.this.selGoodEffects.get(effect), isGood);
+                        TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
+                    }
+                } else if(!this.isGood){
+                    if(TribeEffectScreen.this.selBadEffects.size() < TribeEffectScreen.this.maxBadEffects) TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
+                    if(TribeEffectScreen.this.selBadEffects.containsKey(effect)){
+                        TribeEffectScreen.this.removeEffect(effect, TribeEffectScreen.this.selBadEffects.get(effect), isGood);
+                        TribeEffectScreen.this.addEffect(effect, amplifier, isGood);
                     }
                 }
-            }else if(negEffects.contains(effect)){
-                if(numSelectedBad < maxBadEffects){
-                    if(!isSelected()){
-                        screen.addEffect(effect, getAmplifier(), false);
-                        System.out.println(effectName.getString() + " " + this.getAmplifier());
-                    }else{
-                        screen.removeEffect(effect, getAmplifier(), false);
-                        System.out.println(effectName.getString() + " " + this.getAmplifier());
-                    }
-                }
+            }else if(this.isSelected()){
+                TribeEffectScreen.this.removeEffect(effect, amplifier, isGood);
             }
+            TribeEffectScreen.this.buttons.clear();
+            TribeEffectScreen.this.children.clear();
             TribeEffectScreen.this.init();
             TribeEffectScreen.this.tick();
         }
