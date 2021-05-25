@@ -21,10 +21,11 @@ A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissione
     - initials <string> (vice leader+)
     - chunk <claim, unclaim> (officers+)
 - GUIs
-    - create tribe
-    - shows owner of current chunk in top left
-    
+    - create (/tribe create)
+    - effects (/tribe effects)
+    - join (/tribe join)
+    - owner of current chunk displayed in top left
 
 ## Credits
-- [Luke Graham Landry](https://github.com/LukeGrahamLandry)
-- [GreenOne](https://github.com/TheGreenOne)
+- [Luke Graham Landry](https://lukegrahamlandry.ca)
+- [GreenOne](https://github.com/TheGreenOne))

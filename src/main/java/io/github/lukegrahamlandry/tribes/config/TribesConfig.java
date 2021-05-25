@@ -1,7 +1,11 @@
 package io.github.lukegrahamlandry.tribes.config;
 
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -142,5 +146,40 @@ public class TribesConfig {
         List<Integer> punishments = (List<Integer>) (deathWasPVP ? pvpDeathPunishTimes.get() : nonpvpDeathPunishTimes.get());
         index = Math.min(index, punishments.size() - 1);
         return punishments.get(index);
+
+    // might change based on config later
+    public static List<Effect> getGoodEffects(){
+        ArrayList<Effect> theEffects = new ArrayList<>();
+
+        for (Field field : Effects.class.getFields()){
+            try {
+                if (field.get(null) instanceof Effect){
+                    Effect toCheck = (Effect) field.get(null);
+                    if (toCheck.isBeneficial() && !toCheck.equals(Effects.INSTANT_HEALTH) && !toCheck.equals(Effects.CONDUIT_POWER) && !toCheck.equals(Effects.HEALTH_BOOST) && !toCheck.equals(Effects.LUCK) && !toCheck.equals(Effects.HERO_OF_THE_VILLAGE)){
+                        theEffects.add(toCheck);
+                    }
+                }
+            } catch (IllegalAccessException ignored) {}
+        }
+
+        return theEffects;
+    }
+
+    // might change based on config later
+    public static List<Effect> getBadEffects(){
+        ArrayList<Effect> theEffects = new ArrayList<>();
+
+        for (Field field : Effects.class.getFields()){
+            try {
+                if (field.get(null) instanceof Effect){
+                    Effect toCheck = (Effect) field.get(null);
+                    if (!toCheck.isBeneficial() && !toCheck.equals(Effects.INSTANT_DAMAGE)){
+                        theEffects.add(toCheck);
+                    }
+                }
+            } catch (IllegalAccessException ignored) {}
+        }
+
+        return theEffects;
     }
 }

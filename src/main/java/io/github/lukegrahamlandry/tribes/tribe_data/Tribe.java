@@ -5,6 +5,7 @@ import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effect;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
 
@@ -23,6 +24,7 @@ public class Tribe {
     public int deathIndex = 0;
     public boolean deathWasPVP = false;
 
+    public HashMap<Effect, Integer> effects;
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
         this.initials = Character.toString(tribeName.charAt(0));
@@ -30,6 +32,7 @@ public class Tribe {
         this.members = new HashMap<>();
         this.relationToOtherTribes = new HashMap<>();
         this.chunks = new ArrayList<>();
+        this.effects = new HashMap<>();
         this.addMember(creater, Rank.LEADER);
         this.hemiAccess = LandClaimHelper.Hemi.NONE;
     }
@@ -203,6 +206,12 @@ public class Tribe {
         } else if (this.hemiAccess == LandClaimHelper.Hemi.POSITIVE){
             obj.addProperty("hemi", 2);
         }
+        JsonObject effectMap = new JsonObject();
+        this.effects.forEach((effect, level) -> {
+            String key = String.valueOf(Effect.getId(effect));
+            effectMap.addProperty(key, level);
+        });
+        obj.add("effects", effectMap);
 
         return obj;
     }
@@ -248,6 +257,15 @@ public class Tribe {
             tribe.hemiAccess = LandClaimHelper.Hemi.POSITIVE;
         }
 
+
+        if (obj.has("effects")){
+            JsonObject effectMap = obj.get("effects").getAsJsonObject();
+            for (Map.Entry<String, JsonElement> e : effectMap.entrySet()){
+                int id = new Integer(e.getKey());
+                Effect effect = Effect.get(id);
+                tribe.effects.put(effect, e.getValue().getAsInt());
+            }
+        }
 
         return tribe;
     }

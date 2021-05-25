@@ -17,7 +17,8 @@ public enum TribeActionResult {
     ALREADY_CLAIMED,
     HAVE_HEMI,
     INVALID_ARG,
-    WEAK_TRIBE;
+    WEAK_TRIBE,
+    INVALID_INT;
 
     @Override
     public String toString() {
@@ -39,6 +40,7 @@ public enum TribeActionResult {
             case HAVE_HEMI: return "FAILURE: you have already claimed a hemisphere";
             case INVALID_ARG: return "FAILURE: invalid argument";
             case WEAK_TRIBE: return "FAILURE: your tribe has too few members";
+            case INVALID_INT: return "FAILURE: that number is not in the correct range";
         }
         return "ERROR: invalid TribeActionResult";
     }

@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effect;
 
 import java.util.*;
 
@@ -60,7 +61,6 @@ public class TribesManager {
     }
 
     static public List<Tribe> getTribes(){
-        TribesMain.LOGGER.debug(tribes);
         if (tribes.isEmpty()){
             return new ArrayList<>();
         }
@@ -122,5 +122,15 @@ public class TribesManager {
             }
         }
         return bans;
+    }
+
+    public static int getNumberOfGoodEffects(PlayerEntity player){
+        // later i'll do logic for doing it based on config / tribe level but for now its hard-coded
+        return 2;
+    }
+
+    public static int getNumberOfBadEffects(PlayerEntity player) {
+        // later i'll do logic for doing it based on config / tribe level but for now its hard-coded
+        return 1;
     }
 }

@@ -2,6 +2,8 @@ package io.github.lukegrahamlandry.tribes.init;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.client.CreateTribeScreen;
+import io.github.lukegrahamlandry.tribes.client.JoinTribeScreen;
+import io.github.lukegrahamlandry.tribes.client.TribeEffectScreen;
 import io.github.lukegrahamlandry.tribes.item.GUIItem;
 import io.github.lukegrahamlandry.tribes.item.TribeCompass;
 import net.minecraft.item.BlockItem;
