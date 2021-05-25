@@ -43,6 +43,7 @@ public class PacketOpenJoinGUI {
             buf.writeString(name);
             buf.writeInt(members);
         });
+
         buf.writeBoolean(true);
     }
 

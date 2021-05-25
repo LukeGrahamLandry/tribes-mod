@@ -84,7 +84,7 @@ public class TribesConfig {
             try {
                 if (field.get(null) instanceof Effect){
                     Effect toCheck = (Effect) field.get(null);
-                    if (toCheck.isBeneficial()){
+                    if (toCheck.isBeneficial() && !toCheck.equals(Effects.INSTANT_HEALTH) && !toCheck.equals(Effects.CONDUIT_POWER) && !toCheck.equals(Effects.HEALTH_BOOST) && !toCheck.equals(Effects.LUCK) && !toCheck.equals(Effects.HERO_OF_THE_VILLAGE)){
                         theEffects.add(toCheck);
                     }
                 }
@@ -102,7 +102,7 @@ public class TribesConfig {
             try {
                 if (field.get(null) instanceof Effect){
                     Effect toCheck = (Effect) field.get(null);
-                    if (!toCheck.isBeneficial()){
+                    if (!toCheck.isBeneficial() && !toCheck.equals(Effects.INSTANT_DAMAGE)){
                         theEffects.add(toCheck);
                     }
                 }

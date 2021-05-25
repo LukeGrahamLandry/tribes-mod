@@ -47,7 +47,7 @@ authors="Luke Graham Landry" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Let's players form tribes. 
+Lets players form tribes.
 '''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.

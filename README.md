@@ -18,7 +18,10 @@ A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissione
     - who <player>
     - initials <string> (vice leader+)
 - GUIs
-    - create
+    - create (/tribe create)
+    - effects **WIP** (/tribe effects)
+    - join **WIP** (/tribe join)
 
 ## Credits
-- Prometheus Software ([Luke Graham Landry](https://github.com/LukeGrahamLandry) & [GreenOne](https://github.com/TheGreenOne))
+- [Luke Graham Landry](https://lukegrahamlandry.ca)
+- [GreenOne](https://github.com/TheGreenOne))

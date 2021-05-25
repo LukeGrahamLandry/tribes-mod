@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenEffectGUI;
+import io.github.lukegrahamlandry.tribes.network.PacketOpenJoinGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
@@ -25,7 +26,7 @@ public class JoinTribeCommand {
                         .executes(JoinTribeCommand::handleJoin)
                 ).executes(ctx -> {
                     ServerPlayerEntity player = ctx.getSource().asPlayer();
-                    NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenEffectGUI(player));
+                    NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenJoinGUI(player));
                     return Command.SINGLE_SUCCESS;
                 });
     }
