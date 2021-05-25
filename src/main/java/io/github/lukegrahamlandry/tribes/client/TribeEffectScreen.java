@@ -53,8 +53,7 @@ public class TribeEffectScreen extends TribeScreen {
             if (posEffects.contains(effect)) selGoodEffects.put(effect, level);
             if (negEffects.contains(effect)) selBadEffects.put(effect, level);
         });
-        numSelectedGood = selGoodEffects.size();
-        numSelectedBad = selBadEffects.size();
+        calcNumSelected();
     }
 
     @Override
@@ -145,6 +144,17 @@ public class TribeEffectScreen extends TribeScreen {
         }else{
             selBadEffects.remove(effect, amplifier);
             numSelectedBad -= amplifier;
+        }
+    }
+
+    private void calcNumSelected() {
+        numSelectedBad=0;
+        numSelectedGood=0;
+        for(Effect effect : selGoodEffects.keySet()){
+            numSelectedGood+=selGoodEffects.get(effect);
+        }
+        for(Effect effect : selBadEffects.keySet()){
+            numSelectedBad+=selBadEffects.get(effect);
         }
     }
 
