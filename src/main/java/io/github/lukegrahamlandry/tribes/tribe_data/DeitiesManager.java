@@ -30,6 +30,19 @@ public class DeitiesManager {
 
         public void generateBook(String rawBookContent) {
             this.bookPages.clear();
+
+            List<String> words = Arrays.asList(rawBookContent.split(" "));
+            StringBuilder nextPage = new StringBuilder();
+            for (String word : words){
+                if (nextPage.length() + word.length() <= 256){
+                    nextPage.append(word);
+                } else {
+                    this.bookPages.add(nextPage.toString());
+                    nextPage = new StringBuilder();
+                    nextPage.append(word);
+                }
+            }
+
         }
     }
 

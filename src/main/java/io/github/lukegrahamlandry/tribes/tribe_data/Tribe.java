@@ -15,6 +15,7 @@ public class Tribe {
     public LandClaimHelper.Hemi hemiAccess;
     String name;
     String initials;
+    public String deity;
     HashMap<String, Rank> members;  // key is player uuid
     List<String> bans;
     HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
@@ -213,6 +214,8 @@ public class Tribe {
         });
         obj.add("effects", effectMap);
 
+        obj.addProperty("deity", this.deity == null ? "NONE" : this.deity);
+
         return obj;
     }
 
@@ -257,7 +260,6 @@ public class Tribe {
             tribe.hemiAccess = LandClaimHelper.Hemi.POSITIVE;
         }
 
-
         if (obj.has("effects")){
             JsonObject effectMap = obj.get("effects").getAsJsonObject();
             for (Map.Entry<String, JsonElement> e : effectMap.entrySet()){
@@ -266,6 +268,9 @@ public class Tribe {
                 tribe.effects.put(effect, e.getValue().getAsInt());
             }
         }
+
+        tribe.deity = obj.get("deity").getAsString();
+        if (tribe.deity.equals("NONE")) tribe.deity = null;
 
         return tribe;
     }
