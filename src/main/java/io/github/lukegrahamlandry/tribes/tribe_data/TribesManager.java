@@ -11,10 +11,6 @@ import java.util.*;
 public class TribesManager {
     static Map<String, Tribe> tribes = new HashMap<>();
 
-    static private List<Tribe> loadSavedTribes() {
-        return new ArrayList<>();
-    }
-
     public static TribeActionResult createNewTribe(String name, PlayerEntity player){
         if (player.getEntityWorld().isRemote()){
             TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread'");

@@ -52,26 +52,78 @@ public class SaveHandler {
             TribesMain.LOGGER.error("couldn't create file");
             e.printStackTrace();
         }
+
+        File deityDataFile = new File(worldDir, "deities.json");
+        if (!deityDataFile.exists()){
+            try{
+                FileWriter writer = new FileWriter(dataFile);
+                writer.write(DeitiesManager.generateExampleJson());
+                writer.close();
+            } catch (IOException e){
+                TribesMain.LOGGER.error("couldn't create file");
+                e.printStackTrace();
+            }
+
+            File deitiesBooksLocation = new File(worldDir, "deities");
+            File bookLocation = new File(deitiesBooksLocation, DeitiesManager.EXAMPLE_DEITY.key + ".json");
+            try{
+                FileWriter writer = new FileWriter(bookLocation);
+                writer.write("this is where you would put your holy text :) ");
+                writer.write("it can be very long and will be automatically broken into pages");
+                writer.close();
+            } catch (IOException e){
+                TribesMain.LOGGER.error("couldn't create file");
+                e.printStackTrace();
+            }
+        }
+
+
+
         TribesMain.LOGGER.debug("saved");
     }
 
     public static void load(File worldDir) {
-        TribesMain.LOGGER.debug("loading");
-
-        File dataFile = new File(worldDir, "tribes.json"); // .getIntegratedServer().getFile("tribes.json");
-
-        if (!dataFile.exists()) return;
-        if (dataFile.getAbsolutePath().contains("DIM")) return;
-        TribesMain.LOGGER.debug(dataFile.getAbsolutePath());
-
+        if (worldDir.getAbsolutePath().contains("DIM")) {
+            TribesMain.LOGGER.debug("skip load from " + worldDir.getAbsolutePath());
+            return;
+        }
+        TribesMain.LOGGER.debug("loading from " + worldDir.getAbsolutePath());
         tribeDataLocation = worldDir;
 
-        StringBuilder tribesData = new StringBuilder();
+
+        // read tribes
+        File tribeDataFile = new File(worldDir, "tribes.json");
+        if (tribeDataFile.exists()) {
+            TribesManager.readFromString(readMultiline(tribeDataFile));
+            LandClaimHelper.setup();
+        }
+
+        // read deities
+        File deityDataFile = new File(worldDir, "deities.json");
+        if (deityDataFile.exists()) {
+            DeitiesManager.readFromString(readMultiline(deityDataFile));
+        }
+
+        // read deity books
+        File deitiesBooksLocation = new File(worldDir, "deities");
+        DeitiesManager.deities.forEach((key, deityData) -> {
+            File bookLocation = new File(deitiesBooksLocation, key + ".json");
+            if (bookLocation.exists()) {
+                String rawBookContent = readMultiline(bookLocation);
+                deityData.generateBook(rawBookContent);
+            }
+        });
+
+        TribesMain.LOGGER.debug("loaded");
+    }
+
+    private static String readMultiline(File dataLocation){
+        StringBuilder data = new StringBuilder();
 
         try {
-            Scanner reader = new Scanner(dataFile);
+            Scanner reader = new Scanner(dataLocation);
             while (reader.hasNext()){
-                tribesData.append(reader.nextLine());
+                data.append(reader.nextLine());
             }
             reader.close();
         } catch (FileNotFoundException e) {
@@ -79,8 +131,6 @@ public class SaveHandler {
             e.printStackTrace();
         }
 
-        TribesManager.readFromString(tribesData.toString());
-        LandClaimHelper.setup();
-        TribesMain.LOGGER.debug("loaded");
+        return data.toString();
     }
 }
