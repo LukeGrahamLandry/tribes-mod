@@ -288,6 +288,8 @@ public class Tribe {
     }
 
     public void removeMember(UUID playerID) {
+        int oldTier = getTribeTier();
+
         this.members.remove(playerID.toString());
 
         if (this.members.size() == 0){
@@ -318,6 +320,12 @@ public class Tribe {
             this.setRank(toPromote, Rank.LEADER);
             // TODO broadcast message but needs world
         }
+
+
+        // reset effects when you go down a tier
+        if (oldTier < getTribeTier()){
+            this.effects.clear();
+        }
     }
 
     public boolean isBanned(UUID uniqueID) {
@@ -327,6 +335,7 @@ public class Tribe {
     public TribeActionResult claimChunk(long chunk, UUID player) {
         if (!this.isOfficer(player)) return TribeActionResult.LOW_RANK;
         if (LandClaimHelper.getChunkOwner(chunk) != null) return TribeActionResult.ALREADY_CLAIMED;
+        if (this.getTribeTier() < TribesConfig.getMinTierToClaimLand()) return TribeActionResult.WEAK_TRIBE;
 
         if (this.getClaimedChunks().size() >= TribesConfig.getMaxChunksClaimed().get(this.getTribeTier()-1)) return TribeActionResult.CONFIG;
 

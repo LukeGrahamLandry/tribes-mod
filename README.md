@@ -5,7 +5,7 @@ A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissione
 ## Features
 - config at saves/world_name/serverconfig/tribes-server.toml
 - tribe data stored at saves/world_name/data/tribes.json
-- tribe compass that points to the nearest claimed chunk
+- tribe compass item that points to the nearest claimed chunk
 - /tribe 
     - create <name>
     - join <name>
@@ -21,11 +21,11 @@ A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissione
     - initials <string> (vice leader+)
     - chunk <claim, unclaim> (officers+)
 - GUIs
-    - create (/tribe create)
-    - effects (/tribe effects)
-    - join (/tribe join)
+    - create tribe
+    - choose effects (/tribe effects)
+    - join join (/tribe join)
     - owner of current chunk displayed in top left
 
 ## Credits
 - [Luke Graham Landry](https://lukegrahamlandry.ca)
-- [GreenOne](https://github.com/TheGreenOne))
+- [GreenOne](https://github.com/TheGreenOne)

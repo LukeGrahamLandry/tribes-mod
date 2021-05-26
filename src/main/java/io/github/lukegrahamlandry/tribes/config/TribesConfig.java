@@ -49,13 +49,13 @@ public class TribesConfig {
                 .define("tribesRequired", true);
         tierThresholds = server
                 .comment("I:Tier Thresholds: ")
-                .defineList("tier_thresholds", Arrays.asList(4,12),i -> (int)i>=0);
+                .defineList("tier_thresholds", Arrays.asList(4,12,30,100),i -> (int)i>=0);
         tierNegEffects = server
                 .comment("I:Tier Negative Effects: ")
-                .defineList("tier_negative_effects", Arrays.asList(1,1,0),i -> (int)i>=0);
+                .defineList("tier_negative_effects", Arrays.asList(2,2,1,1,0),i -> (int)i>=0);
         tierPosEffects = server
                 .comment("I:Tier Positive Effects: ")
-                .defineList("tier_positive_effects", Arrays.asList(1,2,3),i -> (int)i>=0);
+                .defineList("tier_positive_effects", Arrays.asList(1,2,2,3,3),i -> (int)i>=0);
         friendlyFire = server
                 .comment("Whether players should be able to harm other members of their tribe: ")
                 .define("tribesRequired", false);
@@ -76,10 +76,10 @@ public class TribesConfig {
                 .defineInRange("halfNoMansLandWidth", 500, 0, Integer.MAX_VALUE);
         nonpvpDeathPunishTimes = server
                 .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
-                .defineList("pvpDeathPunishTimes", Arrays.asList(5, 60, 360),i -> (int)i>=0);
+                .defineList("pvpDeathPunishTimes", Arrays.asList(10, 60, 360),i -> (int)i>=0);
         pvpDeathPunishTimes = server
                 .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
-                .defineList("nonpvpDeathPunishTimes", Arrays.asList(10, 120, 720),i -> (int)i>=0);
+                .defineList("nonpvpDeathPunishTimes", Arrays.asList(30, 120, 1440),i -> (int)i>=0);
         rankToChooseHemi = server
                 .comment("a member must have equal greater than thus rank to select a hemisphere for thier tribe [member, officer, vice leader, leader]: ")
                 .defineInRange("rankToChooseHemi", 2, 0, 3);
@@ -91,7 +91,7 @@ public class TribesConfig {
         return numTribes.get();
     }
 
-    public static boolean getTribesRequired(){
+    public static boolean isTribeRequired(){
         return tribeRequired.get();
     }
 
@@ -137,6 +137,7 @@ public class TribesConfig {
     public static int getHalfNoMansLandWidth(){
         return halfNoMansLandWidth.get();
     }
+    
     public static int rankToChooseHemi(){
         return rankToChooseHemi.get();
     }
@@ -146,6 +147,7 @@ public class TribesConfig {
         List<Integer> punishments = (List<Integer>) (deathWasPVP ? pvpDeathPunishTimes.get() : nonpvpDeathPunishTimes.get());
         index = Math.min(index, punishments.size() - 1);
         return punishments.get(index);
+    }
 
     // might change based on config later
     public static List<Effect> getGoodEffects(){
@@ -173,7 +175,7 @@ public class TribesConfig {
             try {
                 if (field.get(null) instanceof Effect){
                     Effect toCheck = (Effect) field.get(null);
-                    if (!toCheck.isBeneficial() && !toCheck.equals(Effects.INSTANT_DAMAGE)){
+                    if (!toCheck.isBeneficial() && !toCheck.equals(Effects.INSTANT_DAMAGE) && !toCheck.equals(Effects.UNLUCK)){
                         theEffects.add(toCheck);
                     }
                 }

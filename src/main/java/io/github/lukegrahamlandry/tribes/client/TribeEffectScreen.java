@@ -58,7 +58,8 @@ public class TribeEffectScreen extends TribeScreen {
 
     @Override
     public void tick() {
-        confirmButton.active = (selGoodEffects.size()!=0) || (selBadEffects.size()!=0);
+        calcNumSelected();
+        confirmButton.active = numSelectedGood == maxGoodEffects && numSelectedBad == maxBadEffects;
     }
 
     @Override
@@ -168,10 +169,12 @@ public class TribeEffectScreen extends TribeScreen {
         }
 
         public void onPress() {
-            NetworkHandler.INSTANCE.sendToServer(new SaveEffectsPacket(selGoodEffects, selBadEffects));
-            selBadEffects.clear();
-            selGoodEffects.clear();
-            TribeEffectScreen.this.minecraft.displayGuiScreen(null);
+            if (this.active){
+                NetworkHandler.INSTANCE.sendToServer(new SaveEffectsPacket(selGoodEffects, selBadEffects));
+                selBadEffects.clear();
+                selGoodEffects.clear();
+                TribeEffectScreen.this.minecraft.displayGuiScreen(null);
+            }
         }
 
         public void renderToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {

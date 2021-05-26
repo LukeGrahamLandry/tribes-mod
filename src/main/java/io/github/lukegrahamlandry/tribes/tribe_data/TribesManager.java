@@ -125,12 +125,12 @@ public class TribesManager {
     }
 
     public static int getNumberOfGoodEffects(PlayerEntity player){
-        // later i'll do logic for doing it based on config / tribe level but for now its hard-coded
-        return 2;
+        int tier = getTribeOf(player.getUniqueID()).getTribeTier();
+        return TribesConfig.getTierPositiveEffects().get(tier - 1);
     }
 
     public static int getNumberOfBadEffects(PlayerEntity player) {
-        // later i'll do logic for doing it based on config / tribe level but for now its hard-coded
-        return 1;
+        int tier = getTribeOf(player.getUniqueID()).getTribeTier();
+        return TribesConfig.getTierNegativeEffects().get(tier - 1);
     }
 }

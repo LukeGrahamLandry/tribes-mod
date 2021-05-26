@@ -71,7 +71,9 @@ public class LandClaimHelper {
         // claimed chunk
         long chunk = player.getEntityWorld().getChunkAt(position).getPos().asLong();
         Tribe chunkOwner = getChunkOwner(chunk);
-        if (chunkOwner != null && !chunkOwner.equals(interactingTribe) && chunkOwner.claimDisableTime <= 0) return false;
+        if (chunkOwner != null && !chunkOwner.equals(interactingTribe)){
+            return chunkOwner.claimDisableTime <= 0;  // respect pvp death penalties
+        }
 
         Hemi currentHemi = getHemiAt(position);
 
@@ -79,7 +81,6 @@ public class LandClaimHelper {
         if (currentHemi == Hemi.NONE) return true;
 
         // hemisphere
-        // TODO: hemiOwner.claimDisableTime >= 0
         if (TribesConfig.getRequireHemiAccess()){
             return hemispheres.get(currentHemi).contains(interactingTribe);
         }

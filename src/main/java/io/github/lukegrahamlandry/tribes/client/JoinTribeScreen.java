@@ -18,22 +18,29 @@ import java.util.*;
 public class JoinTribeScreen extends TribeScreen {
     private final Map<String, Integer> tribes;
     private final List<String> names;
+    private final boolean allowClose;
     private Button laterButton;
     private Button createButton;
     private Button backButton;
     private Button nextButton;
     private int page = 0;
 
-    public JoinTribeScreen(Map<String, Integer> tribes) {
+    public JoinTribeScreen(Map<String, Integer> tribes, boolean allowClose) {
         super(".joinTribeScreen", "textures/gui/join_tribe.png", 185, 160, false);
         this.tribes = tribes;
         this.names = new ArrayList<>();
         this.tribes.forEach((name, members) -> this.names.add(name));
+        this.allowClose = allowClose;
     }
 
     @Override
     public void tick() {
 
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return this.allowClose;
     }
 
     // TODO: add a help button for new players
@@ -46,7 +53,6 @@ public class JoinTribeScreen extends TribeScreen {
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
 
-
         // (this.height - this.ySize + 110) / 2
         this.createButton = this.addButton(new Button(this.guiLeft + 13, this.guiTop + 10, 75, 20, new StringTextComponent("Create Tribe!"), (p_214318_1_) -> {
             this.closeScreen();
@@ -54,8 +60,11 @@ public class JoinTribeScreen extends TribeScreen {
         }));
 
         this.laterButton = this.addButton(new Button(this.guiLeft + 13 + 85, this.guiTop + 10, 75, 20, new StringTextComponent("Choose Later."), (p_214318_1_) -> {
-            this.closeScreen();
+            if (this.laterButton.active){
+                this.closeScreen();
+            }
         }));
+        this.laterButton.active = this.allowClose;
 
         for (int i=0;i<TRIBES_PER_PAGE;i++){
             makeJoinButton(i);
