@@ -293,7 +293,7 @@ public class Tribe {
         this.members.remove(playerID.toString());
 
         if (this.members.size() == 0){
-            TribesManager.deleteTribe(this.getName(), playerID);
+            TribesManager.forceDeleteTribe(this.getName());
             return;
         }
 

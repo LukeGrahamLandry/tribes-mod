@@ -34,53 +34,32 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.util.Random;
 
-// The value here should match an entry in the META-INF/mods.toml file
-@Mod("tribes")
+@Mod(TribesMain.MOD_ID)
 public class TribesMain {
-    // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "tribes";
 
     public TribesMain() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        // Common Setup Listener
-        eventBus.addListener(this::setup);
 
-        // Registering of both Client and Server Configs
+        // register configs
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.client_config);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.server_config);
 
-        // Loading of both Client and Server Config Files
+        // load configs
         Config.loadConfig(Config.client_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-client.toml").toString());
         Config.loadConfig(Config.server_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-server.toml").toString());
 
-        // Initialize Items
+        // deferred registers
         ItemInit.ITEMS.register(eventBus);
-
         BlockInit.BLOCKS.register(eventBus);
+
+        // event listeners
+        eventBus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    // Common Setup Event
     private void setup(final FMLCommonSetupEvent event) {
         NetworkHandler.registerMessages();
-    }
-
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public static class ForgeEvent{
-        // note: fires 3 times, /data /DIM1/data and /DIM-1/data
-        @SubscribeEvent
-        public static void doLoad(WorldEvent.Load event){
-            if (event.getWorld().isRemote()) return;
-            File dataFile = ((ServerChunkProvider)event.getWorld().getChunkProvider()).getSavedData().folder;
-            SaveHandler.load(dataFile);
-        }
-
-        @SubscribeEvent
-        public static void doSave(WorldEvent.Unload event){
-            if (event.getWorld().isRemote()) return;
-            File dataFile = ((ServerChunkProvider)event.getWorld().getChunkProvider()).getSavedData().folder;
-            SaveHandler.save(dataFile);
-        }
     }
 }

@@ -1,8 +1,6 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,6 +45,12 @@ public class TribesManager {
         return TribeActionResult.SUCCESS;
     }
 
+    public static void forceDeleteTribe(String name){
+        if (!isNameAvailable(name)) {
+            tribes.remove(name);
+        }
+    }
+
     static public TribeActionResult addNewTribe(Tribe newTribe){
         if (isNameAvailable(newTribe.name)){
             tribes.put(newTribe.name, newTribe);
@@ -89,12 +93,13 @@ public class TribesManager {
     }
 
     public static String writeToString() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonArray tribeListJson = new JsonArray();
-        for (Tribe tribe :  getTribes()){
+        for (Tribe tribe : getTribes()){
             tribeListJson.add(tribe.write());
         }
 
-        return tribeListJson.toString();
+        return gson.toJson(tribeListJson); //tribeListJson.toString();
     }
 
     public static void readFromString(String data) {
@@ -132,5 +137,12 @@ public class TribesManager {
     public static int getNumberOfBadEffects(PlayerEntity player) {
         int tier = getTribeOf(player.getUniqueID()).getTribeTier();
         return TribesConfig.getTierNegativeEffects().get(tier - 1);
+    }
+
+    public static void renameTribe(String name, String newname) {
+        if (isNameAvailable(newname) && !isNameAvailable(name)){
+            tribes.put(newname, tribes.get(name));
+            tribes.remove(name);
+        }
     }
 }

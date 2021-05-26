@@ -32,7 +32,8 @@ public class CommandInit {
                 .then(WhichTribeCommand.register())
                 .then(ChunkClaimCommand.register())
                 .then(HemiAccessCommand.register())
-                .then(EffectsTribeCommand.register()));
+                .then(EffectsTribeCommand.register())
+                .then(AdminCommands.register()));
 
         TribesMain.LOGGER.debug("Tribe commands registered");
     }

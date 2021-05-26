@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class TribesConfig {
     //Declaration of config variables
@@ -31,12 +32,12 @@ public class TribesConfig {
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> nonpvpDeathPunishTimes;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> pvpDeathPunishTimes;
 
-
+    private static ForgeConfigSpec.ConfigValue<List<? extends String>> admins;
 
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
-        server.comment("Server configuration settings")
+        server.comment("tribes server side configuration settings")
                 .push("server");
         numTribes = server
                 .comment("Maximum Number of Tribes: ")
@@ -51,10 +52,10 @@ public class TribesConfig {
                 .comment("I:Tier Thresholds: ")
                 .defineList("tier_thresholds", Arrays.asList(4,12,30,100),i -> (int)i>=0);
         tierNegEffects = server
-                .comment("I:Tier Negative Effects: ")
+                .comment("I:Number of negative effects by tribe tier: ")
                 .defineList("tier_negative_effects", Arrays.asList(2,2,1,1,0),i -> (int)i>=0);
         tierPosEffects = server
-                .comment("I:Tier Positive Effects: ")
+                .comment("I:Number of positive effects by tribe tier: ")
                 .defineList("tier_positive_effects", Arrays.asList(1,2,2,3,3),i -> (int)i>=0);
         friendlyFire = server
                 .comment("Whether players should be able to harm other members of their tribe: ")
@@ -81,8 +82,11 @@ public class TribesConfig {
                 .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
                 .defineList("nonpvpDeathPunishTimes", Arrays.asList(30, 120, 1440),i -> (int)i>=0);
         rankToChooseHemi = server
-                .comment("a member must have equal greater than thus rank to select a hemisphere for thier tribe [member, officer, vice leader, leader]: ")
+                .comment("A member must have equal or greater than this rank to select a hemisphere for thier tribe [member, officer, vice leader, leader]: ")
                 .defineInRange("rankToChooseHemi", 2, 0, 3);
+        admins = server
+                .comment("S: UUIDs of server admins: ")
+                .defineList("admins", Arrays.asList("380df991-f603-344c-a090-369bad2a924a"),i ->((String) i).split("-").length == 5);
         server.pop();
 
     }
@@ -137,7 +141,7 @@ public class TribesConfig {
     public static int getHalfNoMansLandWidth(){
         return halfNoMansLandWidth.get();
     }
-    
+
     public static int rankToChooseHemi(){
         return rankToChooseHemi.get();
     }
@@ -183,5 +187,10 @@ public class TribesConfig {
         }
 
         return theEffects;
+    }
+
+    public static boolean isAdmin(String id) {
+        List<String> adminIDs = (List<String>) admins.get();
+        return adminIDs.contains(id);
     }
 }
