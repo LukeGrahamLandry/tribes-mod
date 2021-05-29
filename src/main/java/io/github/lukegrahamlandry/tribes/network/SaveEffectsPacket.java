@@ -70,7 +70,12 @@ public class SaveEffectsPacket {
                 long timePassed = System.currentTimeMillis() - tribe.lastEffectsChangeTime;
                 long timeToWait = TribesConfig.betweenEffectsChangeMillis() - timePassed;
                 if (timeToWait > 0){
-                    player.sendStatusMessage(new StringTextComponent("you must wait " + (timeToWait / 1000 / 60 / 60) + " hours before changing your effects"), false);
+                    player.sendStatusMessage(new StringTextComponent("error: you must wait " + (timeToWait / 1000 / 60 / 60) + " hours before changing your effects"), false);
+                    return;
+                }
+
+                if (!tribe.isLeader(playerID)){
+                    player.sendStatusMessage(new StringTextComponent("error: only leader can change tribe effects"), false);
                     return;
                 }
 

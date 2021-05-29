@@ -381,6 +381,19 @@ public class Tribe {
         return false;
     }
 
+    public TribeActionResult validateSelectHemi(PlayerEntity player, String side) {
+        int runRank = this.getRankOf(player.getUniqueID().toString()).asInt();
+        if (runRank < TribesConfig.rankToChooseHemi()) return TribeActionResult.LOW_RANK;
+        if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeActionResult.HAVE_HEMI;
+        if (this.getTribeTier() < TribesConfig.getMinTierToClaimLand()) return TribeActionResult.WEAK_TRIBE;
+        if (TribesConfig.getUseNorthSouthHemisphereDirection()){
+            if (!side.equals("north") && !side.equals("west")) return TribeActionResult.INVALID_ARG;
+        } else {
+            if (!side.equals("east") && !side.equals("south")) return TribeActionResult.INVALID_ARG;
+        }
+        return TribeActionResult.SUCCESS;
+    }
+
     public TribeActionResult selectHemi(PlayerEntity player, String side) {
         int runRank = this.getRankOf(player.getUniqueID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeActionResult.LOW_RANK;

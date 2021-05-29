@@ -34,10 +34,15 @@ public class HemiAccessCommand {
         String side = StringArgumentType.getString(source, "side");
 
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
-        TribeActionResult response = tribe.selectHemi(player, side);
+        TribeActionResult response = tribe.validateSelectHemi(player, side);
 
         if (response == TribeActionResult.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("your tribe has claimed: " + side), true);
+            source.getSource().sendFeedback(new StringTextComponent("are you sure you want to choose " + side + "? your tribe's hemisphere can never be changed"), true);
+
+            ConfirmCommand.add(player, () -> {
+                tribe.selectHemi(player, side);
+                source.getSource().sendFeedback(new StringTextComponent("your tribe has claimed: " + side), true);
+            });
         } else {
             source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
         }

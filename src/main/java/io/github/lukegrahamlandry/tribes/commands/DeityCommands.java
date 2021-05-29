@@ -60,9 +60,11 @@ public class DeityCommands {
                     long hoursToWait = (TribesConfig.betweenDeityChangeMillis() - timeSinceLastChange) / 1000 / 60 / 60;
                     source.getSource().sendFeedback(new StringTextComponent("error: you must wait " + hoursToWait + " hours before changing your deity"), true);
                 } else {
-                    tribe.deity = name;
-                    tribe.lastDeityChangeTime = System.currentTimeMillis();
-                    source.getSource().sendFeedback(new StringTextComponent("your tribe now follows " + DeitiesManager.deities.get(name).displayName), true);
+                    ConfirmCommand.add(player, () -> {
+                        tribe.deity = name;
+                        tribe.lastDeityChangeTime = System.currentTimeMillis();
+                        source.getSource().sendFeedback(new StringTextComponent("your tribe now follows " + DeitiesManager.deities.get(name).displayName), true);
+                    });
                 }
             } else {
                 source.getSource().sendFeedback(new StringTextComponent("error: you are too low a rank to choose your tribe's deity"), true);
