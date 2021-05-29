@@ -25,6 +25,9 @@ public class Tribe {
     public int deathIndex = 0;
     public boolean deathWasPVP = false;
 
+    public long lastDeityChangeTime = 0;
+    public long lastEffectsChangeTime = 0;
+
     public HashMap<Effect, Integer> effects;
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
@@ -216,6 +219,9 @@ public class Tribe {
 
         obj.addProperty("deity", this.deity == null ? "NONE" : this.deity);
 
+        obj.addProperty("deitytime", this.lastDeityChangeTime);
+        obj.addProperty("effectstime", this.lastEffectsChangeTime);
+
         return obj;
     }
 
@@ -271,6 +277,9 @@ public class Tribe {
 
         tribe.deity = obj.get("deity").getAsString();
         if (tribe.deity.equals("NONE")) tribe.deity = null;
+
+        tribe.lastDeityChangeTime = obj.get("deitytime").getAsLong();
+        tribe.lastEffectsChangeTime = obj.get("effectstime").getAsLong();
 
         return tribe;
     }

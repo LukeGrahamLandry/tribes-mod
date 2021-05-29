@@ -6,6 +6,8 @@ A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissione
 - config at saves/world_name/serverconfig/tribes-server.toml
 - tribe data stored at saves/world_name/data/tribes.json
 - tribe compass item that points to the nearest claimed chunk
+- deity data stored at saves/world_name/data/deities.json
+- deity book contents stored at saves/world_name/data/deities/key.txt
 - /tribe 
     - create [name]
     - join [name]

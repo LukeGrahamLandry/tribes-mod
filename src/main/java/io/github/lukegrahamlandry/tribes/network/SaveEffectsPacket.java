@@ -1,6 +1,7 @@
 package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
@@ -66,7 +67,14 @@ public class SaveEffectsPacket {
             UUID playerID = player.getUniqueID();
             Tribe tribe = TribesManager.getTribeOf(playerID);
             if (tribe != null){
-                // TODO: validate numbers of effects
+                long timePassed = System.currentTimeMillis() - tribe.lastEffectsChangeTime;
+                long timeToWait = TribesConfig.betweenEffectsChangeMillis() - timePassed;
+                if (timeToWait > 0){
+                    player.sendStatusMessage(new StringTextComponent("you must wait " + (timeToWait / 1000 / 60 / 60) + " hours before changing your effects"), false);
+                    return;
+                }
+
+                // TODO: validate numbers of effects so hacked clients cant lie
 
                 tribe.effects.clear();
                 this.good.forEach((effect, level) -> tribe.effects.put(effect, level));

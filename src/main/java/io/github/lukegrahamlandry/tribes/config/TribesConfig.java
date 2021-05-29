@@ -32,6 +32,8 @@ public class TribesConfig {
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> nonpvpDeathPunishTimes;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> pvpDeathPunishTimes;
 
+    private static ForgeConfigSpec.IntValue daysBetweenDeityChange;
+    private static ForgeConfigSpec.IntValue daysBetweenEffectsChange;
     private static ForgeConfigSpec.ConfigValue<List<? extends String>> admins;
 
 
@@ -87,8 +89,13 @@ public class TribesConfig {
         admins = server
                 .comment("S: UUIDs of server admins: ")
                 .defineList("admins", Arrays.asList("380df991-f603-344c-a090-369bad2a924a"),i ->((String) i).split("-").length == 5);
+        daysBetweenDeityChange = server
+                .comment("The number of days you must wait between changing your tribe's deity : ")
+                .defineInRange("daysBetweenDeityChange", 30, 0, Integer.MAX_VALUE);
+        daysBetweenEffectsChange = server
+                .comment("The number of days you must wait between changing your tribe's effects : ")
+                .defineInRange("daysBetweenEffectsChange", 10, 0, Integer.MAX_VALUE);
         server.pop();
-
     }
 
     public static int getMaxNumberOfTribes(){
@@ -146,7 +153,6 @@ public class TribesConfig {
         return rankToChooseHemi.get();
     }
 
-
     public static int getDeathClaimDisableTime(int index, boolean deathWasPVP) {
         List<Integer> punishments = (List<Integer>) (deathWasPVP ? pvpDeathPunishTimes.get() : nonpvpDeathPunishTimes.get());
         index = Math.min(index, punishments.size() - 1);
@@ -192,5 +198,13 @@ public class TribesConfig {
     public static boolean isAdmin(String id) {
         List<String> adminIDs = (List<String>) admins.get();
         return adminIDs.contains(id);
+    }
+
+    public static long betweenDeityChangeMillis(){
+        return daysBetweenDeityChange.get() * 24 * 60 * 60 * 1000;
+    }
+
+    public static long betweenEffectsChangeMillis(){
+        return daysBetweenEffectsChange.get() * 24 * 60 * 60 * 1000;
     }
 }

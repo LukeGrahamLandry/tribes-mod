@@ -64,7 +64,9 @@ public class DeitiesManager {
             boolean enabled = deityJson.get("enabled").getAsBoolean();
 
             DeityData result = new DeityData(key, displayName, bookTitle, bookAuthor, label, domains, enabled);
-            deities.put(key, result);
+            if (result.enabled){
+                deities.put(key, result);
+            }
         }
     }
 

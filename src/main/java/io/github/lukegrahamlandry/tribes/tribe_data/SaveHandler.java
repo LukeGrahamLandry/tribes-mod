@@ -65,7 +65,7 @@ public class SaveHandler {
             }
 
             File deitiesBooksLocation = new File(worldDir, "deities");
-            File bookLocation = new File(deitiesBooksLocation, DeitiesManager.EXAMPLE_DEITY.key + ".json");
+            File bookLocation = new File(deitiesBooksLocation, DeitiesManager.EXAMPLE_DEITY.key + ".txt");
             try{
                 FileWriter writer = new FileWriter(bookLocation);
                 writer.write("this is where you would put your holy text :) ");
@@ -107,7 +107,7 @@ public class SaveHandler {
         // read deity books
         File deitiesBooksLocation = new File(worldDir, "deities");
         DeitiesManager.deities.forEach((key, deityData) -> {
-            File bookLocation = new File(deitiesBooksLocation, key + ".json");
+            File bookLocation = new File(deitiesBooksLocation, key + ".txt");
             if (bookLocation.exists()) {
                 String rawBookContent = readMultiline(bookLocation);
                 deityData.generateBook(rawBookContent);
