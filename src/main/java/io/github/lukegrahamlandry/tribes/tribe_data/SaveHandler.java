@@ -63,21 +63,24 @@ public class SaveHandler {
                 TribesMain.LOGGER.error("couldn't create file");
                 e.printStackTrace();
             }
+        }
 
-            File deitiesBooksLocation = new File(worldDir, "deities");
+        File deitiesBooksLocation = new File(worldDir, "deities");
+        if (!deitiesBooksLocation.exists()){
+            deitiesBooksLocation.mkdir();
+
             File bookLocation = new File(deitiesBooksLocation, DeitiesManager.EXAMPLE_DEITY.key + ".txt");
             try{
                 FileWriter writer = new FileWriter(bookLocation);
                 writer.write("this is where you would put your holy text :) ");
-                writer.write("it can be very long and will be automatically broken into pages");
+                writer.write("it can be long and will be automatically broken into pages");
+                writer.write("it will be given to players when they use /tribe deity book");
                 writer.close();
             } catch (IOException e){
                 TribesMain.LOGGER.error("couldn't create file");
                 e.printStackTrace();
             }
         }
-
-
 
         TribesMain.LOGGER.debug("saved");
     }

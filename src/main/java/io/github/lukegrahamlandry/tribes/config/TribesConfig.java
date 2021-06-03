@@ -14,7 +14,6 @@ public class TribesConfig {
     //Declaration of config variables
     private static ForgeConfigSpec.IntValue numTribes;
     private static ForgeConfigSpec.BooleanValue tribeRequired;
-    private static ForgeConfigSpec.IntValue effectChangeDays;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierThresholds;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierNegEffects;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierPosEffects;
@@ -44,9 +43,6 @@ public class TribesConfig {
         numTribes = server
                 .comment("Maximum Number of Tribes: ")
                 .defineInRange("numberOfTribes", 10, 1, 999);
-        effectChangeDays = server
-                .comment("Days between Effect Change: ")
-                .defineInRange("daysBetweenEffectChange", 10, 0, 999);
         tribeRequired = server
                 .comment("Tribe Required: ")
                 .define("tribesRequired", true);
@@ -105,9 +101,6 @@ public class TribesConfig {
     public static boolean isTribeRequired(){
         return tribeRequired.get();
     }
-
-    //Getter Method for the number of days between effects change
-    public static int getDaysBetweenEffects(){ return effectChangeDays.get(); }
 
     public static List<Integer> getTierThresholds(){
         return (List<Integer>) tierThresholds.get();

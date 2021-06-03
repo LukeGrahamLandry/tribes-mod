@@ -129,7 +129,8 @@ public class DeityCommands {
 
                     book.setTag(tag);
 
-                    player.setHeldItem(Hand.MAIN_HAND, book);
+                    player.getHeldItem(Hand.MAIN_HAND).shrink(1);
+                    player.dropItem(book, true);
 
                     if (currentlyHeld == Items.BOOKSHELF){
                         player.dropItem(book, true);
