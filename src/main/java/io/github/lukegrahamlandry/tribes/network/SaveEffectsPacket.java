@@ -84,6 +84,7 @@ public class SaveEffectsPacket {
                 tribe.effects.clear();
                 this.good.forEach((effect, level) -> tribe.effects.put(effect, level));
                 this.bad.forEach((effect, level) -> tribe.effects.put(effect, level));
+                tribe.lastEffectsChangeTime = System.currentTimeMillis();
                 TribesMain.LOGGER.debug("Effects Received: " + tribe.effects);
             }
         });

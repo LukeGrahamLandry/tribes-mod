@@ -117,7 +117,7 @@ public class DeityCommands {
                     CompoundNBT tag = new CompoundNBT();
 
                     tag.putString("author", data.bookAuthor);
-                    tag.putString("title", data.bookAuthor);
+                    tag.putString("title", data.bookTitle);
                     tag.putBoolean("resolved", true);
 
                     ListNBT pages = new ListNBT();

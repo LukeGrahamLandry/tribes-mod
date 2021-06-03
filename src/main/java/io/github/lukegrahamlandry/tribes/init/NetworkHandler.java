@@ -1,6 +1,7 @@
-package io.github.lukegrahamlandry.tribes.network;
+package io.github.lukegrahamlandry.tribes.init;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.network.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -24,5 +25,8 @@ public class NetworkHandler {
         INSTANCE.registerMessage(nextID(), PacketOpenEffectGUI.class, PacketOpenEffectGUI::encode, PacketOpenEffectGUI::decode, PacketOpenEffectGUI::handle);
         INSTANCE.registerMessage(nextID(), PacketJoinTribe.class, PacketJoinTribe::toBytes, PacketJoinTribe::new, PacketJoinTribe::handle);
         INSTANCE.registerMessage(nextID(), PacketOpenJoinGUI.class, PacketOpenJoinGUI::encode, PacketOpenJoinGUI::decode, PacketOpenJoinGUI::handle);
+        INSTANCE.registerMessage(nextID(), PacketOpenMyTribeGUI.class, PacketOpenMyTribeGUI::encode, PacketOpenMyTribeGUI::decode, PacketOpenMyTribeGUI::handle);
+        INSTANCE.registerMessage(nextID(), PacketLeaveTribe.class, PacketLeaveTribe::encode, PacketLeaveTribe::new, PacketLeaveTribe::handle);
+        INSTANCE.registerMessage(nextID(), PacketSendEffects.class, PacketSendEffects::encode, PacketSendEffects::new, PacketSendEffects::handle);
     }
 }

@@ -1,17 +1,10 @@
 package io.github.lukegrahamlandry.tribes.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import io.github.lukegrahamlandry.tribes.TribesMain;
-import io.github.lukegrahamlandry.tribes.config.TribesConfig;
-import io.github.lukegrahamlandry.tribes.network.NetworkHandler;
-import io.github.lukegrahamlandry.tribes.network.PacketCreateTribe;
+import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketJoinTribe;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.*;
 

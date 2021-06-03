@@ -56,7 +56,7 @@ public class SaveHandler {
         File deityDataFile = new File(worldDir, "deities.json");
         if (!deityDataFile.exists()){
             try{
-                FileWriter writer = new FileWriter(dataFile);
+                FileWriter writer = new FileWriter(deityDataFile);
                 writer.write(DeitiesManager.generateExampleJson());
                 writer.close();
             } catch (IOException e){

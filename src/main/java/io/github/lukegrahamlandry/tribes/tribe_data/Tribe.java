@@ -415,6 +415,15 @@ public class Tribe {
 
     }
 
+    public String getOwner() {
+        for (String m : this.members.keySet()){
+            if (this.getRankOf(m) == Rank.LEADER){
+                return m;
+            }
+        }
+        return null;
+    }
+
     public enum Rank {
         MEMBER,
         OFFICER,
