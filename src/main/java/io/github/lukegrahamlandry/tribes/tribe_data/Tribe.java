@@ -18,7 +18,7 @@ public class Tribe {
     public String deity;
     HashMap<String, Rank> members;  // key is player uuid
     List<String> bans;
-    HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
+    public HashMap<String, Relation> relationToOtherTribes;  // key is tribe name
     List<Long> chunks;
 
     public int claimDisableTime = 0;

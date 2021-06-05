@@ -17,6 +17,7 @@ public class ItemInit {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, TribesMain.MOD_ID);
 
     public static RegistryObject<Item> TRIBE_COMPASS = ITEMS.register("tribe_compass", () -> new TribeCompass(new Item.Properties()));
+
     static {
         for (BannerPattern pattern : BannarInit.patterns){
             ITEMS.register(pattern.getFileName(), () -> new BannerPatternItem(pattern, (new Item.Properties()).maxStackSize(1).group(ItemGroup.MISC).rarity(Rarity.UNCOMMON)));
