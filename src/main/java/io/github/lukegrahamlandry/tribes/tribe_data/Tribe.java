@@ -28,6 +28,10 @@ public class Tribe {
     public long lastDeityChangeTime = 0;
     public long lastEffectsChangeTime = 0;
 
+    public int autobanDeathThreshold = 3;
+    public int autobanDaysThreshold = 2;
+    public Map<Rank, Boolean> autobanRank = new HashMap<>();
+
     public HashMap<Effect, Integer> effects;
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
@@ -39,6 +43,11 @@ public class Tribe {
         this.effects = new HashMap<>();
         this.addMember(creater, Rank.LEADER);
         this.hemiAccess = LandClaimHelper.Hemi.NONE;
+
+        autobanRank.put(Rank.MEMBER, true);
+        autobanRank.put(Rank.OFFICER, true);
+        autobanRank.put(Rank.VICE_LEADER, false);
+        autobanRank.put(Rank.LEADER, false);
     }
 
     public TribeActionResult addMember(UUID playerID, Rank rank) {
@@ -222,6 +231,12 @@ public class Tribe {
         obj.addProperty("deitytime", this.lastDeityChangeTime);
         obj.addProperty("effectstime", this.lastEffectsChangeTime);
 
+        obj.addProperty("autobandeaths", this.autobanDeathThreshold);
+        obj.addProperty("autobandays", this.autobanDaysThreshold);
+        this.autobanRank.forEach((rank, value) -> {
+            obj.addProperty("autoban" + rank.asString(), value);
+        });
+
         return obj;
     }
 
@@ -280,6 +295,13 @@ public class Tribe {
 
         tribe.lastDeityChangeTime = obj.get("deitytime").getAsLong();
         tribe.lastEffectsChangeTime = obj.get("effectstime").getAsLong();
+
+        tribe.autobanDeathThreshold = obj.get("autobandeaths").getAsInt();
+        tribe.autobanDaysThreshold = obj.get("autobandays").getAsInt();
+        tribe.autobanRank.put(Rank.MEMBER, obj.get("autoban" + Rank.MEMBER.asString()).getAsBoolean());
+        tribe.autobanRank.put(Rank.OFFICER, obj.get("autoban" + Rank.OFFICER.asString()).getAsBoolean());
+        tribe.autobanRank.put(Rank.VICE_LEADER, obj.get("autoban" + Rank.VICE_LEADER.asString()).getAsBoolean());
+        tribe.autobanRank.put(Rank.LEADER, obj.get("autoban" + Rank.LEADER.asString()).getAsBoolean());
 
         return tribe;
     }

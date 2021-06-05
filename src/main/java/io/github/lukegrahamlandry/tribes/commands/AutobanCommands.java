@@ -28,7 +28,7 @@ public class AutobanCommands {
                                 .then(Commands.argument("numDays", IntegerArgumentType.integer(0, 999))
                         .executes(AutobanCommands::handleSet))))
                 .then(Commands.literal("rank")
-                        .then(Commands.argument("rank", StringArgumentType.greedyString())
+                        .then(Commands.argument("rank", StringArgumentType.string())
                                 .then(Commands.argument("value", BoolArgumentType.bool())
                                         .executes(AutobanCommands::handleRankSettings)))
         );
