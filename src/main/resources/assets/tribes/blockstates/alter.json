@@ -1,0 +1,51 @@
+{
+  "variants": {
+    "facing=east,type=single": {
+      "model": "tribes:block/alter_center",
+      "y": 90
+    },
+    "facing=north,type=single": {
+      "model": "tribes:block/alter_center"
+    },
+    "facing=south,type=single": {
+      "model": "tribes:block/alter_center",
+      "y": 180
+    },
+    "facing=west,type=single": {
+      "model": "tribes:block/alter_center",
+      "y": 270
+    },
+
+    "facing=east,type=left": {
+      "model": "tribes:block/alter_left",
+      "y": 90
+    },
+    "facing=north,type=left": {
+      "model": "tribes:block/alter_left"
+    },
+    "facing=south,type=left": {
+      "model": "tribes:block/alter_left",
+      "y": 180
+    },
+    "facing=west,type=left": {
+      "model": "tribes:block/alter_left",
+      "y": 270
+    },
+
+    "facing=east,type=right": {
+      "model": "tribes:block/alter_right",
+      "y": 90
+    },
+    "facing=north,type=right": {
+      "model": "tribes:block/alter_right"
+    },
+    "facing=south,type=right": {
+      "model": "tribes:block/alter_right",
+      "y": 180
+    },
+    "facing=west,type=right": {
+      "model": "tribes:block/alter_right",
+      "y": 270
+    }
+  }
+}

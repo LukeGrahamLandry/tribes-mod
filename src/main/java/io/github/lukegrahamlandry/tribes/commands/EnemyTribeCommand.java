@@ -17,7 +17,7 @@ public class EnemyTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("enemy")
                 .requires(cs->cs.hasPermissionLevel(0)) //permission
-                .then(Commands.argument("name", StringArgumentType.word())
+                .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(EnemyTribeCommand::handleJoin)
                 ).executes(ctx -> {
                             ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to enemy"), false);

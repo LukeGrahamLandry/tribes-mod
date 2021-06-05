@@ -17,7 +17,7 @@ public class NeutralTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("neutral")
                 .requires(cs->cs.hasPermissionLevel(0)) //permission
-                .then(Commands.argument("name", StringArgumentType.word())
+                .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(NeutralTribeCommand::handleJoin)
                 ).executes(ctx -> {
                             ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to be neutral with"), false);

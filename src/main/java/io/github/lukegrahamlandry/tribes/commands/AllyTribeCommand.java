@@ -17,7 +17,7 @@ public class AllyTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("ally")
                 .requires(cs->cs.hasPermissionLevel(0)) //permission
-                .then(Commands.argument("name", StringArgumentType.word())
+                .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(AllyTribeCommand::handleJoin)
                 ).executes(ctx -> {
                             ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to ally"), false);
