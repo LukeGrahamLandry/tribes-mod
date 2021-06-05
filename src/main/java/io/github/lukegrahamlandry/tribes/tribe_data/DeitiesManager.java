@@ -1,6 +1,7 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import com.google.gson.*;
+import io.github.lukegrahamlandry.tribes.TribesMain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,16 +33,21 @@ public class DeitiesManager {
             this.bookPages.clear();
 
             List<String> words = Arrays.asList(rawBookContent.split(" "));
+            TribesMain.LOGGER.debug(words);
             StringBuilder nextPage = new StringBuilder();
             for (String word : words){
+                word += " ";
                 if (nextPage.length() + word.length() <= 256){
                     nextPage.append(word);
                 } else {
+                    TribesMain.LOGGER.debug(nextPage.toString());
                     this.bookPages.add(nextPage.toString());
                     nextPage = new StringBuilder();
                     nextPage.append(word);
                 }
             }
+            this.bookPages.add(nextPage.toString());
+            TribesMain.LOGGER.debug(this.bookPages);
 
         }
     }

@@ -18,7 +18,7 @@ public class CreateTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("create")
                 .requires(cs->cs.hasPermissionLevel(0)) //permission
-                .then(Commands.argument("name", StringArgumentType.word())
+                .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(CreateTribeCommand::handleCreate)
                 ).executes(ctx -> {
                             ctx.getSource().sendFeedback(new StringTextComponent("pick a name for your tribe"), false);

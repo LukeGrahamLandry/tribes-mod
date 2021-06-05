@@ -20,7 +20,7 @@ public class JoinTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("join")
                 .requires(cs->cs.hasPermissionLevel(0)) //permission
-                .then(Commands.argument("name", StringArgumentType.word())
+                .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(JoinTribeCommand::handleJoin)
                 ).executes(ctx -> {
                     ServerPlayerEntity player = ctx.getSource().asPlayer();

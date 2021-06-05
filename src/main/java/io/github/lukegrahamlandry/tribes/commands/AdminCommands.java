@@ -22,15 +22,15 @@ public class AdminCommands {
                 .then(Commands.literal("save").executes(AdminCommands::saveData))
                 .then(Commands.literal("load").executes(AdminCommands::loadData))
                 .then(Commands.literal("delete")
-                        .then(Commands.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.string())
                             .executes(AdminCommands::handleDelete))
                         .executes(ctx -> {
                                 ctx.getSource().sendFeedback(new StringTextComponent("choose a tribe to delete"), false);
                                 return 0;
                             }))
                 .then(Commands.literal("rename")
-                        .then(Commands.argument("name", StringArgumentType.word())
-                                .then(Commands.argument("newname", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.string())
+                                .then(Commands.argument("newname", StringArgumentType.string())
                                         .executes(AdminCommands::handleRename))
                                 .executes(ctx -> {
                                     ctx.getSource().sendFeedback(new StringTextComponent("choose a new name for " + StringArgumentType.getString(ctx, "name")), false);

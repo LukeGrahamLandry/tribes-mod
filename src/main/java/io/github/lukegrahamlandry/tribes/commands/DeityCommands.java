@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
 import io.github.lukegrahamlandry.tribes.tribe_data.SaveHandler;
@@ -120,11 +121,14 @@ public class DeityCommands {
                     tag.putString("title", data.bookTitle);
                     tag.putBoolean("resolved", true);
 
+                    TribesMain.LOGGER.debug(data.bookPages);
+
                     ListNBT pages = new ListNBT();
                     for (String content : data.bookPages){
                         INBT page = StringNBT.valueOf("{\"text\": \"" + content + "\"}");
                         pages.add(page);
                     }
+                    TribesMain.LOGGER.debug(pages);
                     tag.put("pages", pages);
 
                     book.setTag(tag);

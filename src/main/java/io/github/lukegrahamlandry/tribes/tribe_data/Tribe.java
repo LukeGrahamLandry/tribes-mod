@@ -430,9 +430,9 @@ public class Tribe {
         VICE_LEADER,
         LEADER;
 
-        static Rank fromString(String s){
+        public static Rank fromString(String s){
             switch (s){
-                default:
+                case "member":
                     return MEMBER;
                 case "officer":
                     return OFFICER;
@@ -441,11 +441,12 @@ public class Tribe {
                 case "leader":
                     return LEADER;
             }
+            return null;
         }
 
         public String asString(){
             switch (this){
-                default:
+                case MEMBER:
                     return "member";
                 case OFFICER:
                     return "officer";
@@ -454,6 +455,7 @@ public class Tribe {
                 case LEADER:
                     return "leader";
             }
+            return null;
         }
 
         static Rank fromInt(int s){
