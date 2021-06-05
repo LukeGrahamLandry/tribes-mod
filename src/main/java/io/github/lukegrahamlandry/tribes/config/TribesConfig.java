@@ -2,7 +2,9 @@ package io.github.lukegrahamlandry.tribes.config;
 
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ public class TribesConfig {
     private static ForgeConfigSpec.IntValue daysBetweenDeityChange;
     private static ForgeConfigSpec.IntValue daysBetweenEffectsChange;
     private static ForgeConfigSpec.ConfigValue<List<? extends String>> admins;
+
+    private static ForgeConfigSpec.ConfigValue<List<? extends String>> ignoredEffects;
 
 
     //Initialization of the config files and their respective variables
@@ -91,6 +95,10 @@ public class TribesConfig {
         daysBetweenEffectsChange = server
                 .comment("The number of days you must wait between changing your tribe's effects : ")
                 .defineInRange("daysBetweenEffectsChange", 10, 0, Integer.MAX_VALUE);
+        ignoredEffects = server
+                .comment("S: effects that cannot be chosen as a persistent tribe effect : ")
+                .defineList("ignoredEffects", Arrays.asList("minecraft:instant_health", "minecraft:instant_damage", "minecraft:conduit_power", "minecraft:health_boost", "minecraft:luck", "minecraft:unluck", "minecraft:hero_of_the_village"),i ->((String) i).split("-").length == 5);
+
         server.pop();
     }
 
@@ -152,15 +160,21 @@ public class TribesConfig {
         return punishments.get(index);
     }
 
-    // might change based on config later
     public static List<Effect> getGoodEffects(){
+        ArrayList<Effect> disabledEffects = new ArrayList<>();
+        for (String key : ignoredEffects.get()){
+            disabledEffects.add(ForgeRegistries.POTIONS.getValue(new ResourceLocation(key)));
+        }
+
         ArrayList<Effect> theEffects = new ArrayList<>();
 
         for (Field field : Effects.class.getFields()){
             try {
                 if (field.get(null) instanceof Effect){
                     Effect toCheck = (Effect) field.get(null);
-                    if (toCheck.isBeneficial() && !toCheck.equals(Effects.INSTANT_HEALTH) && !toCheck.equals(Effects.CONDUIT_POWER) && !toCheck.equals(Effects.HEALTH_BOOST) && !toCheck.equals(Effects.LUCK) && !toCheck.equals(Effects.HERO_OF_THE_VILLAGE)){
+
+
+                    if (toCheck.isBeneficial() && !disabledEffects.contains(toCheck)){
                         theEffects.add(toCheck);
                     }
                 }
@@ -170,15 +184,19 @@ public class TribesConfig {
         return theEffects;
     }
 
-    // might change based on config later
     public static List<Effect> getBadEffects(){
+        ArrayList<Effect> disabledEffects = new ArrayList<>();
+        for (String key : ignoredEffects.get()){
+            disabledEffects.add(ForgeRegistries.POTIONS.getValue(new ResourceLocation(key)));
+        }
+
         ArrayList<Effect> theEffects = new ArrayList<>();
 
         for (Field field : Effects.class.getFields()){
             try {
                 if (field.get(null) instanceof Effect){
                     Effect toCheck = (Effect) field.get(null);
-                    if (!toCheck.isBeneficial() && !toCheck.equals(Effects.INSTANT_DAMAGE) && !toCheck.equals(Effects.UNLUCK)){
+                    if (!toCheck.isBeneficial() && !disabledEffects.contains(toCheck)){
                         theEffects.add(toCheck);
                     }
                 }
