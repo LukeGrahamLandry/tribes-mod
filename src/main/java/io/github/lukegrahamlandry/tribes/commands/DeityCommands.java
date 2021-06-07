@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
+import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
 import io.github.lukegrahamlandry.tribes.tribe_data.SaveHandler;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
@@ -14,13 +15,12 @@ import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -29,6 +29,7 @@ public class DeityCommands {
         return Commands.literal("deity")
                 .then(Commands.literal("book").executes(DeityCommands::createBook))
                 .then(Commands.literal("list").executes(DeityCommands::handleList))
+                .then(Commands.literal("banner").executes(DeityCommands::createBanner))
                 .then(Commands.literal("choose")
                         .then(Commands.argument("name", StringArgumentType.word())
                             .executes(DeityCommands::handleChoose))
@@ -99,6 +100,51 @@ public class DeityCommands {
         return Command.SINGLE_SUCCESS;
     }
 
+    private static int createBanner(CommandContext<CommandSource> source) throws CommandSyntaxException {
+        ServerPlayerEntity player = source.getSource().asPlayer();
+
+        if (!TribesManager.playerHasTribe(player.getUniqueID())){
+            source.getSource().sendFeedback(new StringTextComponent("error: you do not have a tribe"), true);
+        } else {
+            String deityName = TribesManager.getTribeOf(player.getUniqueID()).deity;
+            if (deityName == null){
+                source.getSource().sendFeedback(new StringTextComponent("error: your tribe has not chosen a deity"), true);
+            } else {
+                ItemStack banner = player.getHeldItem(Hand.MAIN_HAND);
+
+                if (banner.getItem() instanceof BannerItem){
+                    DeitiesManager.DeityData data = DeitiesManager.deities.get(deityName);
+
+                    BannerPattern bannerpattern = BannarInit.patterns.get(0);
+                    DyeColor dyecolor = DyeColor.WHITE;
+                    CompoundNBT compoundnbt = banner.getOrCreateChildTag("BlockEntityTag");
+                    ListNBT listnbt;
+                    if (compoundnbt.contains("Patterns", 9)) {
+                        listnbt = compoundnbt.getList("Patterns", 10);
+                    } else {
+                        listnbt = new ListNBT();
+                        compoundnbt.put("Patterns", listnbt);
+                    }
+
+                    CompoundNBT compoundnbt1 = new CompoundNBT();
+                    compoundnbt1.putString("Pattern", bannerpattern.getHashname());
+                    compoundnbt1.putInt("Color", dyecolor.getId());
+                    listnbt.add(compoundnbt1);
+
+
+                    player.setHeldItem(Hand.MAIN_HAND, banner);
+
+                    source.getSource().sendFeedback(new StringTextComponent("holy banner created"), true);
+                } else {
+                    source.getSource().sendFeedback(new StringTextComponent("you are not holding a banner"), true);
+                }
+            }
+        }
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+
     private static int createBook(CommandContext<CommandSource> source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getSource().asPlayer();
 
@@ -150,4 +196,5 @@ public class DeityCommands {
 
         return Command.SINGLE_SUCCESS;
     }
+
 }
