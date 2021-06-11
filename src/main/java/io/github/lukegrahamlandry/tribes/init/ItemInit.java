@@ -18,10 +18,4 @@ public class ItemInit {
 
     public static RegistryObject<Item> TRIBE_COMPASS = ITEMS.register("tribe_compass", () -> new TribeCompass(new Item.Properties().group(ItemGroup.MISC)));
     public static RegistryObject<Item> ALTER = ITEMS.register("alter", () -> new BlockItem(BlockInit.ALTER.get(), new Item.Properties().group(ItemGroup.MISC)));
-
-    static {
-        for (BannerPattern pattern : BannarInit.patterns){
-            ITEMS.register(pattern.getFileName(), () -> new BannerPatternItem(pattern, (new Item.Properties()).maxStackSize(1).group(ItemGroup.MISC).rarity(Rarity.UNCOMMON)));
-        }
-    }
 }

@@ -3,12 +3,14 @@ package io.github.lukegrahamlandry.tribes;
 import io.github.lukegrahamlandry.tribes.config.Config;
 import io.github.lukegrahamlandry.tribes.init.*;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
+import net.minecraft.item.BannerItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 public class TribesMain {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "tribes";
+
+    public static int test = BannarInit.patterns.size();
 
     public TribesMain() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -37,6 +41,10 @@ public class TribesMain {
         // event listeners
         eventBus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
+
+        LOGGER.debug(1);
+        // LOGGER.debug(BannarInit.patterns.keySet());
+        LOGGER.debug(2);
     }
 
     private void setup(final FMLCommonSetupEvent event) {

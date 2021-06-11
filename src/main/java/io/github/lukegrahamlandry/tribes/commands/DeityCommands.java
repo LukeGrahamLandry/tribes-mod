@@ -115,7 +115,8 @@ public class DeityCommands {
                 if (banner.getItem() instanceof BannerItem){
                     DeitiesManager.DeityData data = DeitiesManager.deities.get(deityName);
 
-                    BannerPattern bannerpattern = BannarInit.patterns.get(0);
+                    // dont actually need the BannerPattern here, just hashname
+                    BannerPattern bannerpattern = BannarInit.get("pick");
                     DyeColor dyecolor = DyeColor.WHITE;
                     CompoundNBT compoundnbt = banner.getOrCreateChildTag("BlockEntityTag");
                     ListNBT listnbt;
@@ -130,7 +131,6 @@ public class DeityCommands {
                     compoundnbt1.putString("Pattern", bannerpattern.getHashname());
                     compoundnbt1.putInt("Color", dyecolor.getId());
                     listnbt.add(compoundnbt1);
-
 
                     player.setHeldItem(Hand.MAIN_HAND, banner);
 

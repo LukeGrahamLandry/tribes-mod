@@ -23,7 +23,7 @@ A Minecraft mod for forge 1.16.5 that allows players to form tribes. Commissione
     - initials [string] (vice leader+)
     - chunk [claim, unclaim] (officers+)
     - admin [save, load, delete, rename] (admins in config)
-    - deity [list, describe, choose, book]
+    - deity [list, describe, choose, book, banner]
 - GUIs
     - create tribe
     - choose effects (/tribe effects)

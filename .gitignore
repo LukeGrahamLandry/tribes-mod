@@ -26,3 +26,6 @@ forge*changelog.txt
 
 # Mac OS
 **/.DS_Store
+
+/scripts/img/*
+/scripts/out/*
