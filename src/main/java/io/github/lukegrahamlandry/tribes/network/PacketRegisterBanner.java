@@ -12,6 +12,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 // server -> client
+// unused
 public class PacketRegisterBanner {
     private String name;
 

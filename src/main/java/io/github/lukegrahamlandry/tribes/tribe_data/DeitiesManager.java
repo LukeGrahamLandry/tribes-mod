@@ -2,6 +2,7 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import com.google.gson.*;
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.init.BannarInit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,8 +19,9 @@ public class DeitiesManager {
         public final List<String> domains;
         public final boolean enabled;
         public List<String> bookPages = new ArrayList<>();
+        public final String bannerKey;
 
-        public DeityData(String key, String displayName, String bookTitle, String bookAuthor, String label, List<String> domains, boolean enabled){
+        public DeityData(String key, String displayName, String bookTitle, String bookAuthor, String label, List<String> domains, boolean enabled, String bannerKey){
             this.key = key;
             this.displayName = displayName;
             this.bookTitle = bookTitle;
@@ -27,6 +29,7 @@ public class DeitiesManager {
             this.label = label;  // god / goddess
             this.domains = domains;
             this.enabled = enabled;
+            this.bannerKey = BannarInit.get(bannerKey) != null ? bannerKey : "ainvalid";
         }
 
         public void generateBook(String rawBookContent) {
@@ -64,19 +67,20 @@ public class DeitiesManager {
             String displayName = deityJson.get("display name").getAsString();
             String bookTitle = deityJson.get("book title").getAsString();
             String label = deityJson.get("label").getAsString();
+            String banner = deityJson.get("banner").getAsString();
             String bookAuthor = deityJson.get("book author").getAsString();
             List<String> domains = new ArrayList<>();
             deityJson.get("domains").getAsJsonArray().forEach((d) -> domains.add(d.getAsString()));
             boolean enabled = deityJson.get("enabled").getAsBoolean();
 
-            DeityData result = new DeityData(key, displayName, bookTitle, bookAuthor, label, domains, enabled);
+            DeityData result = new DeityData(key, displayName, bookTitle, bookAuthor, label, domains, enabled, banner);
             if (result.enabled){
                 deities.put(key, result);
             }
         }
     }
 
-    public static final DeityData EXAMPLE_DEITY = new DeityData("example", "Examplar", "The Example Text", "The Tribes Dev", "God", Arrays.asList("Examples", "Mistakes", "Knowledge"), false);
+    public static final DeityData EXAMPLE_DEITY = new DeityData("example", "Examplar", "The Example Text", "The Tribes Dev", "God", Arrays.asList("Examples", "Mistakes", "Knowledge"), false, "book");
     public static String generateExampleJson(){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonArray allDeitiesJson = new JsonArray();
@@ -87,6 +91,7 @@ public class DeitiesManager {
         obj.addProperty("book author", EXAMPLE_DEITY.bookAuthor);
         obj.addProperty("label", EXAMPLE_DEITY.label);
         obj.addProperty("enabled", EXAMPLE_DEITY.enabled);
+        obj.addProperty("banner", EXAMPLE_DEITY.bannerKey);
         JsonArray domainsJson = new JsonArray();
         EXAMPLE_DEITY.domains.forEach(domainsJson::add);
         obj.add("domains", domainsJson);

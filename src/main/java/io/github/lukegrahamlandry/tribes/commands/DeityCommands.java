@@ -22,7 +22,9 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponentUtils;
 
 public class DeityCommands {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -82,7 +84,10 @@ public class DeityCommands {
         DeitiesManager.deities.forEach((key, data) -> {
             StringBuilder domains = new StringBuilder();
             data.domains.forEach((s) -> domains.append(s).append(", "));
-            source.getSource().sendFeedback(new StringTextComponent(key + ": " + data.displayName + " is the " + data.label + " of " + domains), true);
+            StringTextComponent comp = new StringTextComponent(key);
+            comp.getStyle().setBold(true);
+            comp.append(new StringTextComponent( ": " + data.displayName + " is the " + data.label + " of " + domains));
+            source.getSource().sendFeedback(comp, true);
         });
         return Command.SINGLE_SUCCESS;
     }
@@ -116,7 +121,7 @@ public class DeityCommands {
                     DeitiesManager.DeityData data = DeitiesManager.deities.get(deityName);
 
                     // dont actually need the BannerPattern here, just hashname
-                    BannerPattern bannerpattern = BannarInit.get("pick");
+                    BannerPattern bannerpattern = BannarInit.get(data.bannerKey);
                     DyeColor dyecolor = DyeColor.WHITE;
                     CompoundNBT compoundnbt = banner.getOrCreateChildTag("BlockEntityTag");
                     ListNBT listnbt;

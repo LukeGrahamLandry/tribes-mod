@@ -1,0 +1,156 @@
+[
+  {
+    "key": "example",
+    "display name": "Examplar",
+    "book title": "The Example Text",
+    "book author": "The Tribes Dev",
+    "label": "God",
+    "enabled": false,
+    "banner": "book",
+    "domains": [
+      "Examples",
+      "Mistakes",
+      "Knowledge"
+    ]
+  },
+  {
+    "key": "faenen",
+    "display name": "Faenen",
+    "book title": "The Neryvere",
+    "book author": "Father Cygnus",
+    "label": "Goddess",
+    "enabled": true,
+    "banner": "faenen",
+    "domains": [
+      "pacifism",
+      "harmony",
+      "love"
+    ]
+  },
+  {
+    "key": "skribbit",
+    "display name": "Skribbit",
+    "book title": "Practical Rituals",
+    "book author": "Amethyst Nightshade",
+    "label": "Goddess",
+    "enabled": true,
+    "banner": "skribbit",
+    "domains": [
+      "power",
+      "manipulation",
+      "liberation from the chains of morality"
+    ]
+  },
+  {
+    "key": "pendeen",
+    "display name": "Pendeen",
+    "book title": "A solitary life",
+    "book author": "Paul Crockett",
+    "label": "God",
+    "enabled": true,
+    "banner": "pendeen",
+    "domains": [
+      "uncertainty",
+      "wisdom",
+      "hermits"
+    ]
+  },
+  {
+    "key": "julius",
+    "display name": "Julius",
+    "book title": "The Seven Commandments",
+    "book author": "Julius",
+    "label": "God",
+    "banner": "julius",
+    "enabled": true,
+    "domains": [
+      "order",
+      "war",
+      "early civilizations"
+    ]
+  },
+  {
+    "key": "aurum",
+    "display name": "Aurum",
+    "book title": "The Rules of Acquirement",
+    "book author": "Grand Magus Gaunt",
+    "label": "God",
+    "banner": "dollar",
+    "enabled": true,
+    "domains": [
+      "luck",
+      "commerce",
+      "greed"
+    ]
+  },
+  {
+    "key": "eselia",
+    "display name": "Eselia",
+    "book title": "Worldly Pleasures",
+    "book author": "An unattributed Bishop of Eselia",
+    "label": "Goddess",
+    "banner": "eselia",
+    "enabled": true,
+    "domains": [
+      "pleasure",
+      "sloth",
+      "heresy"
+    ]
+  },
+  {
+    "key": "izanagi",
+    "display name": "Izanagi",
+    "book title": "The Eightfold Path",
+    "book author": "Hakurei Reimu",
+    "label": "Goddess",
+    "enabled": true,
+    "banner": "izanagi",
+    "domains": [
+      "justice",
+      "courage",
+      "the far east"
+    ]
+  },
+  {
+    "key": "efba",
+    "display name": "Efba",
+    "book title": "The Book of Varka",
+    "book author": "Great Dragon Varka",
+    "label": "God",
+    "enabled": true,
+    "banner": "efba",
+    "domains": [
+      "the elements",
+      "animals",
+      "nature"
+    ]
+  },
+  {
+    "key": "aqua",
+    "display name": "Aqua",
+    "book title": "The Aqua Order's Credo",
+    "book author": "Aqua",
+    "label": "Goddess",
+    "banner": "aqua",
+    "enabled": true,
+    "domains": [
+      "misfortune",
+      "stupidity",
+      "immaturity"
+    ]
+  },
+  {
+    "key": "ikea",
+    "display name": "Ikea",
+    "book title": "description",
+    "book author": "me",
+    "label": "Unknown being",
+    "banner": "ikea",
+    "enabled": true,
+    "domains": [
+      "atheists",
+      "trolls",
+      "irony"
+    ]
+  }
+]

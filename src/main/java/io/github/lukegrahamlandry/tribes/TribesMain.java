@@ -21,8 +21,6 @@ public class TribesMain {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "tribes";
 
-    public static int test = BannarInit.patterns.size();
-
     public TribesMain() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -31,8 +29,8 @@ public class TribesMain {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.server_config);
 
         // load configs
-        Config.loadConfig(Config.client_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-client.toml").toString());
-        Config.loadConfig(Config.server_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID+"-server.toml").toString());
+        Config.loadConfig(Config.client_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + "-client.toml").toString());
+        Config.loadConfig(Config.server_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + "-server.toml").toString());
 
         // deferred registers
         ItemInit.ITEMS.register(eventBus);
@@ -43,7 +41,7 @@ public class TribesMain {
         MinecraftForge.EVENT_BUS.register(this);
 
         LOGGER.debug(1);
-        // LOGGER.debug(BannarInit.patterns.keySet());
+        BannarInit.setup();
         LOGGER.debug(2);
     }
 

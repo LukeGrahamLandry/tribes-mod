@@ -25,8 +25,8 @@ for file in os.listdir(directory):
     if filename.endswith(".png"):
         read = Image.open('img/' + filename)
         out = background.copy()
-        out.paste(read, (4, 20))
+        out.paste(read, (6, 20))
         out.paste(read, (46, 20))  # todo: this should be mirrored left/right
-        out.save('out/' + filename, quality=95)
-        all.append(filename.split(".")[0])
+        out.save('out/tribes' + filename.lower(), quality=95)
+        all.append(filename.lower().split(".")[0])
 print(all)

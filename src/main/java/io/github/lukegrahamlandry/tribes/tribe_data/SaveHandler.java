@@ -53,18 +53,6 @@ public class SaveHandler {
             e.printStackTrace();
         }
 
-        File deityDataFile = new File(worldDir, "deities.json");
-        if (!deityDataFile.exists()){
-            try{
-                FileWriter writer = new FileWriter(deityDataFile);
-                writer.write(DeitiesManager.generateExampleJson());
-                writer.close();
-            } catch (IOException e){
-                TribesMain.LOGGER.error("couldn't create file");
-                e.printStackTrace();
-            }
-        }
-
         File deitiesBooksLocation = new File(worldDir, "deities");
         if (!deitiesBooksLocation.exists()){
             deitiesBooksLocation.mkdir();
@@ -75,6 +63,18 @@ public class SaveHandler {
                 writer.write("this is where you would put your holy text :) ");
                 writer.write("it can be long and will be automatically broken into pages");
                 writer.write("it will be given to players when they use /tribe deity book");
+                writer.close();
+            } catch (IOException e){
+                TribesMain.LOGGER.error("couldn't create file");
+                e.printStackTrace();
+            }
+        }
+
+        File deityDataFile = new File(deitiesBooksLocation, "deities.json");
+        if (!deityDataFile.exists()){
+            try{
+                FileWriter writer = new FileWriter(deityDataFile);
+                writer.write(DeitiesManager.generateExampleJson());
                 writer.close();
             } catch (IOException e){
                 TribesMain.LOGGER.error("couldn't create file");
@@ -102,13 +102,13 @@ public class SaveHandler {
         }
 
         // read deities
-        File deityDataFile = new File(worldDir, "deities.json");
+        File deitiesBooksLocation = new File(worldDir, "deities");
+        File deityDataFile = new File(deitiesBooksLocation, "deities.json");
         if (deityDataFile.exists()) {
             DeitiesManager.readFromString(readMultiline(deityDataFile));
         }
 
         // read deity books
-        File deitiesBooksLocation = new File(worldDir, "deities");
         DeitiesManager.deities.forEach((key, deityData) -> {
             TribesMain.LOGGER.debug(key);
             File bookLocation = new File(deitiesBooksLocation, key + ".txt");
