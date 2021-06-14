@@ -1,4 +1,4 @@
-package io.github.lukegrahamlandry.tribes.client;
+package io.github.lukegrahamlandry.tribes.client.gui;
 
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketJoinTribe;

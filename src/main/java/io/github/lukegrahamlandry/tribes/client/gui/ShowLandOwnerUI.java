@@ -1,4 +1,4 @@
-package io.github.lukegrahamlandry.tribes.client;
+package io.github.lukegrahamlandry.tribes.client.gui;
 
 
 import io.github.lukegrahamlandry.tribes.TribesMain;

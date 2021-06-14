@@ -1,8 +1,7 @@
-package io.github.lukegrahamlandry.tribes.client;
+package io.github.lukegrahamlandry.tribes.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
-import io.github.lukegrahamlandry.tribes.network.PacketCreateTribe;
 import io.github.lukegrahamlandry.tribes.network.PacketLeaveTribe;
 import io.github.lukegrahamlandry.tribes.network.PacketSendEffects;
 import net.minecraft.client.gui.widget.button.Button;

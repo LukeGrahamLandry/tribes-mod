@@ -32,17 +32,15 @@ public class TribesMain {
         Config.loadConfig(Config.client_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + "-client.toml").toString());
         Config.loadConfig(Config.server_config, FMLPaths.CONFIGDIR.get().resolve(MOD_ID + "-server.toml").toString());
 
-        // deferred registers
+        // register
         ItemInit.ITEMS.register(eventBus);
         BlockInit.BLOCKS.register(eventBus);
+        TileEntityInit.TILE_ENTITY_TYPES.register(eventBus);
+        BannarInit.setup();
 
         // event listeners
         eventBus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.register(this);
-
-        LOGGER.debug(1);
-        BannarInit.setup();
-        LOGGER.debug(2);
     }
 
     private void setup(final FMLCommonSetupEvent event) {

@@ -2,9 +2,7 @@ package io.github.lukegrahamlandry.tribes.network;
 
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
-import io.github.lukegrahamlandry.tribes.client.ShowLandOwnerUI;
 import io.github.lukegrahamlandry.tribes.item.TribeCompass;
-import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;

@@ -1,18 +1,10 @@
-package io.github.lukegrahamlandry.tribes.client;
+package io.github.lukegrahamlandry.tribes.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

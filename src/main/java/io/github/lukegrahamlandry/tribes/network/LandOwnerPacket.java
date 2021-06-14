@@ -1,10 +1,7 @@
 package io.github.lukegrahamlandry.tribes.network;
 
 
-import io.github.lukegrahamlandry.tribes.client.ShowLandOwnerUI;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
+import io.github.lukegrahamlandry.tribes.client.gui.ShowLandOwnerUI;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 

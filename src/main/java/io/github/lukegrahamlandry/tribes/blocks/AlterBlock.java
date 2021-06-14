@@ -1,10 +1,12 @@
 package io.github.lukegrahamlandry.tribes.blocks;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
+import io.github.lukegrahamlandry.tribes.tile.AltarTileEntity;
+import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
+import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
+import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.IInventory;
@@ -35,6 +37,34 @@ public class AlterBlock extends Block {
     public AlterBlock(AbstractBlock.Properties props) {
         super(props);
         this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(TYPE, ChestType.SINGLE));
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new AltarTileEntity();
+    }
+
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+        if (placer instanceof ServerPlayerEntity){
+            Tribe tribe = TribesManager.getTribeOf(placer.getUniqueID());
+            if (tribe != null && tribe.deity != null){
+                DeitiesManager.DeityData deity = DeitiesManager.deities.get(tribe.deity);
+                AltarTileEntity tile = (AltarTileEntity) worldIn.getTileEntity(pos);
+                tile.setBannerKey(deity.bannerKey);
+            }
+        }
     }
 
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {

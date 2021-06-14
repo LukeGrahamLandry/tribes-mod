@@ -1,15 +1,12 @@
 package io.github.lukegrahamlandry.tribes.network;
 
-import io.github.lukegrahamlandry.tribes.client.JoinTribeScreen;
-import io.github.lukegrahamlandry.tribes.client.TribeEffectScreen;
+import io.github.lukegrahamlandry.tribes.client.gui.JoinTribeScreen;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
-import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.potion.Effect;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;

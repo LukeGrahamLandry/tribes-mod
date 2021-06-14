@@ -22,7 +22,7 @@ public class AdminCommands {
                 .then(Commands.literal("save").executes(AdminCommands::saveData))
                 .then(Commands.literal("load").executes(AdminCommands::loadData))
                 .then(Commands.literal("delete")
-                        .then(Commands.argument("name", StringArgumentType.string())
+                        .then(Commands.argument("name", StringArgumentType.greedyString())
                             .executes(AdminCommands::handleDelete))
                         .executes(ctx -> {
                                 ctx.getSource().sendFeedback(new StringTextComponent("choose a tribe to delete"), false);

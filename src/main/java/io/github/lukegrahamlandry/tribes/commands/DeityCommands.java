@@ -33,14 +33,14 @@ public class DeityCommands {
                 .then(Commands.literal("list").executes(DeityCommands::handleList))
                 .then(Commands.literal("banner").executes(DeityCommands::createBanner))
                 .then(Commands.literal("choose")
-                        .then(Commands.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.greedyString())
                             .executes(DeityCommands::handleChoose))
                         .executes(ctx -> {
                                 ctx.getSource().sendFeedback(new StringTextComponent("choose a deity to follow"), false);
                                 return 0;
                             }))
                 .then(Commands.literal("describe")
-                        .then(Commands.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.greedyString())
                                 .executes(DeityCommands::handleDescribe))
                         .executes(ctx -> {
                             ctx.getSource().sendFeedback(new StringTextComponent("choose a deity to describe"), false);

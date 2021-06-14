@@ -1,6 +1,6 @@
 package io.github.lukegrahamlandry.tribes.network;
 
-import io.github.lukegrahamlandry.tribes.client.TribeEffectScreen;
+import io.github.lukegrahamlandry.tribes.client.gui.TribeEffectScreen;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.client.Minecraft;
@@ -11,7 +11,6 @@ import net.minecraft.potion.Effect;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class PacketOpenEffectGUI {

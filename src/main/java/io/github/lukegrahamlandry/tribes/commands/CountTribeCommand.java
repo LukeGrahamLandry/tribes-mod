@@ -16,7 +16,7 @@ public class CountTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("count")
                 .requires(cs->cs.hasPermissionLevel(0)) //permission
-                .then(Commands.argument("name", StringArgumentType.word())
+                .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(CountTribeCommand::handleCount)
                 ).executes(ctx -> {
                             ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to count"), false);
