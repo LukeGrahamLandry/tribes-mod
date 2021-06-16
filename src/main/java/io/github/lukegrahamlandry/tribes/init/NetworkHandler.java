@@ -28,7 +28,6 @@ public class NetworkHandler {
         INSTANCE.registerMessage(nextID(), PacketOpenMyTribeGUI.class, PacketOpenMyTribeGUI::encode, PacketOpenMyTribeGUI::decode, PacketOpenMyTribeGUI::handle);
         INSTANCE.registerMessage(nextID(), PacketLeaveTribe.class, PacketLeaveTribe::encode, PacketLeaveTribe::new, PacketLeaveTribe::handle);
         INSTANCE.registerMessage(nextID(), PacketSendEffects.class, PacketSendEffects::encode, PacketSendEffects::new, PacketSendEffects::handle);
-        INSTANCE.registerMessage(nextID(), PacketRegisterBanner.class, PacketRegisterBanner::toBytes, PacketRegisterBanner::new, PacketRegisterBanner::handle);
-
+        // INSTANCE.registerMessage(nextID(), PacketRegisterBanner.class, PacketRegisterBanner::toBytes, PacketRegisterBanner::new, PacketRegisterBanner::handle);
     }
 }

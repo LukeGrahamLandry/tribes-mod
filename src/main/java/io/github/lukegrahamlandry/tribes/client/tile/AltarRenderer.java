@@ -3,6 +3,7 @@ package io.github.lukegrahamlandry.tribes.client.tile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.datafixers.util.Pair;
+import io.github.lukegrahamlandry.tribes.blocks.AlterBlock;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import io.github.lukegrahamlandry.tribes.tile.AltarTileEntity;
 import net.minecraft.block.BannerBlock;
@@ -17,8 +18,13 @@ import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.DyeColor;
+import net.minecraft.state.properties.ChestType;
 import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3f;
+
+import static io.github.lukegrahamlandry.tribes.blocks.AlterBlock.TYPE;
 
 public class AltarRenderer extends TileEntityRenderer<AltarTileEntity> {
     ModelRenderer model = getModelRender();
@@ -33,17 +39,25 @@ public class AltarRenderer extends TileEntityRenderer<AltarTileEntity> {
     }
 
     public void render(AltarTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        BlockState state = tileEntityIn.getBlockState();
+        if (state.get(TYPE) == ChestType.LEFT) return;
+
         String bannerKey = tileEntityIn.getBannerKey();
         if (bannerKey == null) return;
         BannerPattern pattern = BannarInit.get(bannerKey);
 
         matrixStackIn.push();
         matrixStackIn.translate(0.5D, 1D, 0.5D);
+
+        if (state.get(TYPE) == ChestType.RIGHT){
+            Direction attachSide = AlterBlock.getDirectionToAttached(state);
+            matrixStackIn.translate(attachSide.getXOffset() / 0.5D, 0, attachSide.getZOffset() / 0.5D);
+        }
+
         matrixStackIn.scale(0.5F, 0.5F, 0.5F);
         float spin = (tileEntityIn.getWorld().getDayTime() + partialTicks) / 30.0F;
         matrixStackIn.rotate(Vector3f.YP.rotation(spin));
 
-        // todo: shift when is double altar
         // todo: fix the positioning of the first side of banner and inverse the second
         // or new RenderMaterial(Atlases.SHIELD_ATLAS, pattern.getTextureLocation(false))
 

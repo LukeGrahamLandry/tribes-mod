@@ -7,25 +7,31 @@ import io.github.lukegrahamlandry.tribes.network.PacketSendEffects;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.StringTextComponent;
 
+import java.util.List;
+
 public class MyTribeScreen extends TribeScreen {
     private final String tribeName;
     private final String rank;
     private final String owner;
     private final int members;
     private final int tier;
+    private final List<String> goodTribes;
+    private final List<String> badTribes;
     private Button effectsButton;
     private Button leaveButton;
     private Button backButton;
     private Button nextButton;
     private int page = 0;
 
-    public MyTribeScreen(String tribeName, String rank, String owner, int members, int tier) {
+    public MyTribeScreen(String tribeName, String rank, String owner, int members, int tier, List<String> goodTribes, List<String> badTribes) {
         super(".joinTribeScreen", "textures/gui/join_tribe.png", 185, 160, false);
         this.tribeName = tribeName;
         this.rank = rank;
         this.owner = owner;
         this.members = members;
         this.tier = tier;
+        this.goodTribes = goodTribes;
+        this.badTribes = badTribes;
     }
 
     @Override
@@ -64,10 +70,30 @@ public class MyTribeScreen extends TribeScreen {
         int x = (this.width - this.xSize) / 2 + 15;
         int baseY = (this.height - this.ySize) / 2 + 20;
 
-        this.font.func_243248_b(matrixStack, new StringTextComponent(this.tribeName), x, baseY, 4210752);
-        this.font.func_243248_b(matrixStack, new StringTextComponent("Rank: " + this.rank), x, baseY + 15, 4210752);
-        this.font.func_243248_b(matrixStack, new StringTextComponent("Owner: " + this.owner), x, baseY + 30, 4210752);
-        this.font.func_243248_b(matrixStack, new StringTextComponent("Members: " + this.members), x, baseY + 45, 4210752);
-        this.font.func_243248_b(matrixStack, new StringTextComponent("Tier: " + this.tier), x, baseY + 60, 4210752);
+        this.write(matrixStack, this.tribeName, x, baseY, GREY);
+        this.write(matrixStack, "Rank: " + this.rank, x, baseY + 15, GREY);
+        this.write(matrixStack, "Owner: " + this.owner, x, baseY + 30, GREY);
+        this.write(matrixStack, "Members: " + this.members, x, baseY + 45, GREY);
+        this.write(matrixStack, "Tier: " + this.tier, x, baseY + 60, GREY);
+
+        int y = baseY;
+        int middleX = x + 100;
+        int gap = 12;
+        for (String name : this.goodTribes){
+            this.write(matrixStack, name, middleX, y, GREEN);
+            y += gap;
+        }
+        for (String name : this.badTribes){
+            this.write(matrixStack, name, middleX, y, RED);
+            y += gap;
+        }
+    }
+
+    final int GREY = 4210752;
+    final int GREEN = 0x00FF00;
+    final int RED = 0xFF0000;
+
+    private void write(MatrixStack matrixStack, String text, int x, int y, int color){
+        this.font.func_243248_b(matrixStack, new StringTextComponent(text), x, y, color);
     }
 }

@@ -1,12 +1,15 @@
 package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.client.gui.JoinTribeScreen;
+import io.github.lukegrahamlandry.tribes.client.gui.TribeEffectScreen;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -52,11 +55,13 @@ public class PacketOpenJoinGUI {
     }
 
     public static void handle(PacketOpenJoinGUI packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            Screen gui = new JoinTribeScreen(packet.tribes, packet.allowClose);
-            Minecraft.getInstance().displayGuiScreen(gui);
-        });
-
+        ctx.get().enqueueWork(() -> doOpen(packet));
         ctx.get().setPacketHandled(true);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void doOpen(PacketOpenJoinGUI packet){
+        Screen gui = new JoinTribeScreen(packet.tribes, packet.allowClose);
+        Minecraft.getInstance().displayGuiScreen(gui);
     }
 }

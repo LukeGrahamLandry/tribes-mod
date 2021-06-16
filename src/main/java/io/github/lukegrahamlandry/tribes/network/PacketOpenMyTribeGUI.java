@@ -7,8 +7,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -18,15 +22,23 @@ public class PacketOpenMyTribeGUI {
     private final String owner;
     private final int members;
     private final int tier;
+    private final List<String> goodTribes;
+    private final List<String> badTribes;
 
     public PacketOpenMyTribeGUI(ServerPlayerEntity player) {
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        this.goodTribes = new ArrayList<>();
+        this.badTribes = new ArrayList<>();
         if (tribe != null){
             this.tribeName = tribe.getName();
             this.rank = tribe.getRankOf(player.getUniqueID().toString()).asString();
             this.owner = player.getServerWorld().getPlayerByUuid(UUID.fromString(tribe.getOwner())).getScoreboardName();
             this.members = tribe.getCount();
             this.tier = tribe.getTribeTier();
+            tribe.relationToOtherTribes.forEach((name, relation) -> {
+                if (relation == Tribe.Relation.ALLY) this.goodTribes.add(name);
+                if (relation == Tribe.Relation.ENEMY) this.badTribes.add(name);
+            });
         } else {
             this.tribeName = "NOT IN TRIBE";
             this.rank = "NONE";
@@ -36,16 +48,18 @@ public class PacketOpenMyTribeGUI {
         }
     }
 
-    public PacketOpenMyTribeGUI(String tribeName, String rank, String owner, int members, int tier) {
+    public PacketOpenMyTribeGUI(String tribeName, String rank, String owner, int members, int tier, List<String> goodTribes, List<String> badTribes) {
         this.tribeName = tribeName;
         this.rank = rank;
         this.owner = owner;
         this.members = members;
         this.tier = tier;
+        this.goodTribes = goodTribes;
+        this.badTribes = badTribes;
     }
 
     public static PacketOpenMyTribeGUI decode(PacketBuffer buf) {
-        return new PacketOpenMyTribeGUI(buf.readString(), buf.readString(), buf.readString(), buf.readInt(), buf.readInt());
+        return new PacketOpenMyTribeGUI(buf.readString(), buf.readString(), buf.readString(), buf.readInt(), buf.readInt(), PacketUtil.readStringList(buf), PacketUtil.readStringList(buf));
     }
 
     public static void encode(PacketOpenMyTribeGUI packet, PacketBuffer buf) {
@@ -54,14 +68,18 @@ public class PacketOpenMyTribeGUI {
         buf.writeString(packet.owner);
         buf.writeInt(packet.members);
         buf.writeInt(packet.tier);
+        PacketUtil.writeStringList(buf, packet.goodTribes);
+        PacketUtil.writeStringList(buf, packet.badTribes);
     }
 
     public static void handle(PacketOpenMyTribeGUI packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            Screen gui = new MyTribeScreen(packet.tribeName, packet.rank, packet.owner, packet.members, packet.tier);
-            Minecraft.getInstance().displayGuiScreen(gui);
-        });
-
+        ctx.get().enqueueWork(() -> doOpen(packet));
         ctx.get().setPacketHandled(true);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static void doOpen(PacketOpenMyTribeGUI packet) {
+        Screen gui = new MyTribeScreen(packet.tribeName, packet.rank, packet.owner, packet.members, packet.tier, packet.goodTribes, packet.badTribes);
+        Minecraft.getInstance().displayGuiScreen(gui);
     }
 }

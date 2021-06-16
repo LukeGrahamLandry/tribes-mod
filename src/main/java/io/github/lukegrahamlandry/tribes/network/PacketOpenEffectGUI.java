@@ -8,6 +8,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Effect;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -60,11 +62,14 @@ public class PacketOpenEffectGUI {
     }
 
     public static void handle(PacketOpenEffectGUI packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            Screen gui = new TribeEffectScreen(packet.numGood, packet.numBad, packet.effects);
-            Minecraft.getInstance().displayGuiScreen(gui);
-        });
-
+        ctx.get().enqueueWork(() -> doOpen(packet));
         ctx.get().setPacketHandled(true);
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    private static void doOpen(PacketOpenEffectGUI packet){
+        Screen gui = new TribeEffectScreen(packet.numGood, packet.numBad, packet.effects);
+        Minecraft.getInstance().displayGuiScreen(gui);
     }
 }

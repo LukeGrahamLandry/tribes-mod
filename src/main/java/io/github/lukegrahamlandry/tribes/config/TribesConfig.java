@@ -97,7 +97,7 @@ public class TribesConfig {
                 .defineInRange("daysBetweenEffectsChange", 10, 0, Integer.MAX_VALUE);
         ignoredEffects = server
                 .comment("S: effects that cannot be chosen as a persistent tribe effect : ")
-                .defineList("ignoredEffects", Arrays.asList("minecraft:instant_health", "minecraft:instant_damage", "minecraft:conduit_power", "minecraft:health_boost", "minecraft:luck", "minecraft:unluck", "minecraft:hero_of_the_village"),i ->((String) i).split("-").length == 5);
+                .defineList("ignoredEffects", Arrays.asList("minecraft:bad_omen", "minecraft:conduit_power", "minecraft:health_boost", "minecraft:luck", "minecraft:unluck", "minecraft:hero_of_the_village"), i -> ((String) i).contains(":"));
 
         server.pop();
     }
@@ -174,7 +174,7 @@ public class TribesConfig {
                     Effect toCheck = (Effect) field.get(null);
 
 
-                    if (toCheck.isBeneficial() && !disabledEffects.contains(toCheck)){
+                    if (toCheck.isBeneficial() && !toCheck.isInstant() && !disabledEffects.contains(toCheck)){
                         theEffects.add(toCheck);
                     }
                 }
@@ -196,7 +196,7 @@ public class TribesConfig {
             try {
                 if (field.get(null) instanceof Effect){
                     Effect toCheck = (Effect) field.get(null);
-                    if (!toCheck.isBeneficial() && !disabledEffects.contains(toCheck)){
+                    if (!toCheck.isBeneficial() && !toCheck.isInstant() && !disabledEffects.contains(toCheck)){
                         theEffects.add(toCheck);
                     }
                 }
