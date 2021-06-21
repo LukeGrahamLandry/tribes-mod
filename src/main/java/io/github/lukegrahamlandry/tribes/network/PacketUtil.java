@@ -17,7 +17,7 @@ public class PacketUtil {
         List<String> data = new ArrayList<>();
         int size = buf.readInt();
         for (int i=0;i<size;i++){
-            data.add(buf.readString());
+            data.add(buf.readString(32767));
         }
 
         return data;

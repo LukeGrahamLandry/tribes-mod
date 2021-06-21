@@ -13,7 +13,7 @@ public class PacketCreateTribe {
 
     // Read tribe name from PacketBuffer
     public PacketCreateTribe(PacketBuffer buf) {
-        this.tribeName = buf.readString();
+        this.tribeName = buf.readString(32767);
     }
 
     // Write tribe name to PacketBuffer

@@ -61,7 +61,7 @@ public class TribesConfig {
                 .defineList("tier_positive_effects", Arrays.asList(1,2,2,3,3),i -> (int)i>=0);
         friendlyFire = server
                 .comment("Whether players should be able to harm other members of their tribe: ")
-                .define("tribesRequired", false);
+                .define("friendlyFire", false);
         tierForClaiming = server
                 .comment("Minimum tribe tier to claim chunks and access a hemisphere: ")
                 .defineInRange("numberOfTribes", 2, 0, 10);
@@ -88,7 +88,7 @@ public class TribesConfig {
                 .defineInRange("rankToChooseHemi", 2, 0, 3);
         admins = server
                 .comment("S: UUIDs of server admins: ")
-                .defineList("admins", Arrays.asList("380df991-f603-344c-a090-369bad2a924a"),i ->((String) i).split("-").length == 5);
+                .defineList("admins", Arrays.asList("380df991-f603-344c-a090-369bad2a924a", "bcb2252d-70de-4abc-9932-bc46bd5dc62f"),i ->((String) i).split("-").length == 5);
         daysBetweenDeityChange = server
                 .comment("The number of days you must wait between changing your tribe's deity : ")
                 .defineInRange("daysBetweenDeityChange", 30, 0, Integer.MAX_VALUE);

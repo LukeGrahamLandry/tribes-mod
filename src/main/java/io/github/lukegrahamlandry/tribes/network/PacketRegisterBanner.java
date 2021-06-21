@@ -17,7 +17,7 @@ public class PacketRegisterBanner {
     private String name;
 
     public PacketRegisterBanner(PacketBuffer buf) {
-        this.name = buf.readString();
+        this.name = buf.readString(32767);
     }
 
     public void toBytes(PacketBuffer buf){

@@ -59,7 +59,7 @@ public class PacketOpenMyTribeGUI {
     }
 
     public static PacketOpenMyTribeGUI decode(PacketBuffer buf) {
-        return new PacketOpenMyTribeGUI(buf.readString(), buf.readString(), buf.readString(), buf.readInt(), buf.readInt(), PacketUtil.readStringList(buf), PacketUtil.readStringList(buf));
+        return new PacketOpenMyTribeGUI(buf.readString(32767), buf.readString(32767), buf.readString(32767), buf.readInt(), buf.readInt(), PacketUtil.readStringList(buf), PacketUtil.readStringList(buf));
     }
 
     public static void encode(PacketOpenMyTribeGUI packet, PacketBuffer buf) {

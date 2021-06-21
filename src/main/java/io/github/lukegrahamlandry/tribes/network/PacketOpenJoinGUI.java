@@ -36,7 +36,7 @@ public class PacketOpenJoinGUI {
     public static PacketOpenJoinGUI decode(PacketBuffer buf) {
         HashMap<String, Integer> tribes = new HashMap<>();
         while (!buf.readBoolean()){
-            tribes.put(buf.readString(), buf.readInt());
+            tribes.put(buf.readString(32767), buf.readInt());
         }
 
         return new PacketOpenJoinGUI(tribes, buf.readBoolean());

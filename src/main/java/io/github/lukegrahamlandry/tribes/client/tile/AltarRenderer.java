@@ -3,6 +3,7 @@ package io.github.lukegrahamlandry.tribes.client.tile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.datafixers.util.Pair;
+import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.blocks.AlterBlock;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import io.github.lukegrahamlandry.tribes.tile.AltarTileEntity;
@@ -50,8 +51,8 @@ public class AltarRenderer extends TileEntityRenderer<AltarTileEntity> {
         matrixStackIn.translate(0.5D, 1D, 0.5D);
 
         if (state.get(TYPE) == ChestType.RIGHT){
-            Direction attachSide = AlterBlock.getDirectionToAttached(state);
-            matrixStackIn.translate(attachSide.getXOffset() / 0.5D, 0, attachSide.getZOffset() / 0.5D);
+            Direction side = AlterBlock.getDirectionToAttached(state);
+            matrixStackIn.translate(side.getXOffset() * 0.5D, 0, side.getZOffset() * 0.5D);
         }
 
         matrixStackIn.scale(0.5F, 0.5F, 0.5F);

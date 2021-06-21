@@ -20,7 +20,7 @@ public class ForceJoinTribe {
         PlayerEntity player = event.getPlayer();
         if (!player.getEntityWorld().isRemote()){
             Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
-            if (tribe != null){
+            if (tribe == null){
                 if (TribesConfig.isTribeRequired())
                     NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new PacketOpenJoinGUI((ServerPlayerEntity) player));
                 else {

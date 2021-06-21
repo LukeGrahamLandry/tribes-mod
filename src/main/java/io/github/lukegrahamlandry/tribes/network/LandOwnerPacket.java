@@ -19,7 +19,7 @@ public class LandOwnerPacket {
     }
 
     public static LandOwnerPacket decode(PacketBuffer buf) {
-        LandOwnerPacket packet = new LandOwnerPacket(buf.readUniqueId(), buf.readString());
+        LandOwnerPacket packet = new LandOwnerPacket(buf.readUniqueId(), buf.readString(32767));
         return packet;
     }
 
