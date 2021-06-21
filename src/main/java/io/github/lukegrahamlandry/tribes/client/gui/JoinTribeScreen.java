@@ -48,7 +48,7 @@ public class JoinTribeScreen extends TribeScreen {
 
         // (this.height - this.ySize + 110) / 2
         this.createButton = this.addButton(new Button(this.guiLeft + 13, this.guiTop + 10, 75, 20, new StringTextComponent("Create Tribe!"), (p_214318_1_) -> {
-            this.closeScreen();
+            // this.closeScreen();
             Minecraft.getInstance().displayGuiScreen(new CreateTribeScreen());
         }));
 

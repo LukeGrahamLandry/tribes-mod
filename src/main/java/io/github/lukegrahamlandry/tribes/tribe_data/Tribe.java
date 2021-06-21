@@ -1,9 +1,7 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import com.google.gson.*;
-import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.text.StringTextComponent;
@@ -371,7 +369,6 @@ public class Tribe {
     public TribeActionResult claimChunk(long chunk, UUID player) {
         if (!this.isOfficer(player)) return TribeActionResult.LOW_RANK;
         if (LandClaimHelper.getChunkOwner(chunk) != null) return TribeActionResult.ALREADY_CLAIMED;
-        if (this.getTribeTier() < TribesConfig.getMinTierToClaimLand()) return TribeActionResult.WEAK_TRIBE;
 
         if (this.getClaimedChunks().size() >= TribesConfig.getMaxChunksClaimed().get(this.getTribeTier()-1)) return TribeActionResult.CONFIG;
 
@@ -407,7 +404,7 @@ public class Tribe {
         int runRank = this.getRankOf(player.getUniqueID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeActionResult.LOW_RANK;
         if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeActionResult.HAVE_HEMI;
-        if (this.getTribeTier() < TribesConfig.getMinTierToClaimLand()) return TribeActionResult.WEAK_TRIBE;
+        if (this.getTribeTier() < TribesConfig.getMinTierToSelectHemi()) return TribeActionResult.WEAK_TRIBE;
         if (TribesConfig.getUseNorthSouthHemisphereDirection()){
             if (!side.equals("north") && !side.equals("west")) return TribeActionResult.INVALID_ARG;
         } else {
@@ -420,7 +417,7 @@ public class Tribe {
         int runRank = this.getRankOf(player.getUniqueID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeActionResult.LOW_RANK;
         if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeActionResult.HAVE_HEMI;
-        if (this.getTribeTier() < TribesConfig.getMinTierToClaimLand()) return TribeActionResult.WEAK_TRIBE;
+        if (this.getTribeTier() < TribesConfig.getMinTierToSelectHemi()) return TribeActionResult.WEAK_TRIBE;
         if (TribesConfig.getUseNorthSouthHemisphereDirection()){
             if (!side.equals("north") && !side.equals("west")) return TribeActionResult.INVALID_ARG;
         } else {

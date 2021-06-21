@@ -1,11 +1,17 @@
 package io.github.lukegrahamlandry.tribes.events;
 
 
+import com.mojang.authlib.GameProfile;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,7 +38,13 @@ public class AttackHandler {
 
     @SubscribeEvent
     public static void punishDeath(LivingDeathEvent event){
-        if (!(event.getEntity() instanceof PlayerEntity) || event.getEntity().getEntityWorld().isRemote()) return;
+        Entity dead = event.getEntity();
+        if (!(dead instanceof PlayerEntity) || dead.getEntityWorld().isRemote()) return;
+
+        Entity killer = event.getSource().getTrueSource();
+        if (killer instanceof PlayerEntity){
+            tryDropHead(dead, killer);
+        }
 
         Tribe tribe = TribesManager.getTribeOf(event.getEntityLiving().getUniqueID());
         if (tribe == null) return;
@@ -41,5 +53,23 @@ public class AttackHandler {
 
         tribe.claimDisableTime = TribesConfig.getDeathClaimDisableTime(tribe.deathIndex, tribe.deathWasPVP);
         tribe.deathIndex++;
+    }
+
+    private static void tryDropHead(Entity dead, Entity killer) {
+        Tribe deadTribe = TribesManager.getTribeOf(dead.getUniqueID());
+        Tribe killerTribe = TribesManager.getTribeOf(killer.getUniqueID());
+        if (killerTribe == null && deadTribe == null) return; // redundant
+        if (killerTribe == deadTribe) return;
+
+        boolean areAllies = deadTribe != null && killerTribe.relationToOtherTribes.get(deadTribe.getName()) == Tribe.Relation.ALLY;
+        if (areAllies) return;
+
+
+        // actually drop the head
+        GameProfile gameprofile = ((PlayerEntity)dead).getGameProfile();
+        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+        stack.getOrCreateTag().put("SkullOwner", NBTUtil.writeGameProfile(new CompoundNBT(), gameprofile));
+        ItemEntity itementity = new ItemEntity(dead.getEntityWorld(), dead.getPosition().getX(), dead.getPosition().getY(), dead.getPosition().getZ(), stack);
+        dead.getEntityWorld().addEntity(itementity);
     }
 }

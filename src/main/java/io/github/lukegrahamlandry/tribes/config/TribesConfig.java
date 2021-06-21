@@ -10,7 +10,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public class TribesConfig {
     //Declaration of config variables
@@ -24,7 +23,7 @@ public class TribesConfig {
 
     // land claiming
     private static ForgeConfigSpec.BooleanValue requireHemiAccess;
-    private static ForgeConfigSpec.IntValue tierForClaiming;
+    private static ForgeConfigSpec.IntValue tierForSelectHemi;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> maxChunksClaimed;
     private static ForgeConfigSpec.BooleanValue useNorthSouthHemisphereDirection;
     private static ForgeConfigSpec.IntValue halfNoMansLandWidth;
@@ -42,8 +41,7 @@ public class TribesConfig {
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
-        server.comment("tribes server side configuration settings")
-                .push("server");
+        server.push("server");
         numTribes = server
                 .comment("Maximum Number of Tribes: ")
                 .defineInRange("numberOfTribes", 10, 1, 999);
@@ -62,9 +60,9 @@ public class TribesConfig {
         friendlyFire = server
                 .comment("Whether players should be able to harm other members of their tribe: ")
                 .define("friendlyFire", false);
-        tierForClaiming = server
-                .comment("Minimum tribe tier to claim chunks and access a hemisphere: ")
-                .defineInRange("numberOfTribes", 2, 0, 10);
+        tierForSelectHemi = server
+                .comment("Minimum tribe tier to access a hemisphere: ")
+                .defineInRange("tierForSelectHemi", 2, 0, 10);
         requireHemiAccess = server
                 .comment("Whether player's tribe must select a hemisphere to access it: ")
                 .define("requireHemiAccess", true);
@@ -134,8 +132,8 @@ public class TribesConfig {
         return requireHemiAccess.get();
     }
 
-    public static int getMinTierToClaimLand(){
-        return tierForClaiming.get();
+    public static int getMinTierToSelectHemi(){
+        return tierForSelectHemi.get();
     }
 
     public static List<Integer> getMaxChunksClaimed() {
