@@ -42,11 +42,13 @@ public class TickHandler {
 
         // apply tribe effects
         Tribe tribe = TribesManager.getTribeOf(event.player.getUniqueID());
-        if (tribe != null){
+        if (tribe != null && timer % 80 == 0){  // without the modulo check the effects dont tick properly. ie wither never happens, regen always happens
             tribe.effects.forEach((effect, level) -> {
                 event.player.addPotionEffect(new EffectInstance(effect, 15*20, level-1));
             });
-        } else if (TribesConfig.isTribeRequired()){
+        }
+
+        if (tribe == null && TribesConfig.isTribeRequired()){
             // no tribe and force tribes
             NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player), new PacketOpenJoinGUI((ServerPlayerEntity) event.player));
         }

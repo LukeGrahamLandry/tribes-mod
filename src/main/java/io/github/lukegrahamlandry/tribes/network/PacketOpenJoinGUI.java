@@ -62,6 +62,7 @@ public class PacketOpenJoinGUI {
     @OnlyIn(Dist.CLIENT)
     private static void doOpen(PacketOpenJoinGUI packet){
         Screen gui = new JoinTribeScreen(packet.tribes, packet.allowClose);
-        Minecraft.getInstance().displayGuiScreen(gui);
+        // dont auto close the create screen every tick when tribes are forced
+        if (Minecraft.getInstance().currentScreen == null) Minecraft.getInstance().displayGuiScreen(gui);
     }
 }
