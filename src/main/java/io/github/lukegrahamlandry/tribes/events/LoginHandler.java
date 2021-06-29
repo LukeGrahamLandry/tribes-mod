@@ -55,6 +55,16 @@ public class LoginHandler {
             if (tribe.deity == null){
                 player.sendStatusMessage(new StringTextComponent("Use '/tribe deity list' see options of deities to follow. Then use '/tribe deity choose deitykey'"), false);
             }
+
+            RemoveInactives.recordActive(player.getUniqueID());
         }
+    }
+
+    @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (!event.getPlayer().getEntityWorld().isRemote()) {
+            RemoveInactives.recordActive(event.getPlayer().getUniqueID());
+        }
+
     }
 }

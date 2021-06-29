@@ -37,6 +37,7 @@ public class TribesConfig {
     private static ForgeConfigSpec.ConfigValue<List<? extends String>> admins;
 
     private static ForgeConfigSpec.ConfigValue<List<? extends String>> ignoredEffects;
+    private static ForgeConfigSpec.IntValue removeInactiveAfterDays;
 
 
     //Initialization of the config files and their respective variables
@@ -76,11 +77,11 @@ public class TribesConfig {
                 .comment("The distance from zero to the edge of a hemisphere, half the width of no mans land : ")
                 .defineInRange("halfNoMansLandWidth", 500, 0, Integer.MAX_VALUE);
         nonpvpDeathPunishTimes = server
-                .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
-                .defineList("pvpDeathPunishTimes", Arrays.asList(10, 60, 360),i -> (int)i>=0);
+                .comment("I:How long your chunk claims will be disabled by how many times people have died (out of PVP) in the interval: ")
+                .defineList("nonpvpDeathPunishTimes", Arrays.asList(10, 60, 360),i -> (int)i>=0);
         pvpDeathPunishTimes = server
-                .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
-                .defineList("nonpvpDeathPunishTimes", Arrays.asList(30, 120, 1440),i -> (int)i>=0);
+                .comment("I:How long your chunk claims will be disabled by how many times people have died (by PVP) in the interval: ")
+                .defineList("pvpDeathPunishTimes", Arrays.asList(30, 120, 1440),i -> (int)i>=0);
         rankToChooseHemi = server
                 .comment("A member must have equal or greater than this rank to select a hemisphere for thier tribe [member, officer, vice leader, leader]: ")
                 .defineInRange("rankToChooseHemi", 2, 0, 3);
@@ -96,6 +97,9 @@ public class TribesConfig {
         ignoredEffects = server
                 .comment("S: effects that cannot be chosen as a persistent tribe effect : ")
                 .defineList("ignoredEffects", Arrays.asList("minecraft:bad_omen", "minecraft:conduit_power", "minecraft:health_boost", "minecraft:luck", "minecraft:unluck", "minecraft:hero_of_the_village"), i -> ((String) i).contains(":"));
+        removeInactiveAfterDays = server
+                .comment("Players who haven't logged on in this many days will automatically be removed from the tribe they're in. Setting this value to 0 will disable this feature: ")
+                .defineInRange("removeInactiveAfterDays", 10, 0, Integer.MAX_VALUE);
 
         server.pop();
     }
@@ -216,4 +220,10 @@ public class TribesConfig {
     public static long betweenEffectsChangeMillis(){
         return daysBetweenEffectsChange.get() * 24 * 60 * 60 * 1000;
     }
+
+    public static long kickInactiveAfterMillis(){
+        return removeInactiveAfterDays.get() * 24 * 60 * 60 * 1000;
+    }
+
+
 }

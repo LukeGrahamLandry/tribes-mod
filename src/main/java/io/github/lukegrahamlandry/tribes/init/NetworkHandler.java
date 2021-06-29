@@ -29,5 +29,6 @@ public class NetworkHandler {
         INSTANCE.registerMessage(nextID(), PacketLeaveTribe.class, PacketLeaveTribe::encode, PacketLeaveTribe::new, PacketLeaveTribe::handle);
         INSTANCE.registerMessage(nextID(), PacketSendEffects.class, PacketSendEffects::encode, PacketSendEffects::new, PacketSendEffects::handle);
         // INSTANCE.registerMessage(nextID(), PacketRegisterBanner.class, PacketRegisterBanner::toBytes, PacketRegisterBanner::new, PacketRegisterBanner::handle);
+        INSTANCE.registerMessage(nextID(), PacketOpenHelpLink.class, PacketOpenHelpLink::encode, PacketOpenHelpLink::decode, PacketOpenHelpLink::handle);
     }
 }

@@ -24,12 +24,12 @@ public class AutobanCommands {
         return Commands.literal("autoban")
                 .requires(cs->cs.hasPermissionLevel(0)) //permission
                 .then(Commands.literal("set")
-                        .then(Commands.argument("numDeaths", IntegerArgumentType.integer(0, 999))
-                                .then(Commands.argument("numDays", IntegerArgumentType.integer(0, 999))
+                        .then(Commands.argument("numDeaths", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                .then(Commands.argument("numDays", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                         .executes(AutobanCommands::handleSet))))
                 .then(Commands.literal("rank")
-                        .then(Commands.argument("rank", StringArgumentType.string())
-                                .then(Commands.argument("value", BoolArgumentType.bool())
+                        .then(Commands.argument("value", BoolArgumentType.bool())
+                        .then(Commands.argument("rank", StringArgumentType.greedyString())
                                         .executes(AutobanCommands::handleRankSettings)))
         );
     }

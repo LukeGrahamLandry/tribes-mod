@@ -82,7 +82,7 @@ public class Tribe {
         int runRank = this.getRankOf(playerRunningCommand.toString()).asInt();
         int targetRank = this.getRankOf(playerToPromote.toString()).asInt();
 
-        if ((runRank - 2) < targetRank) return TribeActionResult.LOW_RANK;
+        if ((runRank - 1) < targetRank) return TribeActionResult.LOW_RANK;
 
         int newRank = targetRank + 1;
         if (newRank > Rank.LEADER.asInt()) return TribeActionResult.RANK_DOESNT_EXIST;
@@ -125,6 +125,7 @@ public class Tribe {
 
     public TribeActionResult trySetInitials(String str, UUID player) {
         if (!this.isViceLeader(player)) return TribeActionResult.LOW_RANK;
+        if (str.length() > 5) return TribeActionResult.LONG_NAME;
 
         this.initials = str;
         return TribeActionResult.SUCCESS;
@@ -472,7 +473,7 @@ public class Tribe {
                 case VICE_LEADER:
                     return "vice leader";
                 case LEADER:
-                    return "leader";
+                    return "leader";  // do not change this string unless you change it in MyTribeScreen.java as well (I was silly and can't be bothered to fix it incase something breaks)
             }
             return null;
         }

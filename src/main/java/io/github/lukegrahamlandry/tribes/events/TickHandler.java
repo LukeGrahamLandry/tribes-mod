@@ -70,6 +70,9 @@ public class TickHandler {
                     }
                 }
             }
+
+            // remove inactive people from thier tribes
+            RemoveInactives.check();
         }
     }
 }

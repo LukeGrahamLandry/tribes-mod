@@ -32,7 +32,7 @@ public class CountTribeCommand {
         if (TribesManager.isNameAvailable(name)){
             source.getSource().sendFeedback(new StringTextComponent(name + " does not exist"), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(name + " has " + TribesManager.getTribe(name).getCount() + " members"), true);
+            source.getSource().sendFeedback(new StringTextComponent(name + " has " + TribesManager.getTribe(name).getCount() + " members (tier " + TribesManager.getTribe(name).getTribeTier() + ")"), true);
         }
 
         return Command.SINGLE_SUCCESS;

@@ -44,6 +44,7 @@ public class CommandInit {
                 .then(ConfirmCommand.register())
                 .then(DeityCommands.register())
                 .then(AutobanCommands.register())
+                .then(HelpCommand.register())
                 .executes(CommandInit::openMyTribeGUI));
 
         event.getDispatcher().register(Commands.literal("tribes").executes(CommandInit::openMyTribeGUI));

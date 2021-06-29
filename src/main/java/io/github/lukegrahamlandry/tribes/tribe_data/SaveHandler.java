@@ -1,6 +1,7 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.events.RemoveInactives;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WorldOptimizer;
@@ -82,6 +83,17 @@ public class SaveHandler {
             }
         }
 
+
+        File loginTimesFile = new File(worldDir, "tribes-player-activity.json");
+        try {
+            FileWriter writer = new FileWriter(loginTimesFile);
+            writer.write(RemoveInactives.save());
+            writer.close();
+        } catch (IOException e){
+            TribesMain.LOGGER.error("couldn't create file");
+            e.printStackTrace();
+        }
+
         TribesMain.LOGGER.debug("saved");
     }
 
@@ -120,6 +132,12 @@ public class SaveHandler {
                 deityData.generateBook(rawBookContent);
             }
         });
+
+
+        File loginTimesFile = new File(worldDir, "tribes-player-activity.json");
+        if (loginTimesFile.exists()) {
+            RemoveInactives.load(readMultiline(loginTimesFile));
+        }
 
         TribesMain.LOGGER.debug("loaded");
     }
