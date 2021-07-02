@@ -2,20 +2,14 @@ package io.github.lukegrahamlandry.tribes.commands.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.ItemArgument;
-import net.minecraft.command.arguments.ItemInput;
-import net.minecraft.command.arguments.ItemParser;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -29,23 +23,23 @@ import java.util.concurrent.CompletableFuture;
 // since this uses a greedy string you can only have it as the last argument
 // further thinking required on how to fix this
 
-public class TribeArgumentType implements ArgumentType<Tribe> {
-    public static TribeArgumentType tribe() {
-        return new TribeArgumentType();
+public class DeityArgumentType implements ArgumentType<DeitiesManager.DeityData> {
+    public static DeityArgumentType tribe() {
+        return new DeityArgumentType();
     }
 
-    public Tribe parse(StringReader reader) {
-        String tribeName = reader.getRemaining();
+    public DeitiesManager.DeityData parse(StringReader reader) {
+        String key = reader.getRemaining();
         reader.setCursor(reader.getTotalLength());
-        return TribesManager.getTribe(tribeName);
+        return DeitiesManager.deities.get(key);
     }
 
-    public static <S> Tribe getTribe(CommandContext<S> context, String name) {
+    public static <S> DeitiesManager.DeityData getDeity(CommandContext<S> context, String name) {
         try {
-            return context.getArgument(name, Tribe.class);
+            return context.getArgument(name, DeitiesManager.DeityData.class);
         } catch (Exception e){
             if (context.getSource() instanceof CommandSource){
-                TextComponent error = new StringTextComponent("Invalid Tribe");
+                TextComponent error = new StringTextComponent("Invalid Deity Key");
                 Style style = error.getStyle().setColor(Color.fromInt(0xFF0000));
                 error.setStyle(style);
                 ((CommandSource)context.getSource()).sendFeedback(error, true);
@@ -64,8 +58,9 @@ public class TribeArgumentType implements ArgumentType<Tribe> {
 
         TribesMain.LOGGER.debug(s);
 
-        for (Tribe tribe : TribesManager.getTribes()){
-            if (tribe.getName().startsWith(s)) builder.suggest(tribe.getName());
+        for (String key : DeitiesManager.deities.keySet()){
+            if (key.startsWith(s)) builder.suggest(key);
+            else if (DeitiesManager.deities.get(key).displayName.startsWith(s)) builder.suggest(key);
         }
 
         return builder.buildFuture();

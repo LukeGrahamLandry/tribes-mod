@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.TribesMain;
+import io.github.lukegrahamlandry.tribes.commands.arguments.DeityArgumentType;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
@@ -33,14 +34,14 @@ public class DeityCommands {
                 .then(Commands.literal("list").executes(DeityCommands::handleList))
                 .then(Commands.literal("banner").executes(DeityCommands::createBanner))
                 .then(Commands.literal("choose")
-                        .then(Commands.argument("name", StringArgumentType.greedyString())
+                        .then(Commands.argument("deity", DeityArgumentType.tribe())
                             .executes(DeityCommands::handleChoose))
                         .executes(ctx -> {
                                 ctx.getSource().sendFeedback(new StringTextComponent("choose a deity to follow"), false);
                                 return 0;
                             }))
                 .then(Commands.literal("describe")
-                        .then(Commands.argument("name", StringArgumentType.greedyString())
+                        .then(Commands.argument("deity", DeityArgumentType.tribe())
                                 .executes(DeityCommands::handleDescribe))
                         .executes(ctx -> {
                             ctx.getSource().sendFeedback(new StringTextComponent("choose a deity to describe"), false);
@@ -50,12 +51,12 @@ public class DeityCommands {
     }
 
     private static int handleChoose(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        String name = StringArgumentType.getString(source, "name");
+        DeitiesManager.DeityData deity = DeityArgumentType.getDeity(source, "deity");
         ServerPlayerEntity player = source.getSource().asPlayer();
 
         if (!TribesManager.playerHasTribe(player.getUniqueID())){
             source.getSource().sendFeedback(new StringTextComponent("error: you do not have a tribe"), true);
-        } else if (DeitiesManager.deities.containsKey(name)){
+        } else if (deity != null){
             Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
 
             if (tribe.isLeader(player.getUniqueID())){
@@ -65,16 +66,14 @@ public class DeityCommands {
                     source.getSource().sendFeedback(new StringTextComponent("error: you must wait " + hoursToWait + " hours before changing your deity"), true);
                 } else {
                     ConfirmCommand.add(player, () -> {
-                        tribe.deity = name;
+                        tribe.deity = deity.key;
                         tribe.lastDeityChangeTime = System.currentTimeMillis();
-                        source.getSource().sendFeedback(new StringTextComponent("your tribe now follows " + DeitiesManager.deities.get(name).displayName), true);
+                        source.getSource().sendFeedback(new StringTextComponent("your tribe now follows " + deity.displayName), true);
                     });
                 }
             } else {
                 source.getSource().sendFeedback(new StringTextComponent("error: you are too low a rank to choose your tribe's deity"), true);
             }
-        } else {
-            source.getSource().sendFeedback(new StringTextComponent("The deity <" + name + "> does not exist. make sure you are using thier key not display name"), true);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -84,22 +83,17 @@ public class DeityCommands {
         DeitiesManager.deities.forEach((key, data) -> {
             StringBuilder domains = new StringBuilder();
             data.domains.forEach((s) -> domains.append(s).append(", "));
-            StringTextComponent comp = new StringTextComponent(key);
-            comp.getStyle().setBold(true);
-            comp.append(new StringTextComponent( ": " + data.displayName + " is the " + data.label + " of " + domains));
-            source.getSource().sendFeedback(comp, true);
+            source.getSource().sendFeedback(new StringTextComponent( data.displayName + " is the " + data.label + " of " + domains), true);
         });
         return Command.SINGLE_SUCCESS;
     }
 
     private static int handleDescribe(CommandContext<CommandSource> source) {
-        String name = StringArgumentType.getString(source, "name");
-        if (DeitiesManager.deities.containsKey(name)){
-            DeitiesManager.DeityData data = DeitiesManager.deities.get(name);
+        DeitiesManager.DeityData data = DeityArgumentType.getDeity(source, "deity");
+        if (data != null){
             StringBuilder domains = new StringBuilder();
             data.domains.forEach((s) -> domains.append(s).append(", "));
             source.getSource().sendFeedback(new StringTextComponent(data.displayName + " is the " + data.label + " of " + domains), true);
-
         }
 
         return Command.SINGLE_SUCCESS;
