@@ -122,13 +122,9 @@ public class SaveHandler {
 
         // read deity books
         DeitiesManager.deities.forEach((key, deityData) -> {
-            TribesMain.LOGGER.debug(key);
             File bookLocation = new File(deitiesBooksLocation, key + ".txt");
-            TribesMain.LOGGER.debug(bookLocation.getAbsolutePath());
             if (bookLocation.exists()) {
-                TribesMain.LOGGER.debug("exists");
                 String rawBookContent = readMultiline(bookLocation);
-                TribesMain.LOGGER.debug(rawBookContent);
                 deityData.generateBook(rawBookContent);
             }
         });

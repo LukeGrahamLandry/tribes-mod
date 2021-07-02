@@ -97,7 +97,7 @@ Only for officers and higher. Claim the chunk you're currently in for your tribe
 The owner of the chunk you're currently in will be displayed in the top left corner. Get more members or change the config to be able to claim more chunks. 
 When people in your tribe die to often your chunks will be briefly able to be raided (defined in config, make the numbers 0 to disable this feature)   
   
-The tribe compass is an item that will point to nearby claimed chunks (yours and other tribes). Right click in a claimed chunk to ignore it when searching for the closest claimed chunk. 
+The Tribe Compass is an item that will point to nearby claimed chunks (yours and other tribes). Right click in a claimed chunk to ignore it when searching for the closest claimed chunk. 
 Right click in an ignored chunk to count it again. 
 
 - max_claimed_chunks config is a list of the number of claimed chunks allowed by tribe rank

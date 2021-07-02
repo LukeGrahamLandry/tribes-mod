@@ -125,7 +125,7 @@ public class Tribe {
 
     public TribeActionResult trySetInitials(String str, UUID player) {
         if (!this.isViceLeader(player)) return TribeActionResult.LOW_RANK;
-        if (str.length() > 5) return TribeActionResult.LONG_NAME;
+        if (str.length() > 4) return TribeActionResult.LONG_NAME;
 
         this.initials = str;
         return TribeActionResult.SUCCESS;
