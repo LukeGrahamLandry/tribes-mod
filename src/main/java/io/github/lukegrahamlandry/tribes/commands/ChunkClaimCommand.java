@@ -44,7 +44,7 @@ public class ChunkClaimCommand {
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(new StringTextComponent("You're not in a tribe'"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
             return Command.SINGLE_SUCCESS;
         }
 
@@ -55,7 +55,7 @@ public class ChunkClaimCommand {
             int z = (int) (getChunk(player) >> 32);
             tribe.broadcastMessage("chunk (" + x + ", " + z + ") has been claimed", player);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getErrorComponent(), true);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -66,7 +66,7 @@ public class ChunkClaimCommand {
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(new StringTextComponent("You're not in a tribe'"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
             return Command.SINGLE_SUCCESS;
         }
 

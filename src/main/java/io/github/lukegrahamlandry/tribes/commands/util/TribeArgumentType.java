@@ -1,4 +1,4 @@
-package io.github.lukegrahamlandry.tribes.commands.arguments;
+package io.github.lukegrahamlandry.tribes.commands.util;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -6,8 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.github.lukegrahamlandry.tribes.TribesMain;
-import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.Color;
@@ -23,26 +23,23 @@ import java.util.concurrent.CompletableFuture;
 // since this uses a greedy string you can only have it as the last argument
 // further thinking required on how to fix this
 
-public class DeityArgumentType implements ArgumentType<DeitiesManager.DeityData> {
-    public static DeityArgumentType tribe() {
-        return new DeityArgumentType();
+public class TribeArgumentType implements ArgumentType<Tribe> {
+    public static TribeArgumentType tribe() {
+        return new TribeArgumentType();
     }
 
-    public DeitiesManager.DeityData parse(StringReader reader) {
-        String key = reader.getRemaining();
+    public Tribe parse(StringReader reader) {
+        String tribeName = reader.getRemaining();
         reader.setCursor(reader.getTotalLength());
-        return DeitiesManager.deities.get(key);
+        return TribesManager.getTribe(tribeName);
     }
 
-    public static <S> DeitiesManager.DeityData getDeity(CommandContext<S> context, String name) {
+    public static <S> Tribe getTribe(CommandContext<S> context, String name) {
         try {
-            return context.getArgument(name, DeitiesManager.DeityData.class);
+            return context.getArgument(name, Tribe.class);
         } catch (Exception e){
             if (context.getSource() instanceof CommandSource){
-                TextComponent error = new StringTextComponent("Invalid Deity Key");
-                Style style = error.getStyle().setColor(Color.fromInt(0xFF0000));
-                error.setStyle(style);
-                ((CommandSource)context.getSource()).sendFeedback(error, true);
+                ((CommandSource)context.getSource()).sendFeedback(TribeActionResult.INVALID_TRIBE.getErrorComponent(), true);
             }
             return null;
         }
@@ -58,9 +55,8 @@ public class DeityArgumentType implements ArgumentType<DeitiesManager.DeityData>
 
         TribesMain.LOGGER.debug(s);
 
-        for (String key : DeitiesManager.deities.keySet()){
-            if (key.startsWith(s)) builder.suggest(key);
-            else if (DeitiesManager.deities.get(key).displayName.startsWith(s)) builder.suggest(key);
+        for (Tribe tribe : TribesManager.getTribes()){
+            if (tribe.getName().startsWith(s)) builder.suggest(tribe.getName());
         }
 
         return builder.buildFuture();

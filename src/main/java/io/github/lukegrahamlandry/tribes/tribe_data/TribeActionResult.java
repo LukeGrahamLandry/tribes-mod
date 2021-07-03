@@ -1,5 +1,9 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TranslationTextComponent;
+
 public enum TribeActionResult {
     SUCCESS,
     NAME_TAKEN,
@@ -16,32 +20,26 @@ public enum TribeActionResult {
     CONFIG,
     ALREADY_CLAIMED,
     HAVE_HEMI,
-    INVALID_ARG,
+    INVALID_HEMI,
     WEAK_TRIBE,
-    INVALID_INT;
+    NO_CONFIRM,
+    INVALID_DEITY;
+
+
+    public TranslationTextComponent getComponent(){
+        String langEntry = "error.tribes." + this.name().toLowerCase();
+        return new TranslationTextComponent(langEntry);
+    }
+
+    public TranslationTextComponent getErrorComponent(){
+        TranslationTextComponent text = this.getComponent();
+        Style style = text.getStyle().setColor(Color.fromInt(0xFF0000));
+        text.setStyle(style);
+        return text;
+    }
 
     @Override
     public String toString() {
-        switch (this){
-            case NAME_TAKEN: return "FAILURE: name taken";
-            case SUCCESS: return "SUCCESS";
-            case IN_TRIBE: return "FAILURE: you are already in a tribe";
-            case LONG_NAME: return "FAILURE: name too long";
-            case CLIENT: return "And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread'. This should never happen, DM the Dev.";
-            case INVALID_TRIBE: return "FAILURE: that tribe does not exist";
-            case LOW_RANK: return "FAILURE: your rank in your tribe is too low";
-            case YOU_NOT_IN_TRIBE: return "FAILURE: you are not in a tribe";
-            case THEY_NOT_IN_TRIBE: return "FAILURE: that player is not in your tribe";
-            case BANNED: return "FAILURE: player has been banned";
-            case RANK_DOESNT_EXIST: return "FAILURE: there is no rank greater than leader";
-            case SAME_TRIBE: return "FAILURE: that's your own tribe";
-            case CONFIG: return "FAILURE: that action is not allowed by the current config (ie hit tribes/members limit)";
-            case ALREADY_CLAIMED: return "FAILURE: that area has been claimed";
-            case HAVE_HEMI: return "FAILURE: you have already claimed a hemisphere";
-            case INVALID_ARG: return "FAILURE: invalid argument";
-            case WEAK_TRIBE: return "FAILURE: your tribe has too few members";
-            case INVALID_INT: return "FAILURE: that number is not in the correct range";
-        }
-        return "ERROR: invalid TribeActionResult";
+        return "use TranslationTextComponent instead of TribeActionResult#toString";
     }
 }

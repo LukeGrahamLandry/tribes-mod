@@ -37,7 +37,7 @@ public class SetInitialsCommand {
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Your tribe's initials are now: " + str), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getErrorComponent(), true);
         }
 
 

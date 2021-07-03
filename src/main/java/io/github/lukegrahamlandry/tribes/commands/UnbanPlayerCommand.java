@@ -34,7 +34,7 @@ public class UnbanPlayerCommand {
 
         Tribe tribe = TribesManager.getTribeOf(playerBanning.getUniqueID());
         if (tribe == null){
-            source.getSource().sendFeedback(new StringTextComponent("FAILURE: you are not in a tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         } else {
             TribeActionResult response = tribe.unbanPlayer(playerBanning.getUniqueID(), playerToUnban.getUniqueID());
 
@@ -42,7 +42,7 @@ public class UnbanPlayerCommand {
                 // source.getSource().sendFeedback(new StringTextComponent("You successfully unbanned: " + playerToUnban.getName().getString()), true);
                 tribe.broadcastMessage( playerToUnban.getName().getString() + " has been unbanned", playerBanning);
             } else {
-                source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+                source.getSource().sendFeedback(response.getErrorComponent(), true);
             }
         }
 

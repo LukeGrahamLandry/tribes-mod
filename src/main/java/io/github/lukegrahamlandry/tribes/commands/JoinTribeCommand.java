@@ -1,16 +1,14 @@
 package io.github.lukegrahamlandry.tribes.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.lukegrahamlandry.tribes.commands.arguments.TribeArgumentType;
+import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenJoinGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
@@ -45,7 +43,7 @@ public class JoinTribeCommand {
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Tribe successfully joined: " + tribe.getName()), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getErrorComponent(), true);
         }
 
         return Command.SINGLE_SUCCESS;

@@ -39,7 +39,7 @@ public class CreateTribeCommand {
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Tribe successfully created: " + name), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getErrorComponent(), true);
         }
 
 

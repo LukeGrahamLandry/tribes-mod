@@ -34,7 +34,7 @@ public class DemotePlayerCommand {
 
         Tribe tribe = TribesManager.getTribeOf(playerRunning.getUniqueID());
         if (tribe == null){
-            source.getSource().sendFeedback(new StringTextComponent("FAILURE: you are not in a tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         } else {
             TribeActionResult response = tribe.demotePlayer(playerRunning.getUniqueID(), playerTarget.getUniqueID());
 
@@ -44,7 +44,7 @@ public class DemotePlayerCommand {
                 // source.getSource().sendFeedback(new StringTextComponent("You successfully demoted " + name + " to " + rank), true);
                 tribe.broadcastMessage(name + " has been demoted to " + rank, playerRunning);
             } else {
-                source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+                source.getSource().sendFeedback(response.getErrorComponent(), true);
             }
         }
 

@@ -39,7 +39,7 @@ public class LeaveTribeCommand {
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("You successfully left your tribe"), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getErrorComponent(), true);
         }
 
         return Command.SINGLE_SUCCESS;

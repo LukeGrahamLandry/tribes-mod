@@ -35,7 +35,7 @@ public class ConfirmCommand {
 
         IConfirmAction action = CONFIRM_ACTIONS.get(player.getUniqueID());
         if (action == null){
-            source.getSource().sendFeedback(new StringTextComponent("there's nothing for you to confirm"), true);
+            source.getSource().sendFeedback(TribeActionResult.NO_CONFIRM.getErrorComponent(), true);
         } else {
             action.call();
         }

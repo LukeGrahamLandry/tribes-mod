@@ -1,17 +1,16 @@
 package io.github.lukegrahamlandry.tribes.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.TribesMain;
-import io.github.lukegrahamlandry.tribes.commands.arguments.DeityArgumentType;
+import io.github.lukegrahamlandry.tribes.commands.util.DeityArgumentType;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
-import io.github.lukegrahamlandry.tribes.tribe_data.SaveHandler;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -23,9 +22,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.BannerPattern;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentUtils;
 
 public class DeityCommands {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -55,7 +52,7 @@ public class DeityCommands {
         ServerPlayerEntity player = source.getSource().asPlayer();
 
         if (!TribesManager.playerHasTribe(player.getUniqueID())){
-            source.getSource().sendFeedback(new StringTextComponent("error: you do not have a tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         } else if (deity != null){
             Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
 
@@ -72,7 +69,7 @@ public class DeityCommands {
                     });
                 }
             } else {
-                source.getSource().sendFeedback(new StringTextComponent("error: you are too low a rank to choose your tribe's deity"), true);
+                source.getSource().sendFeedback(TribeActionResult.LOW_RANK.getErrorComponent(), true);
             }
         }
 
@@ -103,7 +100,7 @@ public class DeityCommands {
         ServerPlayerEntity player = source.getSource().asPlayer();
 
         if (!TribesManager.playerHasTribe(player.getUniqueID())){
-            source.getSource().sendFeedback(new StringTextComponent("error: you do not have a tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         } else {
             String deityName = TribesManager.getTribeOf(player.getUniqueID()).deity;
             if (deityName == null){
@@ -148,7 +145,7 @@ public class DeityCommands {
         ServerPlayerEntity player = source.getSource().asPlayer();
 
         if (!TribesManager.playerHasTribe(player.getUniqueID())){
-            source.getSource().sendFeedback(new StringTextComponent("error: you do not have a tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         } else {
             String deityName = TribesManager.getTribeOf(player.getUniqueID()).deity;
             if (deityName == null){

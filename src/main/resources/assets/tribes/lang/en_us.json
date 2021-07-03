@@ -4,5 +4,26 @@
 
   "item.tribes.tribe_compass": "Tribe Compass",
 
-  "block.tribes.alter": "Altar"
+  "block.tribes.alter": "Altar",
+
+
+  "error.tribes.success": "The action should be successful but you shouldn't be seeing this message. Please report to the Dev",
+  "error.tribes.name_taken": "That name is already in use",
+  "error.tribes.in_tribe": "You are already in a tribe",
+  "error.tribes.long_name": "That is too long",
+  "error.tribes.client": "That action is server side only. This should not happen. Please report to the Dev",
+  "error.tribes.invalid_tribe": "Invalid Tribe",
+  "error.tribes.invalid_deity": "Invalid Deity",
+  "error.tribes.low_rank": "Your rank in your tribe is too low",
+  "error.tribes.you_not_in_tribe": "You are not in a tribe",
+  "error.tribes.they_not_in_tribe": "That player is not in your tribe",
+  "error.tribes.banned": "Banned from tribe",
+  "error.tribes.rank_does_not_exist": "No rank higher than leader or lower than member",
+  "error.tribes.config": "That action is not permitted by the current config",
+  "error.tribes.same_tribe": "That is your own tribe",
+  "error.tribes.have_hemi": "Your tribe has alread claimed a hemisphere",
+  "error.tribes.already_claimed": "This chunk has already been claimed",
+  "error.tribes.invalid_hemi": "That hemisphere does not exist according to current config",
+  "error.tribes.weak_tribe": "Your tribe is not a high enough tier. Get more members",
+  "error.tribes.no_confirm": "There is nothing for you to confirm"
 }

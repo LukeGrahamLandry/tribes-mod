@@ -48,9 +48,9 @@ public class AdminCommands {
         String newname = StringArgumentType.getString(source, "newname");
 
         if (TribesManager.isNameAvailable(name)){
-            source.getSource().sendFeedback(new StringTextComponent("Tribe <" + name + "> does not exist"), true);
+            source.getSource().sendFeedback(TribeActionResult.INVALID_TRIBE.getErrorComponent(), true);
         } else if (!TribesManager.isNameAvailable(newname)){
-            source.getSource().sendFeedback(new StringTextComponent("The name <" + newname + "> is already taken"), true);
+            source.getSource().sendFeedback(TribeActionResult.NAME_TAKEN.getErrorComponent(), true);
         }else {
             TribesManager.renameTribe(name, newname);
             source.getSource().sendFeedback(new StringTextComponent("The tribe <" + name + "> is now called <" + newname + ">"), true);
@@ -63,7 +63,7 @@ public class AdminCommands {
         String name = StringArgumentType.getString(source, "name");
 
         if (TribesManager.isNameAvailable(name)){
-            source.getSource().sendFeedback(new StringTextComponent("Tribe <" + name + "> does not exist"), true);
+            source.getSource().sendFeedback(TribeActionResult.INVALID_TRIBE.getErrorComponent(), true);
         } else {
             TribesManager.forceDeleteTribe(name);
             source.getSource().sendFeedback(new StringTextComponent("Tribe deleted: " + name), true);

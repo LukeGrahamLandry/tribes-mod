@@ -34,6 +34,11 @@ public class PromotePlayerCommand {
 
         Tribe tribe = TribesManager.getTribeOf(playerRunning.getUniqueID());
 
+        if (tribe == null){
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            return Command.SINGLE_SUCCESS;
+        }
+
         // require confirm to demote yourself
         if (tribe.isViceLeader(playerTarget.getUniqueID()) && tribe.isLeader(playerRunning.getUniqueID())){
             source.getSource().sendFeedback(new StringTextComponent("make " + playerTarget.getName().getString() + " the leader of your tribe?"), true);
@@ -47,26 +52,23 @@ public class PromotePlayerCommand {
                     // source.getSource().sendFeedback(new StringTextComponent("You successfully promoted " + name + " to " + rank), true);
                     tribe.broadcastMessage(name + " has been promoted to " + rank, playerRunning);
                 } else {
-                    source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+                    source.getSource().sendFeedback(response.getErrorComponent(), true);
                 }
             });
             return Command.SINGLE_SUCCESS;
         }
 
-        if (tribe == null){
-            source.getSource().sendFeedback(new StringTextComponent("FAILURE: you are not in a tribe"), true);
-        } else {
-            TribeActionResult response = tribe.promotePlayer(playerRunning.getUniqueID(), playerTarget.getUniqueID());
+        TribeActionResult response = tribe.promotePlayer(playerRunning.getUniqueID(), playerTarget.getUniqueID());
 
-            if (response == TribeActionResult.SUCCESS){
-                String name = playerTarget.getName().getString();
-                String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
-                // source.getSource().sendFeedback(new StringTextComponent("You successfully promoted " + name + " to " + rank), true);
-                tribe.broadcastMessage(name + " has been promoted to " + rank, playerRunning);
-            } else {
-                source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
-            }
+        if (response == TribeActionResult.SUCCESS){
+            String name = playerTarget.getName().getString();
+            String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
+            // source.getSource().sendFeedback(new StringTextComponent("You successfully promoted " + name + " to " + rank), true);
+            tribe.broadcastMessage(name + " has been promoted to " + rank, playerRunning);
+        } else {
+            source.getSource().sendFeedback(response.getErrorComponent(), true);
         }
+
 
         return Command.SINGLE_SUCCESS;
     }

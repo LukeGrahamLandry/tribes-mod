@@ -27,7 +27,7 @@ public class DeleteTribeCommand {
         if (response == TribeActionResult.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Tribe successfully deleted"), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getErrorComponent(), true);
         }
 
         return Command.SINGLE_SUCCESS;

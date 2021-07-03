@@ -407,9 +407,9 @@ public class Tribe {
         if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeActionResult.HAVE_HEMI;
         if (this.getTribeTier() < TribesConfig.getMinTierToSelectHemi()) return TribeActionResult.WEAK_TRIBE;
         if (TribesConfig.getUseNorthSouthHemisphereDirection()){
-            if (!side.equals("north") && !side.equals("west")) return TribeActionResult.INVALID_ARG;
+            if (!side.equals("north") && !side.equals("west")) return TribeActionResult.INVALID_HEMI;
         } else {
-            if (!side.equals("east") && !side.equals("south")) return TribeActionResult.INVALID_ARG;
+            if (!side.equals("east") && !side.equals("south")) return TribeActionResult.INVALID_HEMI;
         }
         return TribeActionResult.SUCCESS;
     }
@@ -420,9 +420,9 @@ public class Tribe {
         if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeActionResult.HAVE_HEMI;
         if (this.getTribeTier() < TribesConfig.getMinTierToSelectHemi()) return TribeActionResult.WEAK_TRIBE;
         if (TribesConfig.getUseNorthSouthHemisphereDirection()){
-            if (!side.equals("north") && !side.equals("west")) return TribeActionResult.INVALID_ARG;
+            if (!side.equals("north") && !side.equals("west")) return TribeActionResult.INVALID_HEMI;
         } else {
-            if (!side.equals("east") && !side.equals("south")) return TribeActionResult.INVALID_ARG;
+            if (!side.equals("east") && !side.equals("south")) return TribeActionResult.INVALID_HEMI;
         }
 
         if (side.equals("east") || side.equals("south")) this.hemiAccess = LandClaimHelper.Hemi.POSITIVE;

@@ -8,6 +8,7 @@ import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenEffectGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -36,13 +37,13 @@ public class EffectsTribeCommand {
             }
 
             if (!tribe.isLeader(player.getUniqueID())){
-                source.getSource().sendFeedback(new StringTextComponent("error: only leader can change tribe effects"), true);
+                source.getSource().sendFeedback(TribeActionResult.LOW_RANK.getErrorComponent(), true);
                 return Command.SINGLE_SUCCESS;
             }
 
             NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenEffectGUI(player));
         } else {
-            source.getSource().sendFeedback(new StringTextComponent("error: you're not in a tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         }
 
 

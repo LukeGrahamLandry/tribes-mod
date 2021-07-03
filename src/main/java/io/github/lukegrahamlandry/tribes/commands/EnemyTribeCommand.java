@@ -1,11 +1,10 @@
 package io.github.lukegrahamlandry.tribes.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.lukegrahamlandry.tribes.commands.arguments.TribeArgumentType;
+import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
@@ -40,7 +39,7 @@ public class EnemyTribeCommand {
             source.getSource().sendFeedback(new StringTextComponent("Your tribe is now enemies with " + otherTribe.getName()), true);
             yourTribe.broadcastMessage(otherTribe.getName() + " (" + otherTribe.getInitials() + ") is now your enemy", player);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getErrorComponent(), true);
         }
 
         return Command.SINGLE_SUCCESS;

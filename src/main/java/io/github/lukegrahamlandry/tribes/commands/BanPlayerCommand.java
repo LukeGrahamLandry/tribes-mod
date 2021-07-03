@@ -35,7 +35,7 @@ public class BanPlayerCommand {
 
         Tribe tribe = TribesManager.getTribeOf(playerBanning.getUniqueID());
         if (tribe == null){
-            source.getSource().sendFeedback(new StringTextComponent("FAILURE: you are not in a tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         } else {
             TribeActionResult response = tribe.banPlayer(playerBanning.getUniqueID(), playerToBan.getUniqueID());
 
@@ -43,7 +43,7 @@ public class BanPlayerCommand {
                 // source.getSource().sendFeedback(new StringTextComponent("You successfully banned: " + playerToBan.getName().getString()), true);
                 tribe.broadcastMessage(playerToBan.getName().getString() + " has been banned from your tribe", playerBanning);
             } else {
-                source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+                source.getSource().sendFeedback(response.getErrorComponent(), true);
             }
         }
 

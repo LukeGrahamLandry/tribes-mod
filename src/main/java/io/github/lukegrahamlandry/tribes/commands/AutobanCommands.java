@@ -47,11 +47,11 @@ public class AutobanCommands {
 
                 source.getSource().sendFeedback(new StringTextComponent("your tribe will autoban people who die " + numDeaths + " times within " + numDays + " RL days"), true);
             } else {
-                source.getSource().sendFeedback(new StringTextComponent("you are not the leader of your tribe"), true);
+                source.getSource().sendFeedback(TribeActionResult.LOW_RANK.getErrorComponent(), true);
             }
 
         } else {
-            source.getSource().sendFeedback(new StringTextComponent("you have no tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -76,11 +76,11 @@ public class AutobanCommands {
                     source.getSource().sendFeedback(new StringTextComponent("that is not a valid tribe rank"), true);
                 }
             } else {
-                source.getSource().sendFeedback(new StringTextComponent("you are not the leader of your tribe"), true);
+                source.getSource().sendFeedback(TribeActionResult.LOW_RANK.getErrorComponent(), true);
             }
 
         } else {
-            source.getSource().sendFeedback(new StringTextComponent("you have no tribe"), true);
+            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
         }
 
         return Command.SINGLE_SUCCESS;
