@@ -1,15 +1,12 @@
 package io.github.lukegrahamlandry.tribes.network;
 
-import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Effect;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -70,12 +67,13 @@ public class SaveEffectsPacket {
                 long timePassed = System.currentTimeMillis() - tribe.lastEffectsChangeTime;
                 long timeToWait = TribesConfig.betweenEffectsChangeMillis() - timePassed;
                 if (timeToWait > 0){
-                    player.sendStatusMessage(new StringTextComponent("error: you must wait " + (timeToWait / 1000 / 60 / 60) + " hours before changing your effects"), false);
+                    long hours = timeToWait / 1000 / 60 / 60;
+                    player.sendStatusMessage(TribeErrorType.getWaitText(hours), false);
                     return;
                 }
 
                 if (!tribe.isLeader(playerID)){
-                    player.sendStatusMessage(new StringTextComponent("error: only leader can change tribe effects"), false);
+                    player.sendStatusMessage(TribeErrorType.LOW_RANK.getText(), false);
                     return;
                 }
 
@@ -85,7 +83,6 @@ public class SaveEffectsPacket {
                 this.good.forEach((effect, level) -> tribe.effects.put(effect, level));
                 this.bad.forEach((effect, level) -> tribe.effects.put(effect, level));
                 tribe.lastEffectsChangeTime = System.currentTimeMillis();
-                TribesMain.LOGGER.debug("Effects Received: " + tribe.effects);
             }
         });
         ctx.get().setPacketHandled(true);

@@ -25,5 +25,21 @@
   "error.tribes.already_claimed": "This chunk has already been claimed",
   "error.tribes.invalid_hemi": "That hemisphere does not exist according to current config",
   "error.tribes.weak_tribe": "Your tribe is not a high enough tier. Get more members",
-  "error.tribes.no_confirm": "There is nothing for you to confirm"
+  "error.tribes.no_confirm": "There is nothing for you to confirm",
+  "error.tribes.wait": "You must wait %d hours",
+  "error.tribes.no_deity": "Your tribe has not chosen a deity",
+  "error.tribes.hold_book": "You must be holding a book or bookshelf",
+  "error.tribes.hold_banner": "You must be holding a banner",
+
+
+  "success.tribes.made_tribe": "The tribe %s has been created",
+  "success.tribes.ally_tribe": "The tribe %s is now your ally",
+  "success.tribes.enemy_tribe": "The tribe %s is now your enemy",
+  "success.tribes.neutral_tribe": "The tribe %s is now neutral",
+  "success.tribes.claim_chunk": "Your tribe has claimed the chunk (%d, %d)",
+  "success.tribes.unclaim_chunk": "Your tribe has unclaimed the chunk (%d, %d)",
+  "success.tribes.ban_player": "The player %s has been banned from your tribe",
+  "success.tribes.unban_player": "The player %s has been unbanned from your tribe",
+  "success.tribes.count_tribe": "The tribe %s has %d members (tier %d)",
+  "success.tribes.delete_tribe": "Your tribe has been deleted"
 }

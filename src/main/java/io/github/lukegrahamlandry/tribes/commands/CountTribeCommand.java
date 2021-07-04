@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
@@ -28,7 +29,7 @@ public class CountTribeCommand {
         Tribe tribe = TribeArgumentType.getTribe(source, "tribe");
 
         if (tribe != null) {
-            source.getSource().sendFeedback(new StringTextComponent(tribe.getName() + " has " + tribe.getCount() + " members (tier " + tribe.getTribeTier() + ")"), true);
+            source.getSource().sendFeedback(TribeSuccessType.COUNT_TRIBE.getText(tribe, tribe.getCount(), tribe.getTribeTier()), true);
         }
 
         return Command.SINGLE_SUCCESS;

@@ -1,18 +1,13 @@
 package io.github.lukegrahamlandry.tribes.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
-import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
+import io.github.lukegrahamlandry.tribes.tribe_data.*;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.StringTextComponent;
 
 public class ChunkClaimCommand {
@@ -44,18 +39,17 @@ public class ChunkClaimCommand {
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
             return Command.SINGLE_SUCCESS;
         }
 
-        TribeActionResult response = tribe.claimChunk(getChunk(player), player.getUniqueID());
-        if (response == TribeActionResult.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("You claimed this chunk"), true);
+        TribeErrorType response = tribe.claimChunk(getChunk(player), player.getUniqueID());
+        if (response == TribeErrorType.SUCCESS){
             int x = (int) getChunk(player);
             int z = (int) (getChunk(player) >> 32);
-            tribe.broadcastMessage("chunk (" + x + ", " + z + ") has been claimed", player);
+            tribe.broadcastMessage(TribeSuccessType.CLAIM_CHUNK, player, x, z);
         } else {
-            source.getSource().sendFeedback(response.getErrorComponent(), true);
+            source.getSource().sendFeedback(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -66,18 +60,18 @@ public class ChunkClaimCommand {
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
             return Command.SINGLE_SUCCESS;
         }
 
-        TribeActionResult response = tribe.unclaimChunk(getChunk(player), player.getUniqueID());
-        if (response == TribeActionResult.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("You unclaimed this chunk"), true);
+        TribeErrorType response = tribe.unclaimChunk(getChunk(player), player.getUniqueID());
+        if (response == TribeErrorType.SUCCESS){
             int x = (int) getChunk(player);
             int z = (int) (getChunk(player) >> 32);
-            tribe.broadcastMessage("chunk (" + x + ", " + z + ") has been unclaimed", player);
+
+            tribe.broadcastMessage(TribeSuccessType.UNCLAIM_CHUNK, player, x, z);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

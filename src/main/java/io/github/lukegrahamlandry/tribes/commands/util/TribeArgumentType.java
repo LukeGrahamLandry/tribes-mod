@@ -7,13 +7,9 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +35,7 @@ public class TribeArgumentType implements ArgumentType<Tribe> {
             return context.getArgument(name, Tribe.class);
         } catch (Exception e){
             if (context.getSource() instanceof CommandSource){
-                ((CommandSource)context.getSource()).sendFeedback(TribeActionResult.INVALID_TRIBE.getErrorComponent(), true);
+                ((CommandSource)context.getSource()).sendFeedback(TribeErrorType.INVALID_TRIBE.getText(), true);
             }
             return null;
         }

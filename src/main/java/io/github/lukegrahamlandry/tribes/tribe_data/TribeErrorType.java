@@ -4,7 +4,7 @@ import net.minecraft.util.text.Color;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public enum TribeActionResult {
+public enum TribeErrorType {
     SUCCESS,
     NAME_TAKEN,
     IN_TRIBE,
@@ -23,16 +23,23 @@ public enum TribeActionResult {
     INVALID_HEMI,
     WEAK_TRIBE,
     NO_CONFIRM,
-    INVALID_DEITY;
+    INVALID_DEITY,
+    WAIT,
+    NO_DEITY,
+    HOLD_BOOK,
+    HOLD_BANNER;
 
-
-    public TranslationTextComponent getComponent(){
+    public TranslationTextComponent getText(){
         String langEntry = "error.tribes." + this.name().toLowerCase();
-        return new TranslationTextComponent(langEntry);
+        TranslationTextComponent text = new TranslationTextComponent(langEntry);
+        Style style = text.getStyle().setColor(Color.fromInt(0xFF0000));
+        text.setStyle(style);
+        return text;
     }
 
-    public TranslationTextComponent getErrorComponent(){
-        TranslationTextComponent text = this.getComponent();
+    public static TranslationTextComponent getWaitText(long time){
+        String langEntry = "error.tribes.wait";
+        TranslationTextComponent text = new TranslationTextComponent(langEntry, time);
         Style style = text.getStyle().setColor(Color.fromInt(0xFF0000));
         text.setStyle(style);
         return text;

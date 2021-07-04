@@ -7,12 +7,8 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +40,7 @@ public class DeityArgumentType implements ArgumentType<DeitiesManager.DeityData>
             return context.getArgument(name, DeitiesManager.DeityData.class);
         } catch (Exception e){
             if (context.getSource() instanceof CommandSource){
-                ((CommandSource)context.getSource()).sendFeedback(TribeActionResult.INVALID_DEITY.getErrorComponent(), true);
+                ((CommandSource)context.getSource()).sendFeedback(TribeErrorType.INVALID_DEITY.getText(), true);
             }
             return null;
         }

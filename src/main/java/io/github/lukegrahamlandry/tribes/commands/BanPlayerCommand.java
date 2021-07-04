@@ -1,19 +1,18 @@
 package io.github.lukegrahamlandry.tribes.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
 
 public class BanPlayerCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -35,15 +34,14 @@ public class BanPlayerCommand {
 
         Tribe tribe = TribesManager.getTribeOf(playerBanning.getUniqueID());
         if (tribe == null){
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         } else {
-            TribeActionResult response = tribe.banPlayer(playerBanning.getUniqueID(), playerToBan.getUniqueID());
+            TribeErrorType response = tribe.banPlayer(playerBanning.getUniqueID(), playerToBan.getUniqueID());
 
-            if (response == TribeActionResult.SUCCESS){
-                // source.getSource().sendFeedback(new StringTextComponent("You successfully banned: " + playerToBan.getName().getString()), true);
-                tribe.broadcastMessage(playerToBan.getName().getString() + " has been banned from your tribe", playerBanning);
+            if (response == TribeErrorType.SUCCESS){
+                tribe.broadcastMessage(TribeSuccessType.BAN_PLAYER, playerBanning, playerToBan);
             } else {
-                source.getSource().sendFeedback(response.getErrorComponent(), true);
+                source.getSource().sendFeedback(response.getText(), true);
             }
         }
 

@@ -10,7 +10,7 @@ import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -52,7 +52,7 @@ public class DeityCommands {
         ServerPlayerEntity player = source.getSource().asPlayer();
 
         if (!TribesManager.playerHasTribe(player.getUniqueID())){
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         } else if (deity != null){
             Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
 
@@ -60,7 +60,7 @@ public class DeityCommands {
                 long timeSinceLastChange = System.currentTimeMillis() - tribe.lastDeityChangeTime;
                 if (timeSinceLastChange < TribesConfig.betweenDeityChangeMillis()){
                     long hoursToWait = (TribesConfig.betweenDeityChangeMillis() - timeSinceLastChange) / 1000 / 60 / 60;
-                    source.getSource().sendFeedback(new StringTextComponent("error: you must wait " + hoursToWait + " hours before changing your deity"), true);
+                    source.getSource().sendFeedback(TribeErrorType.getWaitText(hoursToWait), true);
                 } else {
                     ConfirmCommand.add(player, () -> {
                         tribe.deity = deity.key;
@@ -69,7 +69,7 @@ public class DeityCommands {
                     });
                 }
             } else {
-                source.getSource().sendFeedback(TribeActionResult.LOW_RANK.getErrorComponent(), true);
+                source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);
             }
         }
 
@@ -100,11 +100,11 @@ public class DeityCommands {
         ServerPlayerEntity player = source.getSource().asPlayer();
 
         if (!TribesManager.playerHasTribe(player.getUniqueID())){
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         } else {
             String deityName = TribesManager.getTribeOf(player.getUniqueID()).deity;
             if (deityName == null){
-                source.getSource().sendFeedback(new StringTextComponent("error: your tribe has not chosen a deity"), true);
+                source.getSource().sendFeedback(TribeErrorType.NO_DEITY.getText(), true);
             } else {
                 ItemStack banner = player.getHeldItem(Hand.MAIN_HAND);
 
@@ -132,7 +132,7 @@ public class DeityCommands {
 
                     source.getSource().sendFeedback(new StringTextComponent("holy banner created"), true);
                 } else {
-                    source.getSource().sendFeedback(new StringTextComponent("you are not holding a banner"), true);
+                    source.getSource().sendFeedback(TribeErrorType.HOLD_BANNER.getText(), true);
                 }
             }
         }
@@ -145,11 +145,11 @@ public class DeityCommands {
         ServerPlayerEntity player = source.getSource().asPlayer();
 
         if (!TribesManager.playerHasTribe(player.getUniqueID())){
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         } else {
             String deityName = TribesManager.getTribeOf(player.getUniqueID()).deity;
             if (deityName == null){
-                source.getSource().sendFeedback(new StringTextComponent("error: your tribe has not chosen a deity"), true);
+                source.getSource().sendFeedback(TribeErrorType.NO_DEITY.getText(), true);
             } else {
                 Item currentlyHeld = player.getHeldItem(Hand.MAIN_HAND).getItem();
 
@@ -185,7 +185,7 @@ public class DeityCommands {
 
                     source.getSource().sendFeedback(new StringTextComponent("holy book created"), true);
                 } else {
-                    source.getSource().sendFeedback(new StringTextComponent("you are not holding a book"), true);
+                    source.getSource().sendFeedback(TribeErrorType.HOLD_BOOK.getText(), true);
                 }
             }
         }

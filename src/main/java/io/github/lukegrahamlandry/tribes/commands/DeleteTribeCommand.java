@@ -1,11 +1,10 @@
 package io.github.lukegrahamlandry.tribes.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -23,11 +22,9 @@ public class DeleteTribeCommand {
     public static int handleDelete(CommandContext<CommandSource> source) throws CommandSyntaxException {
         PlayerEntity player = source.getSource().asPlayer();
 
-        TribeActionResult response = TribesManager.deleteTribe(TribesManager.getTribeOf(player.getUniqueID()).getName(), player.getUniqueID());
-        if (response == TribeActionResult.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("Tribe successfully deleted"), true);
-        } else {
-            source.getSource().sendFeedback(response.getErrorComponent(), true);
+        TribeErrorType response = TribesManager.deleteTribe(TribesManager.getTribeOf(player.getUniqueID()).getName(), player.getUniqueID());
+        if (response != TribeErrorType.SUCCESS){
+            source.getSource().sendFeedback(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

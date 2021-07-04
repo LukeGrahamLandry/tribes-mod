@@ -1,13 +1,13 @@
 package io.github.lukegrahamlandry.tribes.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.TribesMain;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -29,17 +29,14 @@ public class CreateTribeCommand {
     }
 
     public static int handleCreate(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        TribesMain.LOGGER.debug("handleCommand called");
-
         PlayerEntity player = source.getSource().asPlayer();
         String name = StringArgumentType.getString(source, "name");
-        TribesMain.LOGGER.debug(name);
 
-        TribeActionResult response = TribesManager.createNewTribe(name, player);
-        if (response == TribeActionResult.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("Tribe successfully created: " + name), true);
+        TribeErrorType response = TribesManager.createNewTribe(name, player);
+        if (response == TribeErrorType.SUCCESS){
+            source.getSource().sendFeedback(TribeSuccessType.MADE_TRIBE.getText(name), true);
         } else {
-            source.getSource().sendFeedback(response.getErrorComponent(), true);
+            source.getSource().sendFeedback(response.getText(), true);
         }
 
 

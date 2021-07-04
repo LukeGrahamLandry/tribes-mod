@@ -5,14 +5,14 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
 
 public class UnbanPlayerCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -34,15 +34,14 @@ public class UnbanPlayerCommand {
 
         Tribe tribe = TribesManager.getTribeOf(playerBanning.getUniqueID());
         if (tribe == null){
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         } else {
-            TribeActionResult response = tribe.unbanPlayer(playerBanning.getUniqueID(), playerToUnban.getUniqueID());
+            TribeErrorType response = tribe.unbanPlayer(playerBanning.getUniqueID(), playerToUnban.getUniqueID());
 
-            if (response == TribeActionResult.SUCCESS){
-                // source.getSource().sendFeedback(new StringTextComponent("You successfully unbanned: " + playerToUnban.getName().getString()), true);
-                tribe.broadcastMessage( playerToUnban.getName().getString() + " has been unbanned", playerBanning);
+            if (response == TribeErrorType.SUCCESS){
+                tribe.broadcastMessage(TribeSuccessType.UNBAN_PLAYER, playerBanning, playerToUnban);
             } else {
-                source.getSource().sendFeedback(response.getErrorComponent(), true);
+                source.getSource().sendFeedback(response.getText(), true);
             }
         }
 

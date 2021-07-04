@@ -6,7 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -34,12 +35,11 @@ public class EnemyTribeCommand {
 
         Tribe yourTribe = TribesManager.getTribeOf(player.getUniqueID());
 
-        TribeActionResult response = yourTribe.setRelation(player.getUniqueID(), otherTribe, Tribe.Relation.ENEMY);
-        if (response == TribeActionResult.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("Your tribe is now enemies with " + otherTribe.getName()), true);
-            yourTribe.broadcastMessage(otherTribe.getName() + " (" + otherTribe.getInitials() + ") is now your enemy", player);
+        TribeErrorType response = yourTribe.setRelation(player.getUniqueID(), otherTribe, Tribe.Relation.ENEMY);
+        if (response == TribeErrorType.SUCCESS){
+            yourTribe.broadcastMessage(TribeSuccessType.ENEMY_TRIBE, player, otherTribe);
         } else {
-            source.getSource().sendFeedback(response.getErrorComponent(), true);
+            source.getSource().sendFeedback(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

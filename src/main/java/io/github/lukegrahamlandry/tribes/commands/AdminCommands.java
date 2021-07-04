@@ -4,12 +4,10 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.*;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 
 public class AdminCommands {
@@ -48,9 +46,9 @@ public class AdminCommands {
         String newname = StringArgumentType.getString(source, "newname");
 
         if (TribesManager.isNameAvailable(name)){
-            source.getSource().sendFeedback(TribeActionResult.INVALID_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.INVALID_TRIBE.getText(), true);
         } else if (!TribesManager.isNameAvailable(newname)){
-            source.getSource().sendFeedback(TribeActionResult.NAME_TAKEN.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.NAME_TAKEN.getText(), true);
         }else {
             TribesManager.renameTribe(name, newname);
             source.getSource().sendFeedback(new StringTextComponent("The tribe <" + name + "> is now called <" + newname + ">"), true);
@@ -63,7 +61,7 @@ public class AdminCommands {
         String name = StringArgumentType.getString(source, "name");
 
         if (TribesManager.isNameAvailable(name)){
-            source.getSource().sendFeedback(TribeActionResult.INVALID_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.INVALID_TRIBE.getText(), true);
         } else {
             TribesManager.forceDeleteTribe(name);
             source.getSource().sendFeedback(new StringTextComponent("Tribe deleted: " + name), true);

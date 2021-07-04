@@ -7,7 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -34,9 +34,9 @@ public class HemiAccessCommand {
         String side = StringArgumentType.getString(source, "side");
 
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
-        TribeActionResult response = tribe.validateSelectHemi(player, side);
+        TribeErrorType response = tribe.validateSelectHemi(player, side);
 
-        if (response == TribeActionResult.SUCCESS){
+        if (response == TribeErrorType.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("are you sure you want to choose " + side + "? your tribe's hemisphere can never be changed"), true);
 
             ConfirmCommand.add(player, () -> {

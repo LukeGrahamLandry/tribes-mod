@@ -4,41 +4,42 @@ import com.google.gson.*;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.Effect;
 
 import java.util.*;
 
 public class TribesManager {
     static Map<String, Tribe> tribes = new HashMap<>();
 
-    public static TribeActionResult createNewTribe(String name, PlayerEntity player){
+    public static TribeErrorType createNewTribe(String name, PlayerEntity player){
         if (player.getEntityWorld().isRemote()){
             TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread'");
-            return TribeActionResult.CLIENT;
+            return TribeErrorType.CLIENT;
         }
 
-        if (name.length() > TribesConfig.getMaxTribeNameLength()) return TribeActionResult.LONG_NAME;  // should be caught by the create GUI
-        if (playerHasTribe(player.getUniqueID())) return TribeActionResult.IN_TRIBE;
-        if (getTribes().size() >= TribesConfig.getMaxNumberOfTribes()) return TribeActionResult.CONFIG;
+        if (name.length() > TribesConfig.getMaxTribeNameLength()) return TribeErrorType.LONG_NAME;  // should be caught by the create GUI
+        if (playerHasTribe(player.getUniqueID())) return TribeErrorType.IN_TRIBE;
+        if (getTribes().size() >= TribesConfig.getMaxNumberOfTribes()) return TribeErrorType.CONFIG;
 
         return addNewTribe(new Tribe(name, player.getUniqueID()));
     }
 
-    public static TribeActionResult joinTribe(String name, PlayerEntity player){
-        if (playerHasTribe(player.getUniqueID())) return TribeActionResult.IN_TRIBE;
-        if (isNameAvailable(name)) return TribeActionResult.INVALID_TRIBE;
+    public static TribeErrorType joinTribe(String name, PlayerEntity player){
+        if (playerHasTribe(player.getUniqueID())) return TribeErrorType.IN_TRIBE;
+        if (isNameAvailable(name)) return TribeErrorType.INVALID_TRIBE;
 
         return getTribe(name).addMember(player.getUniqueID(), Tribe.Rank.MEMBER);
     }
 
-    public static TribeActionResult deleteTribe(String name, UUID playerID){
-        if (isNameAvailable(name)) return TribeActionResult.INVALID_TRIBE;
+    public static TribeErrorType deleteTribe(String name, UUID playerID){
+        if (isNameAvailable(name)) return TribeErrorType.INVALID_TRIBE;
 
-        if (!getTribe(name).isLeader(playerID)) return TribeActionResult.LOW_RANK;
+        if (!getTribe(name).isLeader(playerID)) return TribeErrorType.LOW_RANK;
+
+        getTribe(name).broadcastMessage(TribeSuccessType.DELETE_TRIBE, playerID);
 
         tribes.remove(name);
 
-        return TribeActionResult.SUCCESS;
+        return TribeErrorType.SUCCESS;
     }
 
     public static void forceDeleteTribe(String name){
@@ -47,12 +48,12 @@ public class TribesManager {
         }
     }
 
-    static public TribeActionResult addNewTribe(Tribe newTribe){
+    static public TribeErrorType addNewTribe(Tribe newTribe){
         if (isNameAvailable(newTribe.name)){
             tribes.put(newTribe.name, newTribe);
-            return TribeActionResult.SUCCESS;
+            return TribeErrorType.SUCCESS;
         } else {
-            return TribeActionResult.NAME_TAKEN;
+            return TribeErrorType.NAME_TAKEN;
         }
     }
 
@@ -108,11 +109,11 @@ public class TribesManager {
         }
     }
 
-    public static TribeActionResult leaveTribe(PlayerEntity player) {
-        if (!playerHasTribe(player.getUniqueID())) return TribeActionResult.YOU_NOT_IN_TRIBE;
+    public static TribeErrorType leaveTribe(PlayerEntity player) {
+        if (!playerHasTribe(player.getUniqueID())) return TribeErrorType.YOU_NOT_IN_TRIBE;
         Tribe tribe = getTribeOf(player.getUniqueID());
         tribe.removeMember(player.getUniqueID());
-        return TribeActionResult.SUCCESS;
+        return TribeErrorType.SUCCESS;
     }
 
     public static List<Tribe> getBans(PlayerEntity playerToCheck) {

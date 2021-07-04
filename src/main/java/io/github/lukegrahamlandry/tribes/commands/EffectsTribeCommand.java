@@ -8,12 +8,11 @@ import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenEffectGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class EffectsTribeCommand {
@@ -32,18 +31,19 @@ public class EffectsTribeCommand {
             long timePassed = System.currentTimeMillis() - tribe.lastEffectsChangeTime;
             long timeToWait = TribesConfig.betweenEffectsChangeMillis() - timePassed;
             if (timeToWait > 0){
-                source.getSource().sendFeedback(new StringTextComponent("error: you must wait " + (timeToWait / 1000 / 60 / 60) + " hours before changing your effects"), true);
+                long hours = timeToWait / 1000 / 60 / 60;
+                source.getSource().sendFeedback(TribeErrorType.getWaitText(hours), true);
                 return Command.SINGLE_SUCCESS;
             }
 
             if (!tribe.isLeader(player.getUniqueID())){
-                source.getSource().sendFeedback(TribeActionResult.LOW_RANK.getErrorComponent(), true);
+                source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);
                 return Command.SINGLE_SUCCESS;
             }
 
             NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenEffectGUI(player));
         } else {
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         }
 
 

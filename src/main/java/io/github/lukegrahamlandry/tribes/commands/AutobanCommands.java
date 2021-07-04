@@ -7,17 +7,13 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
-import io.github.lukegrahamlandry.tribes.network.PacketOpenJoinGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 public class AutobanCommands {
     public static ArgumentBuilder<CommandSource, ?> register() {
@@ -47,11 +43,11 @@ public class AutobanCommands {
 
                 source.getSource().sendFeedback(new StringTextComponent("your tribe will autoban people who die " + numDeaths + " times within " + numDays + " RL days"), true);
             } else {
-                source.getSource().sendFeedback(TribeActionResult.LOW_RANK.getErrorComponent(), true);
+                source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);
             }
 
         } else {
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -76,11 +72,11 @@ public class AutobanCommands {
                     source.getSource().sendFeedback(new StringTextComponent("that is not a valid tribe rank"), true);
                 }
             } else {
-                source.getSource().sendFeedback(TribeActionResult.LOW_RANK.getErrorComponent(), true);
+                source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);
             }
 
         } else {
-            source.getSource().sendFeedback(TribeActionResult.YOU_NOT_IN_TRIBE.getErrorComponent(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

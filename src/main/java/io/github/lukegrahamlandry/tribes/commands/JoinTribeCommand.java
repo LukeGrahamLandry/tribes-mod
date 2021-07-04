@@ -8,7 +8,7 @@ import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenJoinGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeActionResult;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,14 +36,14 @@ public class JoinTribeCommand {
         Tribe tribe = TribeArgumentType.getTribe(source, "tribe");
         if (tribe == null) return 1;
 
-        TribeActionResult response;
-        if (playerHasTribe(player.getUniqueID())) response = TribeActionResult.IN_TRIBE;
+        TribeErrorType response;
+        if (playerHasTribe(player.getUniqueID())) response = TribeErrorType.IN_TRIBE;
         else response = tribe.addMember(player.getUniqueID(), Tribe.Rank.MEMBER);
 
-        if (response == TribeActionResult.SUCCESS){
+        if (response == TribeErrorType.SUCCESS){
             source.getSource().sendFeedback(new StringTextComponent("Tribe successfully joined: " + tribe.getName()), true);
         } else {
-            source.getSource().sendFeedback(response.getErrorComponent(), true);
+            source.getSource().sendFeedback(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;
