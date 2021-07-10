@@ -21,7 +21,7 @@ public class BanPlayerCommand {
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(BanPlayerCommand::handleBan)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a player to ban"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );

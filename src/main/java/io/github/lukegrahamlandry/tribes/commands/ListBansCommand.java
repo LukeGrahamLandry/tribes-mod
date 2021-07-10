@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -21,7 +22,7 @@ public class ListBansCommand {
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(ListBansCommand::handleListBans)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a player to check"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );

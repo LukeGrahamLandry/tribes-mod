@@ -21,7 +21,7 @@ public class NeutralTribeCommand {
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
                         .executes(NeutralTribeCommand::handleJoin)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to be neutral with"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
                             return 0;
                         }
                 );

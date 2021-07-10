@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -20,7 +21,7 @@ public class PromotePlayerCommand {
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(PromotePlayerCommand::handle)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a player to promote"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );
@@ -46,10 +47,8 @@ public class PromotePlayerCommand {
                 TribeErrorType response = tribe.promotePlayer(playerRunning.getUniqueID(), playerTarget.getUniqueID());
 
                 if (response == TribeErrorType.SUCCESS){
-                    String name = playerTarget.getName().getString();
                     String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
-                    // source.getSource().sendFeedback(new StringTextComponent("You successfully promoted " + name + " to " + rank), true);
-                    tribe.broadcastMessage(name + " has been promoted to " + rank, playerRunning);
+                    tribe.broadcastMessage(TribeSuccessType.PROMOTE, playerRunning, playerTarget, rank);
                 } else {
                     source.getSource().sendFeedback(response.getText(), true);
                 }
@@ -60,10 +59,8 @@ public class PromotePlayerCommand {
         TribeErrorType response = tribe.promotePlayer(playerRunning.getUniqueID(), playerTarget.getUniqueID());
 
         if (response == TribeErrorType.SUCCESS){
-            String name = playerTarget.getName().getString();
             String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
-            // source.getSource().sendFeedback(new StringTextComponent("You successfully promoted " + name + " to " + rank), true);
-            tribe.broadcastMessage(name + " has been promoted to " + rank, playerRunning);
+            tribe.broadcastMessage(TribeSuccessType.PROMOTE, playerRunning, playerTarget, rank);
         } else {
             source.getSource().sendFeedback(response.getText(), true);
         }

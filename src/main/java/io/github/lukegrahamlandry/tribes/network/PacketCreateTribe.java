@@ -1,6 +1,7 @@
 package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
@@ -29,9 +30,9 @@ public class PacketCreateTribe {
         ctx.get().enqueueWork(() -> {
             TribeErrorType result = TribesManager.createNewTribe(tribeName, ctx.get().getSender());
             if (result == TribeErrorType.SUCCESS){
-                ctx.get().getSender().sendMessage(new StringTextComponent("You created a new tribe: " + tribeName), ctx.get().getSender().getUniqueID());
+                ctx.get().getSender().sendMessage(TribeSuccessType.MADE_TRIBE.getText(tribeName), ctx.get().getSender().getUniqueID());
             } else {
-                ctx.get().getSender().sendMessage(new StringTextComponent(result.toString()), ctx.get().getSender().getUniqueID());
+                ctx.get().getSender().sendMessage(result.getText(), ctx.get().getSender().getUniqueID());
             }
         });
         ctx.get().setPacketHandled(true);

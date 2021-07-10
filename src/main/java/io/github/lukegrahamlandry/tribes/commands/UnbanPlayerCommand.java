@@ -21,7 +21,7 @@ public class UnbanPlayerCommand {
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(UnbanPlayerCommand::handleBan)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a player to unban"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );

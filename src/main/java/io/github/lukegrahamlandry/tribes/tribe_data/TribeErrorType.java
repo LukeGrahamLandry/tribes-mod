@@ -27,7 +27,12 @@ public enum TribeErrorType {
     WAIT,
     NO_DEITY,
     HOLD_BOOK,
-    HOLD_BANNER;
+    HOLD_BANNER,
+    ARG_TRIBE,
+    ARG_PLAYER,
+    ARG_DEITY,
+    ARG_MISSING,
+    INVALID_RANK;
 
     public TranslationTextComponent getText(){
         String langEntry = "error.tribes." + this.name().toLowerCase();

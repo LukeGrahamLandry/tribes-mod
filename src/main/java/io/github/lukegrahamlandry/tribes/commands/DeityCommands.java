@@ -8,10 +8,7 @@ import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.commands.util.DeityArgumentType;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
-import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
-import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
-import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
+import io.github.lukegrahamlandry.tribes.tribe_data.*;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -34,14 +31,14 @@ public class DeityCommands {
                         .then(Commands.argument("deity", DeityArgumentType.tribe())
                             .executes(DeityCommands::handleChoose))
                         .executes(ctx -> {
-                                ctx.getSource().sendFeedback(new StringTextComponent("choose a deity to follow"), false);
+                            ctx.getSource().sendFeedback(TribeErrorType.ARG_DEITY.getText(), false);
                                 return 0;
                             }))
                 .then(Commands.literal("describe")
                         .then(Commands.argument("deity", DeityArgumentType.tribe())
                                 .executes(DeityCommands::handleDescribe))
                         .executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("choose a deity to describe"), false);
+                            ctx.getSource().sendFeedback(TribeErrorType.ARG_DEITY.getText(), false);
                             return 0;
                         }))
                 ;
@@ -65,7 +62,7 @@ public class DeityCommands {
                     ConfirmCommand.add(player, () -> {
                         tribe.deity = deity.key;
                         tribe.lastDeityChangeTime = System.currentTimeMillis();
-                        source.getSource().sendFeedback(new StringTextComponent("your tribe now follows " + deity.displayName), true);
+                        source.getSource().sendFeedback(TribeSuccessType.CHOOSE_DEITY.getText(deity.displayName), true);
                     });
                 }
             } else {
@@ -80,7 +77,7 @@ public class DeityCommands {
         DeitiesManager.deities.forEach((key, data) -> {
             StringBuilder domains = new StringBuilder();
             data.domains.forEach((s) -> domains.append(s).append(", "));
-            source.getSource().sendFeedback(new StringTextComponent( data.displayName + " is the " + data.label + " of " + domains), true);
+            source.getSource().sendFeedback(TribeSuccessType.DESCRIBE_DEITY.getBlueText(data.displayName, data.label, domains), false);
         });
         return Command.SINGLE_SUCCESS;
     }
@@ -90,7 +87,7 @@ public class DeityCommands {
         if (data != null){
             StringBuilder domains = new StringBuilder();
             data.domains.forEach((s) -> domains.append(s).append(", "));
-            source.getSource().sendFeedback(new StringTextComponent(data.displayName + " is the " + data.label + " of " + domains), true);
+            source.getSource().sendFeedback(TribeSuccessType.DESCRIBE_DEITY.getBlueText(data.displayName, data.label, domains), false);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -130,7 +127,7 @@ public class DeityCommands {
 
                     player.setHeldItem(Hand.MAIN_HAND, banner);
 
-                    source.getSource().sendFeedback(new StringTextComponent("holy banner created"), true);
+                    source.getSource().sendFeedback(TribeSuccessType.MAKE_HOLY_BANNER.getText(), false);
                 } else {
                     source.getSource().sendFeedback(TribeErrorType.HOLD_BANNER.getText(), true);
                 }
@@ -183,7 +180,7 @@ public class DeityCommands {
                         player.dropItem(book, true);
                     }
 
-                    source.getSource().sendFeedback(new StringTextComponent("holy book created"), true);
+                    source.getSource().sendFeedback(TribeSuccessType.MAKE_HOLY_BOOK.getText(), false);
                 } else {
                     source.getSource().sendFeedback(TribeErrorType.HOLD_BOOK.getText(), true);
                 }

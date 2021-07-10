@@ -30,7 +30,11 @@
   "error.tribes.no_deity": "Your tribe has not chosen a deity",
   "error.tribes.hold_book": "You must be holding a book or bookshelf",
   "error.tribes.hold_banner": "You must be holding a banner",
-
+  "error.tribes.arg_player": "Specify a player to effect",
+  "error.tribes.arg_tribe": "Specify a tribe to effect",
+  "error.tribes.arg_deity": "Specify a deity",
+  "error.tribes.arg_missing": "Missing an argument",
+  "error.tribes.invalid_rank": "That is not a valid rank. Options: [member, officer, vice leader, leader]",
 
   "success.tribes.made_tribe": "The tribe %s has been created",
   "success.tribes.ally_tribe": "The tribe %s is now your ally",
@@ -41,5 +45,23 @@
   "success.tribes.ban_player": "The player %s has been banned from your tribe",
   "success.tribes.unban_player": "The player %s has been unbanned from your tribe",
   "success.tribes.count_tribe": "The tribe %s has %d members (tier %d)",
-  "success.tribes.delete_tribe": "Your tribe has been deleted"
+  "success.tribes.delete_tribe": "Your tribe has been deleted",
+  "success.tribes.choose_deity": "Your tribe now follows %s",
+  "success.tribes.describe_deity": "%s is the %s of %s",
+  "success.tribes.make_holy_banner": "The banner has been inscribed with your holy symbol",
+  "success.tribes.make_holy_book": "Created a holy book",
+  "success.tribes.demote": "%s has been demoted to %s",
+  "success.tribes.promote": "%s has been promoted to %s",
+  "success.tribes.you_left": "You have left your tribe",
+  "success.tribes.someone_left": "%s has left your tribe",
+  "success.tribes.you_joined": "You have joined the tribe %s",
+  "success.tribes.someone_joined": "%s has joined your tribe",
+  "success.tribes.set_initials": "Your tribe initials are now %s",
+  "success.tribes.which_tribe": "%s is in the tribe %s",
+  "success.tribes.which_no_tribe": "%s is not in a tribe",
+  "success.tribes.must_confirm": "Type \"/tribe confirm\" to preform that action",
+  "success.tribes.autoban_numbers": "Your tribe will autoban people who die %d times within %d RL days",
+  "success.tribes.no_autoban_rank": "Your tribe will not autoban %ss if they die too often",
+  "success.tribes.yes_autoban_rank": "Your tribe will autoban %ss if they die too often",
+  "success.tribes.choose_hemi": "Your tribe has chosen the %s hemisphere"
 }

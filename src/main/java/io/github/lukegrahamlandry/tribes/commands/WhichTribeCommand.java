@@ -5,6 +5,8 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -21,7 +23,7 @@ public class WhichTribeCommand {
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(WhichTribeCommand::handleCheck)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a player to check"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );
@@ -34,9 +36,9 @@ public class WhichTribeCommand {
         Tribe tribe = TribesManager.getTribeOf(playerToCheck.getUniqueID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(new StringTextComponent("That player is not in a tribe"), true);
+            source.getSource().sendFeedback(TribeSuccessType.WHICH_NO_TRIBE.getBlueText(playerToCheck), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent("Player is in: " + tribe.getName() + " (" + tribe.getInitials() + ")"), true);
+            source.getSource().sendFeedback(TribeSuccessType.WHICH_TRIBE.getBlueText(playerToCheck, tribe), true);
         }
 
         return Command.SINGLE_SUCCESS;

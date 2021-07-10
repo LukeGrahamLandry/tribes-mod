@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -41,7 +42,7 @@ public class AutobanCommands {
                 tribe.autobanDeathThreshold = numDeaths;
                 tribe.autobanDaysThreshold = numDeaths;
 
-                source.getSource().sendFeedback(new StringTextComponent("your tribe will autoban people who die " + numDeaths + " times within " + numDays + " RL days"), true);
+                source.getSource().sendFeedback(TribeSuccessType.AUTOBAN_NUMBERS.getText(numDeaths, numDays), true);
             } else {
                 source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);
             }
@@ -66,10 +67,13 @@ public class AutobanCommands {
                     tribe.autobanRank.put(rank, value);
 
                     String not = value ? "" : "not";
-                    source.getSource().sendFeedback(new StringTextComponent("your tribe will " + not + " autoban " + rankName + "s if they die too often"), true);
-
+                    if (value){
+                        source.getSource().sendFeedback(TribeSuccessType.YES_AUTOBAN_RANK.getText(rankName), true);
+                    } else {
+                        source.getSource().sendFeedback(TribeSuccessType.NO_AUTOBAN_RANK.getText(rankName), true);
+                    }
                 } else {
-                    source.getSource().sendFeedback(new StringTextComponent("that is not a valid tribe rank"), true);
+                    source.getSource().sendFeedback(TribeErrorType.INVALID_RANK.getText(), true);
                 }
             } else {
                 source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);

@@ -5,10 +5,13 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
+import io.github.lukegrahamlandry.tribes.events.TribeServer;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenJoinGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,10 +41,10 @@ public class JoinTribeCommand {
 
         TribeErrorType response;
         if (playerHasTribe(player.getUniqueID())) response = TribeErrorType.IN_TRIBE;
-        else response = tribe.addMember(player.getUniqueID(), Tribe.Rank.MEMBER);
+        else response = TribesManager.joinTribe(tribe.getName(), player);
 
         if (response == TribeErrorType.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("Tribe successfully joined: " + tribe.getName()), true);
+            source.getSource().sendFeedback(TribeSuccessType.YOU_JOINED.getText(tribe), true);
         } else {
             source.getSource().sendFeedback(response.getText(), true);
         }

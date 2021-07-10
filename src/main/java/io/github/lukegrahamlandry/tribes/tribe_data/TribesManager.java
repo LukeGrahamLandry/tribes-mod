@@ -3,6 +3,7 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 import com.google.gson.*;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
+import io.github.lukegrahamlandry.tribes.events.TribeServer;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.*;
@@ -27,7 +28,10 @@ public class TribesManager {
         if (playerHasTribe(player.getUniqueID())) return TribeErrorType.IN_TRIBE;
         if (isNameAvailable(name)) return TribeErrorType.INVALID_TRIBE;
 
-        return getTribe(name).addMember(player.getUniqueID(), Tribe.Rank.MEMBER);
+        Tribe tribe = getTribe(name);
+        tribe.broadcastMessageNoCause(TribeSuccessType.SOMEONE_JOINED, player);
+
+        return tribe.addMember(player.getUniqueID(), Tribe.Rank.MEMBER);
     }
 
     public static TribeErrorType deleteTribe(String name, UUID playerID){

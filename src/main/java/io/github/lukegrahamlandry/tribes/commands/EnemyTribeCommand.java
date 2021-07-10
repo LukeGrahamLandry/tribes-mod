@@ -21,7 +21,7 @@ public class EnemyTribeCommand {
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
                         .executes(EnemyTribeCommand::handleJoin)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to enemy"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
                             return 0;
                         }
                 );

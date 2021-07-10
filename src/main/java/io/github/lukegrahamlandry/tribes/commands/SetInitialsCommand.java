@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -20,7 +21,7 @@ public class SetInitialsCommand {
                 .then(Commands.argument("name", StringArgumentType.word())
                         .executes(SetInitialsCommand::handleCreate)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick initials for your tribe"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_MISSING.getText(), false);
                             return 0;
                         }
                 );
@@ -34,7 +35,7 @@ public class SetInitialsCommand {
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
         TribeErrorType response = tribe.trySetInitials(str, player.getUniqueID());
         if (response == TribeErrorType.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("Your tribe's initials are now: " + str), true);
+            tribe.broadcastMessage(TribeSuccessType.SET_INITIALS, player, str);
         } else {
             source.getSource().sendFeedback(response.getText(), true);
         }

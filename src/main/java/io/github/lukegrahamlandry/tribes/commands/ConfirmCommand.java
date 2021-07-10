@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,7 +23,7 @@ public class ConfirmCommand {
     }
 
     public static void add(PlayerEntity player, IConfirmAction action){
-        player.sendStatusMessage(new StringTextComponent("type \"/tribe confirm\" to preform that action"), false);
+        player.sendStatusMessage(TribeSuccessType.MUST_CONFIRM.getBlueText(), false);
         CONFIRM_ACTIONS.put(player.getUniqueID(), action);
     }
 
@@ -40,7 +41,7 @@ public class ConfirmCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    interface IConfirmAction {
+    public interface IConfirmAction {
         void call();
     }
 }

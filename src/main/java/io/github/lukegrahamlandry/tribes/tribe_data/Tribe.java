@@ -177,6 +177,17 @@ public class Tribe {
     }
 
     // CANNOT be called from the client side
+    public void broadcastMessageNoCause(TribeSuccessType action, Object... args){
+        ITextComponent text = action.getBlueText(args);
+
+        for (String uuid : this.getMembers()){
+            PlayerEntity player = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
+            if (player != null){
+                player.sendStatusMessage(text, false);
+            }
+        }
+    }
+
     public void broadcastMessage(TribeSuccessType action, UUID causingPlayer, Object... args){
         ITextComponent text = action.getTextPrefixPlayer(causingPlayer, args);
         ITextComponent plainText = action.getText(args);
@@ -385,6 +396,9 @@ public class Tribe {
         if (oldTier < getTribeTier()){
             this.effects.clear();
         }
+
+        PlayerEntity left = TribeServer.getPlayerByUuid(playerID);
+        if (left != null) this.broadcastMessageNoCause(TribeSuccessType.SOMEONE_LEFT, left);
     }
 
     public boolean isBanned(UUID uniqueID) {
@@ -453,7 +467,7 @@ public class Tribe {
         else this.hemiAccess = LandClaimHelper.Hemi.NEGATIVE;
         LandClaimHelper.hemispheres.get(this.hemiAccess).add(this);
 
-        broadcastMessage("Your tribe has claimed the " + side + " hemisphere", player);
+        broadcastMessage(TribeSuccessType.CHOOSE_HEMI, player, side);
 
         return TribeErrorType.SUCCESS;
 

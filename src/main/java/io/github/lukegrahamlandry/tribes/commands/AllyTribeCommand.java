@@ -21,7 +21,7 @@ public class AllyTribeCommand {
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
                         .executes(AllyTribeCommand::handleAlly)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to ally"), false);
+                            ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
                             return 0;
                         }
                 );

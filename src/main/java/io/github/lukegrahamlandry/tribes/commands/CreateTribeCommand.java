@@ -21,7 +21,7 @@ public class CreateTribeCommand {
                 .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(CreateTribeCommand::handleCreate)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a name for your tribe"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_MISSING.getText(), false);
                             return 0;
                         }
                 );

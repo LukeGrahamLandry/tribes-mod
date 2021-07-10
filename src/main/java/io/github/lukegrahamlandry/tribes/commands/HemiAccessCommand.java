@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -37,14 +38,11 @@ public class HemiAccessCommand {
         TribeErrorType response = tribe.validateSelectHemi(player, side);
 
         if (response == TribeErrorType.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("are you sure you want to choose " + side + "? your tribe's hemisphere can never be changed"), true);
-
             ConfirmCommand.add(player, () -> {
                 tribe.selectHemi(player, side);
-                source.getSource().sendFeedback(new StringTextComponent("your tribe has claimed: " + side), true);
             });
         } else {
-            source.getSource().sendFeedback(new StringTextComponent(response.toString()), true);
+            source.getSource().sendFeedback(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

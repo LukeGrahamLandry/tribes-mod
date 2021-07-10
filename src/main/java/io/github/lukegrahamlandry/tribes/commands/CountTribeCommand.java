@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -18,7 +19,7 @@ public class CountTribeCommand {
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
                         .executes(CountTribeCommand::handleCount)
                 ).executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("pick a tribe to count"), false);
+                    ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
                             return 0;
                         }
                 );
@@ -29,7 +30,7 @@ public class CountTribeCommand {
         Tribe tribe = TribeArgumentType.getTribe(source, "tribe");
 
         if (tribe != null) {
-            source.getSource().sendFeedback(TribeSuccessType.COUNT_TRIBE.getText(tribe, tribe.getCount(), tribe.getTribeTier()), true);
+            source.getSource().sendFeedback(TribeSuccessType.COUNT_TRIBE.getBlueText(tribe, tribe.getCount(), tribe.getTribeTier()), true);
         }
 
         return Command.SINGLE_SUCCESS;

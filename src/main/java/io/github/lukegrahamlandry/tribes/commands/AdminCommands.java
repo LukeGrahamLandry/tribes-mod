@@ -23,7 +23,7 @@ public class AdminCommands {
                         .then(Commands.argument("name", StringArgumentType.greedyString())
                             .executes(AdminCommands::handleDelete))
                         .executes(ctx -> {
-                                ctx.getSource().sendFeedback(new StringTextComponent("choose a tribe to delete"), false);
+                            ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
                                 return 0;
                             }))
                 .then(Commands.literal("rename")
@@ -35,7 +35,7 @@ public class AdminCommands {
                                     return 0;
                                 }))
                         .executes(ctx -> {
-                            ctx.getSource().sendFeedback(new StringTextComponent("choose a tribe to rename"), false);
+                            ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
                             return 0;
                         }))
                 ;

@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -23,22 +24,15 @@ public class LeaveTribeCommand {
     public static int handleLeave(CommandContext<CommandSource> source) throws CommandSyntaxException {
         PlayerEntity player = source.getSource().asPlayer();
 
-        // check if it would delete tribe
         Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
-        if (tribe != null && tribe.getCount() == 1){
+        if (tribe != null){
             ConfirmCommand.add(player, () -> {
                 TribesManager.leaveTribe(player);
-                source.getSource().sendFeedback(new StringTextComponent("You successfully left your tribe"), true);
+                source.getSource().sendFeedback(TribeSuccessType.YOU_LEFT.getText(), true);
             });
             return Command.SINGLE_SUCCESS;
-        }
-
-        // normal leave
-        TribeErrorType response = TribesManager.leaveTribe(player);
-        if (response == TribeErrorType.SUCCESS){
-            source.getSource().sendFeedback(new StringTextComponent("You successfully left your tribe"), true);
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;
