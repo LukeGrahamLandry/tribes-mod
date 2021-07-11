@@ -1,6 +1,5 @@
 package io.github.lukegrahamlandry.tribes.client.gui;
 
-
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerController;
@@ -16,6 +15,7 @@ import java.util.UUID;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid=TribesMain.MOD_ID, value=Dist.CLIENT)
 public class ShowLandOwnerUI {
     public static HashMap<UUID, String> chunkOwnerDisplayForPlayer = new HashMap<>();
+    public static HashMap<UUID, Boolean> playerCanAccess = new HashMap<>();
 
     @SubscribeEvent
     public static void renderUI(RenderGameOverlayEvent.Post event) {
@@ -27,11 +27,15 @@ public class ShowLandOwnerUI {
             }
 
             String location = chunkOwnerDisplayForPlayer.get(player.getUniqueID());
+            int color = playerCanAccess.get(player.getUniqueID()) ? GREEN : RED;
             if (!Minecraft.getInstance().gameSettings.showDebugInfo && location != null) {  // && controller.shouldDrawHUD()
-                Minecraft.getInstance().fontRenderer.drawString(event.getMatrixStack(), location, 5, 5, calcColour(0, 255, 0));
+                Minecraft.getInstance().fontRenderer.drawString(event.getMatrixStack(), location, 5, 5, color);
             }
         }
     }
+
+    private static final int RED = calcColour(255, 0, 0);
+    private static final int GREEN = calcColour(0, 255, 0);
 
     private static int calcColour(int r, int g, int b){
         int rgb = r;

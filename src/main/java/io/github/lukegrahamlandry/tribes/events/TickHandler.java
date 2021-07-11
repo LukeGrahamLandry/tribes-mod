@@ -29,7 +29,7 @@ public class TickHandler {
 
         // land owner display
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
-                new LandOwnerPacket(event.player.getUniqueID(), LandClaimHelper.getOwnerDisplayFor(event.player)));
+                new LandOwnerPacket(event.player.getUniqueID(), LandClaimHelper.getOwnerDisplayFor(event.player), LandClaimHelper.canAccessLandAt(event.player, event.player.getPosition())));
 
 
         // tribe compass direction

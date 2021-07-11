@@ -51,6 +51,9 @@ public enum TribeSuccessType {
             if (args[i] instanceof Tribe){
                 args[i] = (Object) ((Tribe) args[i]).getName();
             }
+            if (args[i] instanceof PlayerEntity){
+                args[i] = (Object) ((PlayerEntity) args[i]).getDisplayName().getUnformattedComponentText();
+            }
         }
 
         String langEntry = "success.tribes." + this.name().toLowerCase();

@@ -33,7 +33,6 @@ public class CompassChunkPacket {
     public static void handle(CompassChunkPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             TribeCompass.toLookAt.put(packet.entityID, packet.pos);
-            TribesMain.LOGGER.debug(packet.pos);
         });
 
         ctx.get().setPacketHandled(true);

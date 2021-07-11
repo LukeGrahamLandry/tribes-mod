@@ -132,6 +132,11 @@ public class Tribe {
         if (str.length() > 4) return TribeErrorType.LONG_NAME;
 
         this.initials = str;
+        for (String uuid : this.getMembers()){
+            PlayerEntity toUpdate = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
+            if (toUpdate != null) toUpdate.refreshDisplayName();
+        }
+
         return TribeErrorType.SUCCESS;
     }
 
@@ -157,23 +162,6 @@ public class Tribe {
 
     public Rank getRankOf(String playerID){
         return this.members.get(playerID);
-    }
-
-    // CANNOT be called from the client side
-    public void broadcastMessage(String text, PlayerEntity playerRunningCommand){
-        // show which player ran the command that caused the broadcast
-        // String name = playerRunningCommand.getName().getString();
-        // String fullMessage = "<" + name + ">: " + message;
-
-        /*
-        for (String uuid : this.getMembers()){
-            PlayerEntity player = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
-            if (player != null){
-                player.sendStatusMessage(text, false);
-            }
-        }
-
-         */
     }
 
     // CANNOT be called from the client side

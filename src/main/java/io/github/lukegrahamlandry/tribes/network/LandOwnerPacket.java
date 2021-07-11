@@ -12,25 +12,29 @@ import java.util.function.Supplier;
 public class LandOwnerPacket {
     private UUID entityID;
     private String toDisplay;
+    boolean access;
 
-    public LandOwnerPacket(UUID id, String displayText) {
+    public LandOwnerPacket(UUID id, String displayText, boolean access) {
         this.entityID = id;
         this.toDisplay = displayText;
+        this.access = access;
     }
 
     public static LandOwnerPacket decode(PacketBuffer buf) {
-        LandOwnerPacket packet = new LandOwnerPacket(buf.readUniqueId(), buf.readString(32767));
+        LandOwnerPacket packet = new LandOwnerPacket(buf.readUniqueId(), buf.readString(32767), buf.readBoolean());
         return packet;
     }
 
     public static void encode(LandOwnerPacket packet, PacketBuffer buf) {
         buf.writeUniqueId(packet.entityID);
         buf.writeString(packet.toDisplay);
+        buf.writeBoolean(packet.access);
     }
 
     public static void handle(LandOwnerPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ShowLandOwnerUI.chunkOwnerDisplayForPlayer.put(packet.entityID, packet.toDisplay);
+            ShowLandOwnerUI.playerCanAccess.put(packet.entityID, packet.access);
         });
 
         ctx.get().setPacketHandled(true);

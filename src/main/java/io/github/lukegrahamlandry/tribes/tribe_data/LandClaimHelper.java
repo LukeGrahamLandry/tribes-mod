@@ -120,4 +120,19 @@ public class LandClaimHelper {
 
         return chunks;
     }
+
+    // important to call this whenever a tribe is deleted
+    public static void forgetTribe(Tribe tribe){
+        if (tribe == null) return;
+
+        tribe.chunks.forEach((chunk) -> LandClaimHelper.setChunkOwner(chunk, null));
+
+        LandClaimHelper.hemispheres.forEach((hemi, theTribes) -> {
+            theTribes.remove(tribe);
+        });
+
+        TribesManager.getTribes().forEach((aTribe) -> {
+            aTribe.relationToOtherTribes.remove(tribe.getName());
+        });
+    }
 }

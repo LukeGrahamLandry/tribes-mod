@@ -6,7 +6,6 @@
 
   "block.tribes.alter": "Altar",
 
-
   "error.tribes.success": "The action should be successful but you shouldn't be seeing this message. Please report to the Dev",
   "error.tribes.name_taken": "That name is already in use",
   "error.tribes.in_tribe": "You are already in a tribe",

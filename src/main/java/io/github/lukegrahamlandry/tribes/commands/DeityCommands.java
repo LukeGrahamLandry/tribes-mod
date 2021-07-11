@@ -160,14 +160,11 @@ public class DeityCommands {
                     tag.putString("title", data.bookTitle);
                     tag.putBoolean("resolved", true);
 
-                    TribesMain.LOGGER.debug(data.bookPages);
-
                     ListNBT pages = new ListNBT();
                     for (String content : data.bookPages){
                         INBT page = StringNBT.valueOf("{\"text\": \"" + content + "\"}");
                         pages.add(page);
                     }
-                    TribesMain.LOGGER.debug(pages);
                     tag.put("pages", pages);
 
                     book.setTag(tag);

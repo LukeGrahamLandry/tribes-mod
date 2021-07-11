@@ -39,8 +39,8 @@ public class TribesManager {
 
         if (!getTribe(name).isLeader(playerID)) return TribeErrorType.LOW_RANK;
 
+        LandClaimHelper.forgetTribe(tribes.get(name));
         getTribe(name).broadcastMessage(TribeSuccessType.DELETE_TRIBE, playerID);
-
         tribes.remove(name);
 
         return TribeErrorType.SUCCESS;
@@ -48,6 +48,7 @@ public class TribesManager {
 
     public static void forceDeleteTribe(String name){
         if (!isNameAvailable(name)) {
+            LandClaimHelper.forgetTribe(tribes.get(name));
             tribes.remove(name);
         }
     }
