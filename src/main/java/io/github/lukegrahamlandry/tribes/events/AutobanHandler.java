@@ -2,6 +2,7 @@ package io.github.lukegrahamlandry.tribes.events;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
@@ -49,7 +50,8 @@ public class AutobanHandler {
         int numDeathsWithinThreshold = recentDeaths.size();
         TribesMain.LOGGER.debug(event.getEntityLiving().getUniqueID() + " has died " + numDeathsWithinThreshold + " within their tribe's autoban threshold");
         if (numDeathsWithinThreshold >= tribe.autobanDeathThreshold){
-            tribe.broadcastMessage("has been banned for dying too often", (PlayerEntity) event.getEntityLiving());
+            // todo; specify that its because they died too often
+            tribe.broadcastMessageNoCause(TribeSuccessType.BAN_FOR_DEATHS, (PlayerEntity) event.getEntityLiving());
             tribe.banPlayer(UUID.fromString(tribe.getOwner()), event.getEntityLiving().getUniqueID());
         } else {
             nbt.putLongArray(NBT_KEY, recentDeaths);

@@ -1,15 +1,18 @@
 package io.github.lukegrahamlandry.tribes.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.SaveEffectsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DialogTexts;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,6 +36,11 @@ public class TribeEffectScreen extends TribeScreen {
     // Current number of selected effects
     private static int numSelectedGood;
     private static int numSelectedBad;
+
+    int page = 0;
+    private Button backButton;
+    private Button nextButton;
+    final int EFFECTS_PER_PAGE = 14;
 
     public TribeEffectScreen(int numGoodAllowed, int numBadAllowed, HashMap<Effect, Integer> currentEffects) {
         super(".tribeEffectScreen", "textures/gui/tribe_effects_left.png", "textures/gui/tribe_effects_right.png", 175, 219, false);
@@ -64,12 +72,45 @@ public class TribeEffectScreen extends TribeScreen {
     }
 
     public void addButtons(){
+        this.backButton = this.addButton(new Button(this.guiLeft + (this.xSize - 11), (this.ySize/2 - 11) + 30, 20, 20, new StringTextComponent("<"), (p_214318_1_) -> {
+            if (this.backButton.active){
+                this.page--;
+
+                TribeEffectScreen.this.buttons.clear();
+                TribeEffectScreen.this.children.clear();
+                TribeEffectScreen.this.init();
+                TribeEffectScreen.this.tick();
+            }
+        }));
+        this.backButton.active = this.page > 0;
+        this.nextButton = this.addButton(new Button(this.guiLeft + (this.xSize - 11), (this.ySize/2 - 11) + 60, 20, 20, new StringTextComponent(">"), (p_214318_1_) -> {
+            if (this.nextButton.active){
+                this.page++;
+
+                TribeEffectScreen.this.buttons.clear();
+                TribeEffectScreen.this.children.clear();
+                TribeEffectScreen.this.init();
+                TribeEffectScreen.this.tick();
+            }
+        }));
+        int shown = ((this.page + 1) * EFFECTS_PER_PAGE);
+        this.nextButton.active = shown < posEffects.size() || shown < negEffects.size();
+
+
+
         // Declare confirm button
         this.confirmButton = this.addButton(new ConfirmButton(this,this.guiLeft + (this.xSize - 11), (this.ySize/2 - 11), this.ySize));
+
+        int shift = this.page * EFFECTS_PER_PAGE;
         int i=0;
         int k=0;
         // Iteration through effects to create three buttons for three tiers of each effect
-        for(Effect effect : posEffects){
+
+        for (int e=0;e<EFFECTS_PER_PAGE;e++){
+            int index = shift + e;
+            if (index >= posEffects.size()) break;
+            Effect effect = posEffects.get(index);
+
             EffectButton tribeeffect$effectbutton;
             i=(k>=154) ? 82 : i;
             k=(k>=154) ? 0 : k;
@@ -86,10 +127,16 @@ public class TribeEffectScreen extends TribeScreen {
             }
             i-=22*3;
             k+=22;
+
         }
+
         i=0;
         k=0;
-        for(Effect effect : negEffects){
+        for (int e=0;e<EFFECTS_PER_PAGE;e++){
+            int index = shift + e;
+            if (index >= negEffects.size()) break;
+            Effect effect = negEffects.get(index);
+
             EffectButton tribeeffect$effectbutton;
             i=(k>=154) ? 82 : i;
             k=(k>=154) ? 0 : k;
@@ -111,8 +158,8 @@ public class TribeEffectScreen extends TribeScreen {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.buttons.forEach((b) -> {
-            GuiButton button = (GuiButton) b;
+        this.buttons.forEach((button) -> {
+            // GuiButton button = (GuiButton) b;
             if(button instanceof EffectButton){
                 this.font.drawString(matrixStack, String.valueOf(((EffectButton)button).getAmplifier()), (float)(button.x+2), (float)(button.y+2), 0xffffff);
             }
@@ -212,6 +259,7 @@ public class TribeEffectScreen extends TribeScreen {
         }
 
         public void onPress() {
+            TribesMain.LOGGER.debug(effect + " " + amplifier);
             if (!this.isSelected()) {
                 if (this.isGood) {
                     // Are the maximum number of effects selected?

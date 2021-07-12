@@ -4,6 +4,7 @@ import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenJoinGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -28,7 +29,7 @@ public class LoginHandler {
                 if (TribesConfig.isTribeRequired())
                     NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new PacketOpenJoinGUI((ServerPlayerEntity) player));
                 else {
-                    player.sendStatusMessage(new StringTextComponent("use the \"/tribe join\" command to join a tribe!"), true);
+                    player.sendStatusMessage(TribeSuccessType.ALERT_JOIN.getBlueText(), true);
                 }
                 return;
             }
@@ -38,7 +39,7 @@ public class LoginHandler {
             // choose effects
             // todo: config to force choosing your effects
             if (tribe.effects.isEmpty()){
-                player.sendStatusMessage(new StringTextComponent("Use '/tribe effects' to select always active potion effects for your tribe"), false);
+                player.sendStatusMessage(TribeSuccessType.ALERT_EFFECTS.getBlueText(), false);
             }
 
             // choose vice leader
@@ -47,13 +48,13 @@ public class LoginHandler {
                 if (tribe.isViceLeader(UUID.fromString(id))) hasViceLeader = true;
             }
             if (!hasViceLeader){
-                player.sendStatusMessage(new StringTextComponent("Use `/tribe promote PlayerNameHere` to promote a member to an officer, and again to promote an officer to vice leader. If you leave your tribe, the vice leader will inherit your tribe. There can be any number of members and officers but only 1 vice leader."), false);
+                player.sendStatusMessage(TribeSuccessType.ALERT_VICE_LEADER.getBlueText(), false);
             }
 
             // choose deity 
             // todo: config to force choosing a deity
             if (tribe.deity == null){
-                player.sendStatusMessage(new StringTextComponent("Use '/tribe deity list' see options of deities to follow. Then use '/tribe deity choose deitykey'"), false);
+                player.sendStatusMessage(TribeSuccessType.ALERT_DEITY.getBlueText(), false);
             }
 
             RemoveInactives.recordActive(player.getUniqueID());

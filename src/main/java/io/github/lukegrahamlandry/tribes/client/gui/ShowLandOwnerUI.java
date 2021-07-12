@@ -27,7 +27,7 @@ public class ShowLandOwnerUI {
             }
 
             String location = chunkOwnerDisplayForPlayer.get(player.getUniqueID());
-            int color = playerCanAccess.get(player.getUniqueID()) ? GREEN : RED;
+            int color = playerCanAccess.containsKey(player.getUniqueID()) && playerCanAccess.get(player.getUniqueID()) ? GREEN : RED;
             if (!Minecraft.getInstance().gameSettings.showDebugInfo && location != null) {  // && controller.shouldDrawHUD()
                 Minecraft.getInstance().fontRenderer.drawString(event.getMatrixStack(), location, 5, 5, color);
             }

@@ -35,7 +35,13 @@ public enum TribeSuccessType {
     AUTOBAN_NUMBERS,
     YES_AUTOBAN_RANK,
     NO_AUTOBAN_RANK,
-    CHOOSE_HEMI;
+    CHOOSE_HEMI,
+    BAN_FOR_DEATHS,
+
+    ALERT_EFFECTS,
+    ALERT_DEITY,
+    ALERT_VICE_LEADER,
+    ALERT_JOIN;
 
     public TranslationTextComponent getText(){
         String langEntry = "success.tribes." + this.name().toLowerCase();
