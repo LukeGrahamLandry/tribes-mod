@@ -83,7 +83,7 @@ public enum TribeSuccessType {
 
         String langEntry = "success.tribes." + this.name().toLowerCase();
         TranslationTextComponent text = new TranslationTextComponent(langEntry, args);
-        Style style = text.getStyle().setColor(Color.fromInt(0x0000FF));
+        Style style = text.getStyle().setColor(Color.fromInt(0x34e5eb));
         text.setStyle(style);
         TextComponent name = new StringTextComponent(player.getName().getUnformattedComponentText() + " ");
         Style namestyle = name.getStyle().setBold(true).setColor(Color.fromInt(0xffbb00));
@@ -93,14 +93,14 @@ public enum TribeSuccessType {
 
     public ITextComponent getBlueText() {
         TextComponent text = getText();
-        Style style = text.getStyle().setColor(Color.fromInt(0x0000FF));
+        Style style = text.getStyle().setColor(Color.fromInt(0x34e5eb));
         text.setStyle(style);
         return text;
     }
 
     public ITextComponent getBlueText(Object... args) {
         TextComponent text = getText(args);
-        Style style = text.getStyle().setColor(Color.fromInt(0x0000FF));
+        Style style = text.getStyle().setColor(Color.fromInt(0x34e5eb));
         text.setStyle(style);
         return text;
     }

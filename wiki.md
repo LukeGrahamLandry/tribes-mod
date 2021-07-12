@@ -150,5 +150,4 @@ Leader only. sets whether the autoban mechanic above should apply to a certain r
 
 ## Deity Data Format
 
-**info coming soon...** but the defaults can be found here: https://github.com/LukeGrahamLandry/tribes-mod/tree/main/deities 
-(put those files in world/data)
+**info coming soon...** but when you open a world it will generate the defaults at world/data/deities so you can edit them however you like. the json file has thier meta data and the txt files have holy book contents. 

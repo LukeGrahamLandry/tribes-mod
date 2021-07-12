@@ -2,21 +2,26 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.events.RemoveInactives;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.WorldOptimizer;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerChunkProvider;
-import net.minecraft.world.storage.DimensionSavedDataManager;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber(modid = TribesMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SaveHandler {
@@ -54,36 +59,6 @@ public class SaveHandler {
             e.printStackTrace();
         }
 
-        File deitiesBooksLocation = new File(worldDir, "deities");
-        if (!deitiesBooksLocation.exists()){
-            deitiesBooksLocation.mkdir();
-
-            File bookLocation = new File(deitiesBooksLocation, DeitiesManager.EXAMPLE_DEITY.key + ".txt");
-            try{
-                FileWriter writer = new FileWriter(bookLocation);
-                writer.write("this is where you would put your holy text :) ");
-                writer.write("it can be long and will be automatically broken into pages");
-                writer.write("it will be given to players when they use /tribe deity book");
-                writer.close();
-            } catch (IOException e){
-                TribesMain.LOGGER.error("couldn't create file");
-                e.printStackTrace();
-            }
-        }
-
-        File deityDataFile = new File(deitiesBooksLocation, "deities.json");
-        if (!deityDataFile.exists()){
-            try{
-                FileWriter writer = new FileWriter(deityDataFile);
-                writer.write(DeitiesManager.generateExampleJson());
-                writer.close();
-            } catch (IOException e){
-                TribesMain.LOGGER.error("couldn't create file");
-                e.printStackTrace();
-            }
-        }
-
-
         File loginTimesFile = new File(worldDir, "tribes-player-activity.json");
         try {
             FileWriter writer = new FileWriter(loginTimesFile);
@@ -116,9 +91,10 @@ public class SaveHandler {
         // read deities
         File deitiesBooksLocation = new File(worldDir, "deities");
         File deityDataFile = new File(deitiesBooksLocation, "deities.json");
-        if (deityDataFile.exists()) {
-            DeitiesManager.readFromString(readMultiline(deityDataFile));
+        if (!deityDataFile.exists()) {
+            createDefaultDeityFiles(deitiesBooksLocation);
         }
+        DeitiesManager.readFromString(readMultiline(deityDataFile));
 
         // read deity books
         DeitiesManager.deities.forEach((key, deityData) -> {
@@ -136,6 +112,62 @@ public class SaveHandler {
         }
 
         TribesMain.LOGGER.debug("loaded");
+    }
+
+    private static void createDefaultDeityFiles(File deityLocation) {
+        if (!deityLocation.exists()) deityLocation.mkdirs();
+
+        try {
+            URI uri = SaveHandler.class.getResource("/deities").toURI();
+            AtomicReference<Path> myPath = new AtomicReference<>();
+            TribesMain.LOGGER.error("scheme " + uri.getScheme());
+            if (uri.getScheme().equals("jar")) {
+                FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
+                myPath.set(fileSystem.getPath("/deities"));
+            } else if (uri.getScheme().equals("modjar")){
+                // fixes java.nio.file.FileSystemNotFoundException: Provider modjar not installed
+                FMLLoader.getLoadingModList().getModFiles().forEach((modFile) -> {
+                    modFile.getMods().forEach((modInfo) -> {
+                        if (modInfo.getModId().equals(TribesMain.MOD_ID)){
+                            myPath.set(modFile.getFile().findResource("deities"));
+                        }
+                    });
+                });
+            }
+            else {
+                myPath.set(Paths.get(uri));
+            }
+            Stream<Path> walk = Files.walk(myPath.get(), 1);
+            for (Iterator<Path> it = walk.iterator(); it.hasNext();){
+                String filename = it.next().getFileName().toString();
+
+                if (!filename.contains(".")) continue;
+                TribesMain.LOGGER.debug("load default: /deities/" + filename);
+
+                InputStream in = SaveHandler.class.getClassLoader().getResourceAsStream("/deities/" + filename);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                File newFile = new File(deityLocation, filename);
+                if (!newFile.exists()) newFile.createNewFile();
+                FileWriter writer = new FileWriter(newFile);
+
+                reader.lines().forEach(str -> {
+                    try {
+                        writer.write(str);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                writer.close();
+
+
+            }
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
     private static String readMultiline(File dataLocation){
