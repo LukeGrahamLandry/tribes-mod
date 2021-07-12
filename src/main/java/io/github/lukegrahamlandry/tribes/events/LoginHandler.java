@@ -45,7 +45,7 @@ public class LoginHandler {
             // choose vice leader
             boolean hasViceLeader = false;
             for (String id : tribe.getMembers()){
-                if (tribe.isViceLeader(UUID.fromString(id))) hasViceLeader = true;
+                if (tribe.getRankOf(id) == Tribe.Rank.VICE_LEADER) hasViceLeader = true;
             }
             if (!hasViceLeader){
                 player.sendStatusMessage(TribeSuccessType.ALERT_VICE_LEADER.getBlueText(), false);

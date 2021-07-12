@@ -46,7 +46,10 @@ public class SaveHandler {
     public static void save(File worldDir) {
         TribesMain.LOGGER.debug("saving");
         File dataFile = new File(worldDir, "tribes.json");
-        if (dataFile.getAbsolutePath().contains("DIM")) return;
+        if (dataFile.getAbsolutePath().contains("DIM")){
+            TribesMain.LOGGER.debug("skip save to " + worldDir.getAbsolutePath());
+            return;
+        }
 
         String tribesData = TribesManager.writeToString();
         try{
@@ -85,8 +88,10 @@ public class SaveHandler {
         File tribeDataFile = new File(worldDir, "tribes.json");
         if (tribeDataFile.exists()) {
             TribesManager.readFromString(readMultiline(tribeDataFile));
-            LandClaimHelper.setup();
+        } else {
+            TribesManager.readFromString("[]");
         }
+        LandClaimHelper.setup();
 
         // read deities
         File deitiesBooksLocation = new File(worldDir, "deities");
