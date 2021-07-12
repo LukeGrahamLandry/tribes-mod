@@ -23,10 +23,11 @@ directory = os.fsencode(directory_in_str)
 for file in os.listdir(directory):
     filename = os.fsdecode(file)
     if filename.endswith(".png"):
+        print(filename)
         read = Image.open('img/' + filename)
         out = background.copy()
-        out.paste(read, (6, 20))
-        out.paste(read, (46, 20))  # todo: this should be mirrored left/right
+        out.paste(read, (5, 20)) #-2
+        out.paste(read.transpose(Image.FLIP_LEFT_RIGHT), (48, 20)) # +2
         out.save('out/tribes' + filename.lower(), quality=95)
         all.append(filename.lower().split(".")[0])
 print(all)

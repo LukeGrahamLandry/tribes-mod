@@ -59,8 +59,7 @@ public class AltarRenderer extends TileEntityRenderer<AltarTileEntity> {
         float spin = (tileEntityIn.getWorld().getDayTime() + partialTicks) / 30.0F;
         matrixStackIn.rotate(Vector3f.YP.rotation(spin));
 
-        // todo: fix the positioning of the first side of banner and inverse the second
-        // or new RenderMaterial(Atlases.SHIELD_ATLAS, pattern.getTextureLocation(false))
+        // new RenderMaterial(Atlases.SHIELD_ATLAS, pattern.getTextureLocation(false)) would make one instead of two but need to do the other textures
 
         float[] afloat = DyeColor.WHITE.getColorComponentValues();
 

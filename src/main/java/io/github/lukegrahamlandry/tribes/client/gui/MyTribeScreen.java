@@ -77,7 +77,7 @@ public class MyTribeScreen extends TribeScreen {
         this.write(matrixStack, "Tier: " + this.tier, x, baseY + 60, GREY);
 
         int y = baseY;
-        int middleX = x + 100;
+        int middleX = x + 85;
         int gap = 12;
         for (String name : this.goodTribes){
             this.write(matrixStack, name, middleX, y, GREEN);

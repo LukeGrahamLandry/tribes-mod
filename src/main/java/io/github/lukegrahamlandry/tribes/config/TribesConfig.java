@@ -96,7 +96,7 @@ public class TribesConfig {
                 .defineInRange("daysBetweenEffectsChange", 10, 0, Integer.MAX_VALUE);
         ignoredEffects = server
                 .comment("S: effects that cannot be chosen as a persistent tribe effect : ")
-                .defineList("ignoredEffects", Arrays.asList("minecraft:bad_omen", "minecraft:conduit_power", "minecraft:health_boost", "minecraft:luck", "minecraft:unluck", "minecraft:hero_of_the_village"), i -> ((String) i).contains(":"));
+                .defineList("ignoredEffects", Arrays.asList("minecraft:bad_omen", "minecraft:conduit_power", "minecraft:health_boost", "minecraft:luck", "minecraft:unluck", "minecraft:hero_of_the_village", "minecraft:absorption"), i -> ((String) i).contains(":"));
         removeInactiveAfterDays = server
                 .comment("Players who haven't logged on in this many days will automatically be removed from the tribe they're in. Setting this value to 0 will disable this feature: ")
                 .defineInRange("removeInactiveAfterDays", 10, 0, Integer.MAX_VALUE);
