@@ -39,6 +39,8 @@ public class TribesConfig {
     private static ForgeConfigSpec.ConfigValue<List<? extends String>> ignoredEffects;
     private static ForgeConfigSpec.IntValue removeInactiveAfterDays;
 
+    private static ForgeConfigSpec.ConfigValue<String> landOwnerDisplayPosition;
+
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
@@ -102,6 +104,14 @@ public class TribesConfig {
                 .defineInRange("removeInactiveAfterDays", 10, 0, Integer.MAX_VALUE);
 
         server.pop();
+
+        client.push("client");
+
+        landOwnerDisplayPosition = client
+                .comment("position of the land owner ui. options: top_left, top_right, top_middle, bottom_left, bottom_right, bottom_middle, none ")
+                .define("landOwnerDisplayPosition", "top_left");
+
+        client.pop();
     }
 
     public static int getMaxNumberOfTribes(){
@@ -225,5 +235,12 @@ public class TribesConfig {
         return removeInactiveAfterDays.get() * 24 * 60 * 60 * 1000;
     }
 
+
+
+    // CLIENT
+
+    public static String getLandOwnerDisplayPosition(){
+        return landOwnerDisplayPosition.get();
+    }
 
 }

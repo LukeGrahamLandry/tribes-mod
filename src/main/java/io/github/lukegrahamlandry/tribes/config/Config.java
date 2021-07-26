@@ -19,7 +19,7 @@ public class Config {
     public static final ForgeConfigSpec client_config;
 
     static {
-        //Initiliazation of the main configs
+        // Initiliazation of the main configs
         TribesConfig.init(server_builder, client_builder);
 
         server_config = server_builder.build();
