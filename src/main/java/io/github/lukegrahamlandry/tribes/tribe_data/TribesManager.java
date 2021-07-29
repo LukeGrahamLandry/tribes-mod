@@ -55,6 +55,7 @@ public class TribesManager {
 
     static public TribeErrorType addNewTribe(Tribe newTribe){
         if (isNameAvailable(newTribe.name)){
+            TribesMain.LOGGER.debug("new tribe: " + newTribe.name);
             tribes.put(newTribe.name, newTribe);
             return TribeErrorType.SUCCESS;
         } else {

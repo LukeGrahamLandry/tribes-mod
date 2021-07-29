@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -39,9 +40,9 @@ public class ListBansCommand {
         }
 
         if (bannedIn.size() == 0){
-            source.getSource().sendFeedback(new StringTextComponent("That player is not banned from any tribes"), true);
+            source.getSource().sendFeedback(TribeSuccessType.NO_BANS.getBlueText(playerToCheck), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent("Player banned in: " + output), true);
+            source.getSource().sendFeedback(TribeSuccessType.LIST_BANS.getBlueText(playerToCheck, output), true);
         }
 
         return Command.SINGLE_SUCCESS;

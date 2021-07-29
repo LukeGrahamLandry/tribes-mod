@@ -1,8 +1,13 @@
 package io.github.lukegrahamlandry.tribes;
 
+import io.github.lukegrahamlandry.tribes.commands.util.DeityArgumentType;
+import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
 import io.github.lukegrahamlandry.tribes.config.Config;
 import io.github.lukegrahamlandry.tribes.init.*;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.command.arguments.TeamArgument;
 import net.minecraft.item.BannerItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -37,6 +42,9 @@ public class TribesMain {
         BlockInit.BLOCKS.register(eventBus);
         TileEntityInit.TILE_ENTITY_TYPES.register(eventBus);
         BannarInit.setup();
+
+        ArgumentTypes.register("tribe", TribeArgumentType.class, new ArgumentSerializer<>(TribeArgumentType::tribe));
+        ArgumentTypes.register("deity", DeityArgumentType.class, new ArgumentSerializer<>(DeityArgumentType::tribe));
 
         // event listeners
         eventBus.addListener(this::setup);

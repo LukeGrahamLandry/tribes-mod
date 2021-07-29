@@ -1,5 +1,6 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
+import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -134,5 +135,7 @@ public class LandClaimHelper {
         TribesManager.getTribes().forEach((aTribe) -> {
             aTribe.relationToOtherTribes.remove(tribe.getName());
         });
+
+        TribesMain.LOGGER.debug("delete tribe: " + tribe.getName());
     }
 }

@@ -1,6 +1,7 @@
 package io.github.lukegrahamlandry.tribes.events;
 
 import com.google.gson.*;
+import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
@@ -36,12 +37,15 @@ public class RemoveInactives {
     }
 
     public static void check(){
+        if (TribesConfig.kickInactiveAfterMillis() <= 0) return;
+
         lastPlayTimes.forEach((uuid, loginTime) -> {
             Tribe tribe = TribesManager.getTribeOf(uuid);
             if (tribe != null){
                 long timePassed = System.currentTimeMillis() - loginTime;
                 boolean shouldKick = timePassed > TribesConfig.kickInactiveAfterMillis();
                 if (shouldKick){
+                    TribesMain.LOGGER.debug("kick inavtive: " + uuid + "| " + timePassed + " " + loginTime + " " + TribesConfig.kickInactiveAfterMillis());
                     // todo: message to everyone that the player has been kicked
                     // todo: message to the player when they join again
                     tribe.removeMember(uuid);

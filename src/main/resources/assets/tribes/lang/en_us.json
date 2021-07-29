@@ -67,5 +67,7 @@
   "success.tribes.alert_join": "use the '/tribe join' command to join a tribe!",
   "success.tribes.alert_effects": "Use '/tribe effects' to select always active potion effects for your tribe",
   "success.tribes.alert_vice_leader": "Use `/tribe promote PlayerNameHere` to promote a member to an officer, and again to promote an officer to vice leader. If you leave your tribe, the vice leader will inherit your tribe. There can be any number of members and officers but only 1 vice leader.",
-  "success.tribes.alert_deity": "Use '/tribe deity list' see options of deities to follow. Then use '/tribe deity choose DeityNameHere'"
+  "success.tribes.alert_deity": "Use '/tribe deity list' see options of deities to follow. Then use '/tribe deity choose DeityNameHere'",
+  "success.tribes.no_bans": "%s has not been banned from any tribes",
+  "success.tribes.list_bans": "%s has been banned from: %s"
 }

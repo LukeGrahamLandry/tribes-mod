@@ -37,6 +37,8 @@ public enum TribeSuccessType {
     NO_AUTOBAN_RANK,
     CHOOSE_HEMI,
     BAN_FOR_DEATHS,
+    LIST_BANS,
+    NO_BANS,
 
     ALERT_EFFECTS,
     ALERT_DEITY,
@@ -58,7 +60,7 @@ public enum TribeSuccessType {
                 args[i] = (Object) ((Tribe) args[i]).getName();
             }
             if (args[i] instanceof PlayerEntity){
-                args[i] = (Object) ((PlayerEntity) args[i]).getDisplayName().getUnformattedComponentText();
+                args[i] = ((PlayerEntity) args[i]).getName().getUnformattedComponentText();
             }
         }
 

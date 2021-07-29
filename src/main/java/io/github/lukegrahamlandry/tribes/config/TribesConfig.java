@@ -236,7 +236,6 @@ public class TribesConfig {
     }
 
 
-
     // CLIENT
 
     public static String getLandOwnerDisplayPosition(){
