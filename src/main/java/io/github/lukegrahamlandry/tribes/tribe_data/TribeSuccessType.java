@@ -39,6 +39,10 @@ public enum TribeSuccessType {
     BAN_FOR_DEATHS,
     LIST_BANS,
     NO_BANS,
+    INVITE_SENT,
+    INVITE_REMOVED,
+    NOW_PRIVATE,
+    NO_LONGER_PRIVATE,
 
     ALERT_EFFECTS,
     ALERT_DEITY,

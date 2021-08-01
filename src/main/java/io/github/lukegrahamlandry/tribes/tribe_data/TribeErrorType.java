@@ -32,7 +32,9 @@ public enum TribeErrorType {
     ARG_PLAYER,
     ARG_DEITY,
     ARG_MISSING,
-    INVALID_RANK;
+    INVALID_RANK,
+    NOT_PRIVATE,
+    IS_PRIVATE;
 
     public TranslationTextComponent getText(){
         String langEntry = "error.tribes." + this.name().toLowerCase();

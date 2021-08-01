@@ -29,6 +29,9 @@ public class TribesManager {
         if (isNameAvailable(name)) return TribeErrorType.INVALID_TRIBE;
 
         Tribe tribe = getTribe(name);
+
+        if (tribe.isPrivate && !tribe.pendingInvites.contains(player.getUniqueID().toString())) return TribeErrorType.IS_PRIVATE;
+
         tribe.broadcastMessageNoCause(TribeSuccessType.SOMEONE_JOINED, player);
 
         return tribe.addMember(player.getUniqueID(), Tribe.Rank.MEMBER);

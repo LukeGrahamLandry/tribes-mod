@@ -34,6 +34,9 @@ public class Tribe {
     public int autobanDaysThreshold = 2;
     public Map<Rank, Boolean> autobanRank = new HashMap<>();
 
+    public boolean isPrivate = false;
+    public List<String> pendingInvites = new ArrayList<>();
+
     public HashMap<Effect, Integer> effects;
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
@@ -259,6 +262,8 @@ public class Tribe {
             obj.addProperty("autoban" + rank.asString(), value);
         });
 
+        obj.addProperty("private", this.isPrivate);
+
         return obj;
     }
 
@@ -324,6 +329,10 @@ public class Tribe {
         tribe.autobanRank.put(Rank.OFFICER, obj.get("autoban" + Rank.OFFICER.asString()).getAsBoolean());
         tribe.autobanRank.put(Rank.VICE_LEADER, obj.get("autoban" + Rank.VICE_LEADER.asString()).getAsBoolean());
         tribe.autobanRank.put(Rank.LEADER, obj.get("autoban" + Rank.LEADER.asString()).getAsBoolean());
+
+        if (obj.has("private")){
+            tribe.isPrivate = obj.get("private").getAsBoolean();
+        }
 
         return tribe;
     }
