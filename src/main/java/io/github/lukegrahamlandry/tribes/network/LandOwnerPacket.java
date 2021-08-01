@@ -21,13 +21,13 @@ public class LandOwnerPacket {
     }
 
     public static LandOwnerPacket decode(PacketBuffer buf) {
-        LandOwnerPacket packet = new LandOwnerPacket(buf.readUniqueId(), buf.readString(32767), buf.readBoolean());
+        LandOwnerPacket packet = new LandOwnerPacket(buf.readUUID(), buf.readUtf(32767), buf.readBoolean());
         return packet;
     }
 
     public static void encode(LandOwnerPacket packet, PacketBuffer buf) {
-        buf.writeUniqueId(packet.entityID);
-        buf.writeString(packet.toDisplay);
+        buf.writeUUID(packet.entityID);
+        buf.writeUtf(packet.toDisplay);
         buf.writeBoolean(packet.access);
     }
 

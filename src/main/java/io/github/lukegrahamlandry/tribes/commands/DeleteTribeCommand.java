@@ -14,17 +14,17 @@ import net.minecraft.util.text.StringTextComponent;
 public class DeleteTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("delete")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .executes(DeleteTribeCommand::handleDelete);
 
     }
 
     public static int handleDelete(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
 
-        TribeErrorType response = TribesManager.deleteTribe(TribesManager.getTribeOf(player.getUniqueID()).getName(), player.getUniqueID());
+        TribeErrorType response = TribesManager.deleteTribe(TribesManager.getTribeOf(player.getUUID()).getName(), player.getUUID());
         if (response != TribeErrorType.SUCCESS){
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

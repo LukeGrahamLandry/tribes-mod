@@ -18,32 +18,32 @@ import net.minecraftforge.fml.network.PacketDistributor;
 public class EffectsTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("effects")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .executes(EffectsTribeCommand::handleeffects);
 
     }
 
     public static int handleeffects(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getSource().asPlayer();
+        ServerPlayerEntity player = source.getSource().getPlayerOrException();
 
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         if (tribe != null){
             long timePassed = System.currentTimeMillis() - tribe.lastEffectsChangeTime;
             long timeToWait = TribesConfig.betweenEffectsChangeMillis() - timePassed;
             if (timeToWait > 0){
                 long hours = timeToWait / 1000 / 60 / 60;
-                source.getSource().sendFeedback(TribeErrorType.getWaitText(hours), true);
+                source.getSource().sendSuccess(TribeErrorType.getWaitText(hours), true);
                 return Command.SINGLE_SUCCESS;
             }
 
-            if (!tribe.isLeader(player.getUniqueID())){
-                source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);
+            if (!tribe.isLeader(player.getUUID())){
+                source.getSource().sendSuccess(TribeErrorType.LOW_RANK.getText(), true);
                 return Command.SINGLE_SUCCESS;
             }
 
             NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenEffectGUI(player));
         } else {
-            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         }
 
 

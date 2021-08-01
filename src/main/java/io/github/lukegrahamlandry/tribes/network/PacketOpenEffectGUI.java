@@ -23,7 +23,7 @@ public class PacketOpenEffectGUI {
     public PacketOpenEffectGUI(ServerPlayerEntity player) {
         this.numGood = TribesManager.getNumberOfGoodEffects(player);
         this.numBad = TribesManager.getNumberOfBadEffects(player);
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         this.effects = tribe.effects;
     }
 
@@ -41,7 +41,7 @@ public class PacketOpenEffectGUI {
             boolean done = buf.readBoolean();
             if (done) break;
             else {
-                Effect effect = Effect.get(buf.readInt());
+                Effect effect = Effect.byId(buf.readInt());
                 int level = buf.readInt();
                 currentEffects.put(effect, level);
             }
@@ -70,6 +70,6 @@ public class PacketOpenEffectGUI {
     @OnlyIn(Dist.CLIENT)
     private static void doOpen(PacketOpenEffectGUI packet){
         Screen gui = new TribeEffectScreen(packet.numGood, packet.numBad, packet.effects);
-        Minecraft.getInstance().displayGuiScreen(gui);
+        Minecraft.getInstance().setScreen(gui);
     }
 }

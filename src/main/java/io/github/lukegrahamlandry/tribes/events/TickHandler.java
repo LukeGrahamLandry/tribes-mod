@@ -25,26 +25,26 @@ public class TickHandler {
     static int ONE_MINUTE = 60 * 20;
     @SubscribeEvent
     public static void updateLandOwnerAndCompassAndEffects(TickEvent.PlayerTickEvent event){
-        if (event.player.getEntityWorld().isRemote() || timer % 10 != 0) return;
+        if (event.player.getCommandSenderWorld().isClientSide() || timer % 10 != 0) return;
 
         // land owner display
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
-                new LandOwnerPacket(event.player.getUniqueID(), LandClaimHelper.getOwnerDisplayFor(event.player), LandClaimHelper.canAccessLandAt(event.player, event.player.getPosition())));
+                new LandOwnerPacket(event.player.getUUID(), LandClaimHelper.getOwnerDisplayFor(event.player), LandClaimHelper.canAccessLandAt(event.player, event.player.blockPosition())));
 
 
         // tribe compass direction
-        ItemStack stack = event.player.getHeldItem(Hand.MAIN_HAND);
+        ItemStack stack = event.player.getItemInHand(Hand.MAIN_HAND);
         if (stack.getItem() instanceof TribeCompass){
             NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
-                    new CompassChunkPacket(event.player.getUniqueID(), TribeCompass.caclulateTargetPosition((ServerPlayerEntity) event.player, stack)));
+                    new CompassChunkPacket(event.player.getUUID(), TribeCompass.caclulateTargetPosition((ServerPlayerEntity) event.player, stack)));
         }
 
 
         // apply tribe effects
-        Tribe tribe = TribesManager.getTribeOf(event.player.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(event.player.getUUID());
         if (tribe != null && timer % 80 == 0){  // without the modulo check the effects dont tick properly. ie wither never happens, regen always happens
             tribe.effects.forEach((effect, level) -> {
-                event.player.addPotionEffect(new EffectInstance(effect, 15*20, level-1));
+                event.player.addEffect(new EffectInstance(effect, 15*20, level-1));
             });
         }
 
@@ -56,7 +56,7 @@ public class TickHandler {
 
     @SubscribeEvent
     public static void tickDeathPunishments(TickEvent.WorldTickEvent event){
-        if (event.world.isRemote()) return;
+        if (event.world.isClientSide()) return;
         timer++;
 
         if (timer >= ONE_MINUTE){

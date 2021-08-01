@@ -21,7 +21,7 @@ public class CommandInit {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event){
         event.getDispatcher().register(Commands.literal("tribe")
-                .requires((context) -> context.hasPermissionLevel(0))
+                .requires((context) -> context.hasPermission(0))
                 .then(CreateTribeCommand.register())
                 .then(JoinTribeCommand.register())
                 .then(CountTribeCommand.register())
@@ -54,7 +54,7 @@ public class CommandInit {
     }
 
     public static int openMyTribeGUI(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getSource().asPlayer();
+        ServerPlayerEntity player = source.getSource().getPlayerOrException();
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenMyTribeGUI(player));
         return Command.SINGLE_SUCCESS;
     }

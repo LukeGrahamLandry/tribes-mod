@@ -49,12 +49,12 @@ public class JoinTribeScreen extends TribeScreen {
         // (this.height - this.ySize + 110) / 2
         this.createButton = this.addButton(new Button(this.guiLeft + 13, this.guiTop + 10, 75, 20, new StringTextComponent("Create Tribe!"), (p_214318_1_) -> {
             // this.closeScreen();
-            Minecraft.getInstance().displayGuiScreen(new CreateTribeScreen());
+            Minecraft.getInstance().setScreen(new CreateTribeScreen());
         }));
 
         this.laterButton = this.addButton(new Button(this.guiLeft + 13 + 85, this.guiTop + 10, 75, 20, new StringTextComponent("Choose Later."), (p_214318_1_) -> {
             if (this.laterButton.active){
-                this.closeScreen();
+                this.onClose();
             }
         }));
         this.laterButton.active = this.allowClose;
@@ -99,9 +99,9 @@ public class JoinTribeScreen extends TribeScreen {
 
         this.addButton(new Button(x, y, 160, buttonHeight, new StringTextComponent(name), (p_214318_1_) -> {
             NetworkHandler.INSTANCE.sendToServer(new PacketJoinTribe(name));
-            this.closeScreen();
+            this.onClose();
         }, (p_238659_1_, p_238659_2_, p_238659_3_, p_238659_4_) -> {
-            this.renderTooltip(p_238659_2_, Minecraft.getInstance().fontRenderer.trimStringToWidth(new StringTextComponent(String.valueOf(members) + (members == 1 ? " member" : " members")), Math.max(width / 2 - 43, 170)), p_238659_3_, p_238659_4_);
+            this.renderTooltip(p_238659_2_, Minecraft.getInstance().font.split(new StringTextComponent(String.valueOf(members) + (members == 1 ? " member" : " members")), Math.max(width / 2 - 43, 170)), p_238659_3_, p_238659_4_);
         }));
     }
 }

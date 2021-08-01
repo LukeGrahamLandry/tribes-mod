@@ -41,31 +41,31 @@ public class AltarRenderer extends TileEntityRenderer<AltarTileEntity> {
 
     public void render(AltarTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         BlockState state = tileEntityIn.getBlockState();
-        if (state.get(TYPE) == ChestType.LEFT) return;
+        if (state.getValue(TYPE) == ChestType.LEFT) return;
 
         String bannerKey = tileEntityIn.getBannerKey();
         if (bannerKey == null) return;
         BannerPattern pattern = BannarInit.get(bannerKey);
 
-        matrixStackIn.push();
+        matrixStackIn.pushPose();
         matrixStackIn.translate(0.5D, 1D, 0.5D);
 
-        if (state.get(TYPE) == ChestType.RIGHT){
+        if (state.getValue(TYPE) == ChestType.RIGHT){
             Direction side = AlterBlock.getDirectionToAttached(state);
-            matrixStackIn.translate(side.getXOffset() * 0.5D, 0, side.getZOffset() * 0.5D);
+            matrixStackIn.translate(side.getStepX() * 0.5D, 0, side.getStepZ() * 0.5D);
         }
 
         matrixStackIn.scale(0.5F, 0.5F, 0.5F);
-        float spin = (tileEntityIn.getWorld().getDayTime() + partialTicks) / 30.0F;
-        matrixStackIn.rotate(Vector3f.YP.rotation(spin));
+        float spin = (tileEntityIn.getLevel().getDayTime() + partialTicks) / 30.0F;
+        matrixStackIn.mulPose(Vector3f.YP.rotation(spin));
 
         // new RenderMaterial(Atlases.SHIELD_ATLAS, pattern.getTextureLocation(false)) would make one instead of two but need to do the other textures
 
-        float[] afloat = DyeColor.WHITE.getColorComponentValues();
+        float[] afloat = DyeColor.WHITE.getTextureDiffuseColors();
 
-        RenderMaterial rendermaterial = new RenderMaterial(Atlases.BANNER_ATLAS, pattern.getTextureLocation(true));
-        this.model.render(matrixStackIn, rendermaterial.getBuffer(bufferIn, RenderType::getEntityNoOutline), combinedLightIn, combinedOverlayIn, afloat[0], afloat[1], afloat[2], 1.0F);
+        RenderMaterial rendermaterial = new RenderMaterial(Atlases.BANNER_SHEET, pattern.location(true));
+        this.model.render(matrixStackIn, rendermaterial.buffer(bufferIn, RenderType::entityNoOutline), combinedLightIn, combinedOverlayIn, afloat[0], afloat[1], afloat[2], 1.0F);
 
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
     }
 }

@@ -21,25 +21,25 @@ public class LoginHandler {
     @SubscribeEvent
     public static void remindLeaderOfSetup(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
-        if (!player.getEntityWorld().isRemote()) {
-            Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        if (!player.getCommandSenderWorld().isClientSide()) {
+            Tribe tribe = TribesManager.getTribeOf(player.getUUID());
 
             // join a tribe
             if (tribe == null){
                 if (TribesConfig.isTribeRequired())
                     NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new PacketOpenJoinGUI((ServerPlayerEntity) player));
                 else {
-                    player.sendStatusMessage(TribeSuccessType.ALERT_JOIN.getBlueText(), true);
+                    player.displayClientMessage(TribeSuccessType.ALERT_JOIN.getBlueText(), true);
                 }
                 return;
             }
 
-            if (!tribe.isLeader(player.getUniqueID())) return;
+            if (!tribe.isLeader(player.getUUID())) return;
 
             // choose effects
             // todo: config to force choosing your effects
             if (tribe.effects.isEmpty()){
-                player.sendStatusMessage(TribeSuccessType.ALERT_EFFECTS.getBlueText(), false);
+                player.displayClientMessage(TribeSuccessType.ALERT_EFFECTS.getBlueText(), false);
             }
 
             // choose vice leader
@@ -48,23 +48,23 @@ public class LoginHandler {
                 if (tribe.getRankOf(id) == Tribe.Rank.VICE_LEADER) hasViceLeader = true;
             }
             if (!hasViceLeader){
-                player.sendStatusMessage(TribeSuccessType.ALERT_VICE_LEADER.getBlueText(), false);
+                player.displayClientMessage(TribeSuccessType.ALERT_VICE_LEADER.getBlueText(), false);
             }
 
             // choose deity 
             // todo: config to force choosing a deity
             if (tribe.deity == null){
-                player.sendStatusMessage(TribeSuccessType.ALERT_DEITY.getBlueText(), false);
+                player.displayClientMessage(TribeSuccessType.ALERT_DEITY.getBlueText(), false);
             }
 
-            RemoveInactives.recordActive(player.getUniqueID());
+            RemoveInactives.recordActive(player.getUUID());
         }
     }
 
     @SubscribeEvent
     public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (!event.getPlayer().getEntityWorld().isRemote()) {
-            RemoveInactives.recordActive(event.getPlayer().getUniqueID());
+        if (!event.getPlayer().getCommandSenderWorld().isClientSide()) {
+            RemoveInactives.recordActive(event.getPlayer().getUUID());
         }
 
     }

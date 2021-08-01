@@ -28,14 +28,14 @@ public class PacketLeaveTribe {
 
     public void handle(Supplier<NetworkEvent.Context> ctx){
         ctx.get().enqueueWork(() -> {
-            Tribe tribe = TribesManager.getTribeOf(ctx.get().getSender().getUniqueID());
+            Tribe tribe = TribesManager.getTribeOf(ctx.get().getSender().getUUID());
             if (tribe != null){
                 ConfirmCommand.add(ctx.get().getSender(), () -> {
                     TribesManager.leaveTribe(ctx.get().getSender());
-                    ctx.get().getSender().sendMessage(TribeSuccessType.YOU_LEFT.getText(), ctx.get().getSender().getUniqueID());
+                    ctx.get().getSender().sendMessage(TribeSuccessType.YOU_LEFT.getText(), ctx.get().getSender().getUUID());
                 });
             } else {
-                ctx.get().getSender().sendMessage(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), ctx.get().getSender().getUniqueID());
+                ctx.get().getSender().sendMessage(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), ctx.get().getSender().getUUID());
             }
         });
         ctx.get().setPacketHandled(true);

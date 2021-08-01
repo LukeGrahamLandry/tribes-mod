@@ -21,12 +21,12 @@ public class CompassChunkPacket {
     }
 
     public static CompassChunkPacket decode(PacketBuffer buf) {
-        CompassChunkPacket packet = new CompassChunkPacket(buf.readUniqueId(), buf.readBlockPos());
+        CompassChunkPacket packet = new CompassChunkPacket(buf.readUUID(), buf.readBlockPos());
         return packet;
     }
 
     public static void encode(CompassChunkPacket packet, PacketBuffer buf) {
-        buf.writeUniqueId(packet.entityID);
+        buf.writeUUID(packet.entityID);
         buf.writeBlockPos(packet.pos);
     }
 

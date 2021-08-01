@@ -30,16 +30,16 @@ public class SaveHandler {
     // note: fires 3 times, /data /DIM1/data and /DIM-1/data
     @SubscribeEvent
     public static void doLoad(WorldEvent.Load event){
-        if (event.getWorld().isRemote()) return;
-        File dataFile = ((ServerChunkProvider)event.getWorld().getChunkProvider()).getSavedData().folder;
+        if (event.getWorld().isClientSide()) return;
+        File dataFile = ((ServerChunkProvider)event.getWorld().getChunkSource()).getDataStorage().dataFolder;
         load(dataFile);
     }
 
     // note: fires 3 times, /data /DIM1/data and /DIM-1/data
     @SubscribeEvent
     public static void doSave(WorldEvent.Unload event){
-        if (event.getWorld().isRemote()) return;
-        File dataFile = ((ServerChunkProvider)event.getWorld().getChunkProvider()).getSavedData().folder;
+        if (event.getWorld().isClientSide()) return;
+        File dataFile = ((ServerChunkProvider)event.getWorld().getChunkSource()).getDataStorage().dataFolder;
         save(dataFile);
     }
 

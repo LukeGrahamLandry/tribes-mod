@@ -52,7 +52,7 @@ public enum TribeSuccessType {
     public TranslationTextComponent getText(){
         String langEntry = "success.tribes." + this.name().toLowerCase();
         TranslationTextComponent text = new TranslationTextComponent(langEntry);
-        Style style = text.getStyle().setColor(Color.fromInt(0x00FF00));
+        Style style = text.getStyle().withColor(Color.fromRgb(0x00FF00));
         text.setStyle(style);
         return text;
     }
@@ -64,13 +64,13 @@ public enum TribeSuccessType {
                 args[i] = (Object) ((Tribe) args[i]).getName();
             }
             if (args[i] instanceof PlayerEntity){
-                args[i] = ((PlayerEntity) args[i]).getName().getUnformattedComponentText();
+                args[i] = ((PlayerEntity) args[i]).getName().getContents();
             }
         }
 
         String langEntry = "success.tribes." + this.name().toLowerCase();
         TranslationTextComponent text = new TranslationTextComponent(langEntry, args);
-        Style style = text.getStyle().setColor(Color.fromInt(0x00FF00));
+        Style style = text.getStyle().withColor(Color.fromRgb(0x00FF00));
         text.setStyle(style);
         return text;
     }
@@ -89,24 +89,24 @@ public enum TribeSuccessType {
 
         String langEntry = "success.tribes." + this.name().toLowerCase();
         TranslationTextComponent text = new TranslationTextComponent(langEntry, args);
-        Style style = text.getStyle().setColor(Color.fromInt(0x34e5eb));
+        Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
         text.setStyle(style);
-        TextComponent name = new StringTextComponent(player.getName().getUnformattedComponentText() + " ");
-        Style namestyle = name.getStyle().setBold(true).setColor(Color.fromInt(0xffbb00));
+        TextComponent name = new StringTextComponent(player.getName().getContents() + " ");
+        Style namestyle = name.getStyle().withBold(true).withColor(Color.fromRgb(0xffbb00));
         name.setStyle(namestyle);
         return name.append(text);
     }
 
     public ITextComponent getBlueText() {
         TextComponent text = getText();
-        Style style = text.getStyle().setColor(Color.fromInt(0x34e5eb));
+        Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
         text.setStyle(style);
         return text;
     }
 
     public ITextComponent getBlueText(Object... args) {
         TextComponent text = getText(args);
-        Style style = text.getStyle().setColor(Color.fromInt(0x34e5eb));
+        Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
         text.setStyle(style);
         return text;
     }

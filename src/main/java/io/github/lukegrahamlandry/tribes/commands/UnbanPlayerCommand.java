@@ -17,11 +17,11 @@ import net.minecraft.util.text.StringTextComponent;
 public class UnbanPlayerCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("unban")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(UnbanPlayerCommand::handleBan)
                 ).executes(ctx -> {
-                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
+                    ctx.getSource().sendSuccess(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );
@@ -29,19 +29,19 @@ public class UnbanPlayerCommand {
     }
 
     public static int handleBan(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity playerBanning = source.getSource().asPlayer();
+        PlayerEntity playerBanning = source.getSource().getPlayerOrException();
         PlayerEntity playerToUnban = EntityArgument.getPlayer(source, "player");
 
-        Tribe tribe = TribesManager.getTribeOf(playerBanning.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(playerBanning.getUUID());
         if (tribe == null){
-            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         } else {
-            TribeErrorType response = tribe.unbanPlayer(playerBanning.getUniqueID(), playerToUnban.getUniqueID());
+            TribeErrorType response = tribe.unbanPlayer(playerBanning.getUUID(), playerToUnban.getUUID());
 
             if (response == TribeErrorType.SUCCESS){
                 tribe.broadcastMessage(TribeSuccessType.UNBAN_PLAYER, playerBanning, playerToUnban);
             } else {
-                source.getSource().sendFeedback(response.getText(), true);
+                source.getSource().sendSuccess(response.getText(), true);
             }
         }
 

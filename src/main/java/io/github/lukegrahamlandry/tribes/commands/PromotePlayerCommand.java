@@ -17,11 +17,11 @@ import net.minecraft.util.text.StringTextComponent;
 public class PromotePlayerCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("promote")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(PromotePlayerCommand::handle)
                 ).executes(ctx -> {
-                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
+                    ctx.getSource().sendSuccess(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );
@@ -29,40 +29,40 @@ public class PromotePlayerCommand {
     }
 
     public static int handle(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity playerRunning = source.getSource().asPlayer();
+        PlayerEntity playerRunning = source.getSource().getPlayerOrException();
         PlayerEntity playerTarget = EntityArgument.getPlayer(source, "player");
 
-        Tribe tribe = TribesManager.getTribeOf(playerRunning.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(playerRunning.getUUID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
             return Command.SINGLE_SUCCESS;
         }
 
         // require confirm to demote yourself
-        if (tribe.isViceLeader(playerTarget.getUniqueID()) && tribe.isLeader(playerRunning.getUniqueID())){
-            source.getSource().sendFeedback(new StringTextComponent("make " + playerTarget.getName().getString() + " the leader of your tribe?"), true);
+        if (tribe.isViceLeader(playerTarget.getUUID()) && tribe.isLeader(playerRunning.getUUID())){
+            source.getSource().sendSuccess(new StringTextComponent("make " + playerTarget.getName().getString() + " the leader of your tribe?"), true);
 
             ConfirmCommand.add(playerRunning, () -> {
-                TribeErrorType response = tribe.promotePlayer(playerRunning.getUniqueID(), playerTarget.getUniqueID());
+                TribeErrorType response = tribe.promotePlayer(playerRunning.getUUID(), playerTarget.getUUID());
 
                 if (response == TribeErrorType.SUCCESS){
-                    String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
+                    String rank = tribe.getRankOf(playerTarget.getUUID().toString()).asString();
                     tribe.broadcastMessage(TribeSuccessType.PROMOTE, playerRunning, playerTarget, rank);
                 } else {
-                    source.getSource().sendFeedback(response.getText(), true);
+                    source.getSource().sendSuccess(response.getText(), true);
                 }
             });
             return Command.SINGLE_SUCCESS;
         }
 
-        TribeErrorType response = tribe.promotePlayer(playerRunning.getUniqueID(), playerTarget.getUniqueID());
+        TribeErrorType response = tribe.promotePlayer(playerRunning.getUUID(), playerTarget.getUUID());
 
         if (response == TribeErrorType.SUCCESS){
-            String rank = tribe.getRankOf(playerTarget.getUniqueID().toString()).asString();
+            String rank = tribe.getRankOf(playerTarget.getUUID().toString()).asString();
             tribe.broadcastMessage(TribeSuccessType.PROMOTE, playerRunning, playerTarget, rank);
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
 

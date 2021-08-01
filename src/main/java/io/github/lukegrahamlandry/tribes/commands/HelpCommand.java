@@ -13,7 +13,7 @@ public class HelpCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("help")
                 .executes(ctx -> {
-                    ServerPlayerEntity player = ctx.getSource().asPlayer();
+                    ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
                     NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenHelpLink());
                     return Command.SINGLE_SUCCESS;
                 });

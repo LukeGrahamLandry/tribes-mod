@@ -17,11 +17,11 @@ import net.minecraft.util.text.StringTextComponent;
 public class NeutralTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("neutral")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
                         .executes(NeutralTribeCommand::handleJoin)
                 ).executes(ctx -> {
-                    ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
+                    ctx.getSource().sendSuccess(TribeErrorType.ARG_TRIBE.getText(), false);
                             return 0;
                         }
                 );
@@ -29,17 +29,17 @@ public class NeutralTribeCommand {
     }
 
     public static int handleJoin(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
         Tribe otherTribe = TribeArgumentType.getTribe(source, "tribe");
         if (otherTribe == null) return 1;
 
-        Tribe yourTribe = TribesManager.getTribeOf(player.getUniqueID());
+        Tribe yourTribe = TribesManager.getTribeOf(player.getUUID());
 
-        TribeErrorType response = yourTribe.setRelation(player.getUniqueID(), otherTribe, Tribe.Relation.NONE);
+        TribeErrorType response = yourTribe.setRelation(player.getUUID(), otherTribe, Tribe.Relation.NONE);
         if (response == TribeErrorType.SUCCESS){
             yourTribe.broadcastMessage(TribeSuccessType.NEUTRAL_TRIBE, player, otherTribe);
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

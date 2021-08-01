@@ -25,7 +25,7 @@ public class PacketOpenJoinGUI {
             this.tribes.put(tribe.getName(), tribe.getCount());
         });
 
-        this.allowClose = TribesManager.playerHasTribe(player.getUniqueID())|| !TribesConfig.isTribeRequired();
+        this.allowClose = TribesManager.playerHasTribe(player.getUUID())|| !TribesConfig.isTribeRequired();
     }
 
     public PacketOpenJoinGUI(HashMap<String, Integer> tribes, boolean allowClose) {
@@ -36,7 +36,7 @@ public class PacketOpenJoinGUI {
     public static PacketOpenJoinGUI decode(PacketBuffer buf) {
         HashMap<String, Integer> tribes = new HashMap<>();
         while (!buf.readBoolean()){
-            tribes.put(buf.readString(32767), buf.readInt());
+            tribes.put(buf.readUtf(32767), buf.readInt());
         }
 
         return new PacketOpenJoinGUI(tribes, buf.readBoolean());
@@ -45,7 +45,7 @@ public class PacketOpenJoinGUI {
     public static void encode(PacketOpenJoinGUI packet, PacketBuffer buf) {
         packet.tribes.forEach((name, members) -> {
             buf.writeBoolean(false);
-            buf.writeString(name);
+            buf.writeUtf(name);
             buf.writeInt(members);
         });
 
@@ -63,6 +63,6 @@ public class PacketOpenJoinGUI {
     private static void doOpen(PacketOpenJoinGUI packet){
         Screen gui = new JoinTribeScreen(packet.tribes, packet.allowClose);
         // dont auto close the create screen every tick when tribes are forced
-        if (Minecraft.getInstance().currentScreen == null) Minecraft.getInstance().displayGuiScreen(gui);
+        if (Minecraft.getInstance().screen == null) Minecraft.getInstance().setScreen(gui);
     }
 }

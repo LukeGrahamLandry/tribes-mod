@@ -174,7 +174,7 @@ public class Tribe {
         for (String uuid : this.getMembers()){
             PlayerEntity player = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
             if (player != null){
-                player.sendStatusMessage(text, false);
+                player.displayClientMessage(text, false);
             }
         }
     }
@@ -187,14 +187,14 @@ public class Tribe {
             PlayerEntity player = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
             if (player != null){
                 boolean isCausingPlayer = uuid.equals(causingPlayer.toString());
-                player.sendStatusMessage(isCausingPlayer ? plainText : text, false);
+                player.displayClientMessage(isCausingPlayer ? plainText : text, false);
             }
         }
     }
 
 
     public void broadcastMessage(TribeSuccessType action, PlayerEntity causingPlayer, Object... args){
-        this.broadcastMessage(action, causingPlayer.getUniqueID(), args);
+        this.broadcastMessage(action, causingPlayer.getUUID(), args);
     }
 
     public int getTribeTier(){
@@ -312,7 +312,7 @@ public class Tribe {
             JsonObject effectMap = obj.get("effects").getAsJsonObject();
             for (Map.Entry<String, JsonElement> e : effectMap.entrySet()){
                 int id = new Integer(e.getKey());
-                Effect effect = Effect.get(id);
+                Effect effect = Effect.byId(id);
                 tribe.effects.put(effect, e.getValue().getAsInt());
             }
         }
@@ -437,7 +437,7 @@ public class Tribe {
     }
 
     public TribeErrorType validateSelectHemi(PlayerEntity player, String side) {
-        int runRank = this.getRankOf(player.getUniqueID().toString()).asInt();
+        int runRank = this.getRankOf(player.getUUID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeErrorType.LOW_RANK;
         if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeErrorType.HAVE_HEMI;
         if (this.getTribeTier() < TribesConfig.getMinTierToSelectHemi()) return TribeErrorType.WEAK_TRIBE;
@@ -450,7 +450,7 @@ public class Tribe {
     }
 
     public TribeErrorType selectHemi(PlayerEntity player, String side) {
-        int runRank = this.getRankOf(player.getUniqueID().toString()).asInt();
+        int runRank = this.getRankOf(player.getUUID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeErrorType.LOW_RANK;
         if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeErrorType.HAVE_HEMI;
         if (this.getTribeTier() < TribesConfig.getMinTierToSelectHemi()) return TribeErrorType.WEAK_TRIBE;

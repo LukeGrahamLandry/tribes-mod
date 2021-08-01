@@ -22,7 +22,7 @@ public abstract class GuiButton extends AbstractButton {
     }
 
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        Minecraft.getInstance().getTextureManager().bindTexture(screen.getGuiTexture());
+        Minecraft.getInstance().getTextureManager().bind(screen.getGuiTexture());
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int j = 0;
         if (!this.active) {
@@ -34,10 +34,10 @@ public abstract class GuiButton extends AbstractButton {
         }
 
         this.blit(matrixStack, this.x, this.y, j, ySize, this.width, this.height);
-        this.func_230454_a_(matrixStack);
+        this.renderIcon(matrixStack);
     }
 
-    protected abstract void func_230454_a_(MatrixStack p_230454_1_);
+    protected abstract void renderIcon(MatrixStack p_230454_1_);
 
     public boolean isSelected() {
         return this.selected;
@@ -59,7 +59,7 @@ public abstract class GuiButton extends AbstractButton {
             this.v = v;
         }
 
-        protected void func_230454_a_(MatrixStack p_230454_1_) {
+        protected void renderIcon(MatrixStack p_230454_1_) {
             this.blit(p_230454_1_, this.x + 2, this.y + 2, this.u, this.v, 18, 18);
         }
     }

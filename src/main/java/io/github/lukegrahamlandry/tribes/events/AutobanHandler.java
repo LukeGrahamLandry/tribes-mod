@@ -25,10 +25,10 @@ public class AutobanHandler {
     static String NBT_KEY = "tribesdeaths";
     @SubscribeEvent
     public static void autobanOnDeath(LivingDeathEvent event){
-        if (event.getEntityLiving().getEntityWorld().isRemote() || !(event.getEntityLiving() instanceof PlayerEntity)) return;
+        if (event.getEntityLiving().getCommandSenderWorld().isClientSide() || !(event.getEntityLiving() instanceof PlayerEntity)) return;
 
-        Tribe tribe = TribesManager.getTribeOf(event.getEntityLiving().getUniqueID());
-        if (tribe == null || !tribe.autobanRank.get(tribe.getRankOf(event.getEntityLiving().getUniqueID().toString()))) return;
+        Tribe tribe = TribesManager.getTribeOf(event.getEntityLiving().getUUID());
+        if (tribe == null || !tribe.autobanRank.get(tribe.getRankOf(event.getEntityLiving().getUUID().toString()))) return;
 
         long now = System.currentTimeMillis();
         long threshold = tribe.autobanDaysThreshold * 24 * 60 * 60 * 1000;
@@ -48,11 +48,11 @@ public class AutobanHandler {
         }
 
         int numDeathsWithinThreshold = recentDeaths.size();
-        TribesMain.LOGGER.debug(event.getEntityLiving().getUniqueID() + " has died " + numDeathsWithinThreshold + " within their tribe's autoban threshold");
+        TribesMain.LOGGER.debug(event.getEntityLiving().getUUID() + " has died " + numDeathsWithinThreshold + " within their tribe's autoban threshold");
         if (numDeathsWithinThreshold >= tribe.autobanDeathThreshold){
             // todo; specify that its because they died too often
             tribe.broadcastMessageNoCause(TribeSuccessType.BAN_FOR_DEATHS, (PlayerEntity) event.getEntityLiving());
-            tribe.banPlayer(UUID.fromString(tribe.getOwner()), event.getEntityLiving().getUniqueID());
+            tribe.banPlayer(UUID.fromString(tribe.getOwner()), event.getEntityLiving().getUUID());
         } else {
             nbt.putLongArray(NBT_KEY, recentDeaths);
             // hopefully it was passed by reference and not copied

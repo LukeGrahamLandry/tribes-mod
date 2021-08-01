@@ -20,14 +20,14 @@ public class AngryDogs {
     @SubscribeEvent
     public static void addTribeSlayGoal(EntityJoinWorldEvent event){
         Entity dog = event.getEntity();
-        if (dog.getEntityWorld().isRemote() || !(dog instanceof WolfEntity)) return;
+        if (dog.getCommandSenderWorld().isClientSide() || !(dog instanceof WolfEntity)) return;
         ((WolfEntity) dog).targetSelector.addGoal(0, new NearestAttackableTargetGoal<>((MobEntity) dog, PlayerEntity.class, 10, true, false, (entity) -> {
             if (!(entity instanceof ServerPlayerEntity)) return false;  // just to make sure
 
-            UUID ownerID = ((WolfEntity) dog).getOwnerId();
+            UUID ownerID = ((WolfEntity) dog).getOwnerUUID();
             if (ownerID == null) return false;
             Tribe ownerTribe = TribesManager.getTribeOf(ownerID);
-            Tribe checkTribe = TribesManager.getTribeOf(entity.getUniqueID());
+            Tribe checkTribe = TribesManager.getTribeOf(entity.getUUID());
             if (ownerTribe == null || checkTribe == null) return false;
 
             return ownerTribe.relationToOtherTribes.containsKey(checkTribe.getName()) && ownerTribe.relationToOtherTribes.get(checkTribe.getName()) == Tribe.Relation.ENEMY;

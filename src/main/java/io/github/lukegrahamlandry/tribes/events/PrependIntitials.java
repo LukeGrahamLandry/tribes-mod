@@ -26,17 +26,17 @@ public class PrependIntitials {
 
     @SubscribeEvent
     public static void addToDisplayName(PlayerEvent.NameFormat event){
-        if (event.getPlayer().getEntityWorld().isRemote()) {
+        if (event.getPlayer().getCommandSenderWorld().isClientSide()) {
             return;
         }
 
-        Tribe tribe = TribesManager.getTribeOf(event.getPlayer().getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(event.getPlayer().getUUID());
         if (tribe != null){
             TextComponent initials = new StringTextComponent(tribe.getInitials() + " ");
-            Style style = initials.getStyle().setBold(true).setColor(Color.fromInt(0xffbb00));
+            Style style = initials.getStyle().withBold(true).withColor(Color.fromRgb(0xffbb00));
             initials.setStyle(style);
             TextComponent text = (TextComponent) event.getDisplayname();
-            text.setStyle(Style.EMPTY.setBold(false).setColor(Color.fromInt(0xFFFFFF)));
+            text.setStyle(Style.EMPTY.withBold(false).withColor(Color.fromRgb(0xFFFFFF)));
             ITextComponent both = initials.append(text);
             event.setDisplayname(both);
         }

@@ -23,12 +23,12 @@ public class AttackHandler {
     public static void blockFriendlyFire(LivingDamageEvent event){
         if (TribesConfig.getFriendlyFireEnabled()) return;
 
-        Entity source = event.getSource().getTrueSource();
+        Entity source = event.getSource().getEntity();
         Entity target = event.getEntityLiving();
 
-        if (source instanceof PlayerEntity && !source.getEntityWorld().isRemote()){
-            Tribe sourceTribe = TribesManager.getTribeOf(source.getUniqueID());
-            Tribe targetTribe = TribesManager.getTribeOf(target.getUniqueID());
+        if (source instanceof PlayerEntity && !source.getCommandSenderWorld().isClientSide()){
+            Tribe sourceTribe = TribesManager.getTribeOf(source.getUUID());
+            Tribe targetTribe = TribesManager.getTribeOf(target.getUUID());
 
             if (sourceTribe != null && targetTribe != null){
                 if (sourceTribe.equals(targetTribe)) event.setAmount(0);
@@ -39,25 +39,25 @@ public class AttackHandler {
     @SubscribeEvent
     public static void punishDeath(LivingDeathEvent event){
         Entity dead = event.getEntity();
-        if (!(dead instanceof PlayerEntity) || dead.getEntityWorld().isRemote()) return;
+        if (!(dead instanceof PlayerEntity) || dead.getCommandSenderWorld().isClientSide()) return;
 
-        Entity killer = event.getSource().getTrueSource();
+        Entity killer = event.getSource().getEntity();
         if (killer instanceof PlayerEntity){
             tryDropHead(dead, killer);
         }
 
-        Tribe tribe = TribesManager.getTribeOf(event.getEntityLiving().getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(event.getEntityLiving().getUUID());
         if (tribe == null) return;
 
-        if (event.getSource().getTrueSource() instanceof PlayerEntity) tribe.deathWasPVP = true;
+        if (event.getSource().getEntity() instanceof PlayerEntity) tribe.deathWasPVP = true;
 
         tribe.claimDisableTime = TribesConfig.getDeathClaimDisableTime(tribe.deathIndex, tribe.deathWasPVP);
         tribe.deathIndex++;
     }
 
     private static void tryDropHead(Entity dead, Entity killer) {
-        Tribe deadTribe = TribesManager.getTribeOf(dead.getUniqueID());
-        Tribe killerTribe = TribesManager.getTribeOf(killer.getUniqueID());
+        Tribe deadTribe = TribesManager.getTribeOf(dead.getUUID());
+        Tribe killerTribe = TribesManager.getTribeOf(killer.getUUID());
         if (killerTribe == null && deadTribe == null) return; // redundant
         if (killerTribe == deadTribe) return;
 
@@ -69,7 +69,7 @@ public class AttackHandler {
         GameProfile gameprofile = ((PlayerEntity)dead).getGameProfile();
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
         stack.getOrCreateTag().put("SkullOwner", NBTUtil.writeGameProfile(new CompoundNBT(), gameprofile));
-        ItemEntity itementity = new ItemEntity(dead.getEntityWorld(), dead.getPosition().getX(), dead.getPosition().getY(), dead.getPosition().getZ(), stack);
-        dead.getEntityWorld().addEntity(itementity);
+        ItemEntity itementity = new ItemEntity(dead.getCommandSenderWorld(), dead.blockPosition().getX(), dead.blockPosition().getY(), dead.blockPosition().getZ(), stack);
+        dead.getCommandSenderWorld().addFreshEntity(itementity);
     }
 }

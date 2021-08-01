@@ -31,11 +31,11 @@ public class SaveEffectsPacket {
         while (true){
             int type = buf.readInt();
             if (type == 0){
-                Effect effect = Effect.get(buf.readInt());
+                Effect effect = Effect.byId(buf.readInt());
                 int level = buf.readInt();
                 good.put(effect, level);
             } else if (type == 1){
-                Effect effect = Effect.get(buf.readInt());
+                Effect effect = Effect.byId(buf.readInt());
                 int level = buf.readInt();
                 bad.put(effect, level);
             } else {
@@ -61,19 +61,19 @@ public class SaveEffectsPacket {
     public void handle(Supplier<NetworkEvent.Context> ctx){
         ctx.get().enqueueWork(() -> {
             ServerPlayerEntity player = ctx.get().getSender();
-            UUID playerID = player.getUniqueID();
+            UUID playerID = player.getUUID();
             Tribe tribe = TribesManager.getTribeOf(playerID);
             if (tribe != null){
                 long timePassed = System.currentTimeMillis() - tribe.lastEffectsChangeTime;
                 long timeToWait = TribesConfig.betweenEffectsChangeMillis() - timePassed;
                 if (timeToWait > 0){
                     long hours = timeToWait / 1000 / 60 / 60;
-                    player.sendStatusMessage(TribeErrorType.getWaitText(hours), false);
+                    player.displayClientMessage(TribeErrorType.getWaitText(hours), false);
                     return;
                 }
 
                 if (!tribe.isLeader(playerID)){
-                    player.sendStatusMessage(TribeErrorType.LOW_RANK.getText(), false);
+                    player.displayClientMessage(TribeErrorType.LOW_RANK.getText(), false);
                     return;
                 }
 

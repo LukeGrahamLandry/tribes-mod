@@ -13,7 +13,7 @@ import net.minecraft.util.text.StringTextComponent;
 public class ChunkClaimCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("chunk")
-                .requires(cs->cs.hasPermissionLevel(0))
+                .requires(cs->cs.hasPermission(0))
                 .then(claim())
                 .then(unclaim());
                 // .then(who());  // done in ShowLandOwnerUI
@@ -35,65 +35,65 @@ public class ChunkClaimCommand {
     }
 
     public static int handleClaim(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        PlayerEntity player = source.getSource().getPlayerOrException();
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
             return Command.SINGLE_SUCCESS;
         }
 
-        TribeErrorType response = tribe.claimChunk(getChunk(player), player.getUniqueID());
+        TribeErrorType response = tribe.claimChunk(getChunk(player), player.getUUID());
         if (response == TribeErrorType.SUCCESS){
             int x = (int) getChunk(player);
             int z = (int) (getChunk(player) >> 32);
             tribe.broadcastMessage(TribeSuccessType.CLAIM_CHUNK, player, x, z);
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;
     }
 
     public static int handleUnclaim(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        PlayerEntity player = source.getSource().getPlayerOrException();
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
             return Command.SINGLE_SUCCESS;
         }
 
-        TribeErrorType response = tribe.unclaimChunk(getChunk(player), player.getUniqueID());
+        TribeErrorType response = tribe.unclaimChunk(getChunk(player), player.getUUID());
         if (response == TribeErrorType.SUCCESS){
             int x = (int) getChunk(player);
             int z = (int) (getChunk(player) >> 32);
 
             tribe.broadcastMessage(TribeSuccessType.UNCLAIM_CHUNK, player, x, z);
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;
     }
 
     public static int handleWho(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
 
         Tribe owner = LandClaimHelper.getChunkOwner(getChunk(player));
         int x = (int) getChunk(player);
         int z = (int) (getChunk(player) >> 32);
 
         if (owner == null){
-            source.getSource().sendFeedback(new StringTextComponent("chunk (" + x + ", " + z + ") is unclaimed"), true);
+            source.getSource().sendSuccess(new StringTextComponent("chunk (" + x + ", " + z + ") is unclaimed"), true);
         } else {
-            source.getSource().sendFeedback(new StringTextComponent("chunk (" + x + ", " + z + ") is claimed by " + owner.getName() + " (" + owner.getInitials() + ")"), true);
+            source.getSource().sendSuccess(new StringTextComponent("chunk (" + x + ", " + z + ") is claimed by " + owner.getName() + " (" + owner.getInitials() + ")"), true);
         }
 
         return Command.SINGLE_SUCCESS;
     }
 
     private static long getChunk(PlayerEntity player){
-        return player.getEntityWorld().getChunkAt(player.getPosition()).getPos().asLong();
+        return player.getCommandSenderWorld().getChunkAt(player.blockPosition()).getPos().toLong();
     }
 }

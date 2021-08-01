@@ -161,11 +161,11 @@ public class TribeEffectScreen extends TribeScreen {
         this.buttons.forEach((button) -> {
             // GuiButton button = (GuiButton) b;
             if(button instanceof EffectButton){
-                this.font.drawString(matrixStack, String.valueOf(((EffectButton)button).getAmplifier()), (float)(button.x+2), (float)(button.y+2), 0xffffff);
+                this.font.draw(matrixStack, String.valueOf(((EffectButton)button).getAmplifier()), (float)(button.x+2), (float)(button.y+2), 0xffffff);
             }
         });
-        this.font.drawString(matrixStack, "Benefits: " + numSelectedGood+"/"+maxGoodEffects, this.guiLeft + 15, this.guiTop + 20, 0x5d5d5d);
-        this.font.drawString(matrixStack, "Drawbacks: " + numSelectedBad+"/"+maxBadEffects, this.guiLeft + 20 + xSize, this.guiTop + 20, 0x5d5d5d);
+        this.font.draw(matrixStack, "Benefits: " + numSelectedGood+"/"+maxGoodEffects, this.guiLeft + 15, this.guiTop + 20, 0x5d5d5d);
+        this.font.draw(matrixStack, "Drawbacks: " + numSelectedBad+"/"+maxBadEffects, this.guiLeft + 20 + xSize, this.guiTop + 20, 0x5d5d5d);
     }
 
     // Add effect to selected list
@@ -215,7 +215,7 @@ public class TribeEffectScreen extends TribeScreen {
                 NetworkHandler.INSTANCE.sendToServer(new SaveEffectsPacket(selGoodEffects, selBadEffects));
                 selBadEffects.clear();
                 selGoodEffects.clear();
-                TribeEffectScreen.this.minecraft.displayGuiScreen(null);
+                TribeEffectScreen.this.minecraft.setScreen(null);
             }
         }
 
@@ -238,7 +238,7 @@ public class TribeEffectScreen extends TribeScreen {
             super(screen, x, y, ySizeIn);
             this.effect = p_i50827_4_;
             this.isGood = isGoodIn;
-            this.effectSprite = Minecraft.getInstance().getPotionSpriteUploader().getSprite(p_i50827_4_);
+            this.effectSprite = Minecraft.getInstance().getMobEffectTextures().get(p_i50827_4_);
             this.effectName = this.getEffectName(p_i50827_4_);
             this.screen = (TribeEffectScreen) screen;
             this.amplifier = amplifierIn;
@@ -246,13 +246,13 @@ public class TribeEffectScreen extends TribeScreen {
 
         // Get the name of the effect based on the amplifier
         private ITextComponent getEffectName(Effect effect) {
-            IFormattableTextComponent iformattabletextcomponent = new TranslationTextComponent(effect.getName());
+            IFormattableTextComponent iformattabletextcomponent = new TranslationTextComponent(effect.getDescriptionId());
             if (this.getAmplifier() == 1) {
-                iformattabletextcomponent.appendString(" I");
+                iformattabletextcomponent.append(" I");
             }else if (this.getAmplifier() == 2) {
-                iformattabletextcomponent.appendString(" II");
+                iformattabletextcomponent.append(" II");
             }else if (this.getAmplifier() == 3) {
-                iformattabletextcomponent.appendString(" III");
+                iformattabletextcomponent.append(" III");
             }
 
             return iformattabletextcomponent;
@@ -297,8 +297,8 @@ public class TribeEffectScreen extends TribeScreen {
             return amplifier;
         }
 
-        protected void func_230454_a_(MatrixStack p_230454_1_) {
-            Minecraft.getInstance().getTextureManager().bindTexture(this.effectSprite.getAtlasTexture().getTextureLocation());
+        protected void renderIcon(MatrixStack p_230454_1_) {
+            Minecraft.getInstance().getTextureManager().bind(this.effectSprite.atlas().location());
             blit(p_230454_1_, this.x + 2, this.y + 2, this.getBlitOffset(), 18, 18, this.effectSprite);
         }
     }

@@ -80,13 +80,13 @@ How many you choose is based on your tribe's tier (member count).
 - tier_positive_effects config is a list of the number of positive effects allowed by tribe rank
 - ignoredEffects config is a list of effects that cannot be chosen
 
-### /tribe hemisphere <side>
+### /tribe hemisphere SIDE
 
 Allows your tribe to break and place blocks in one of the world's hemisphere. Before you pick one, you can access neither. 
 You can never change your choice so choose wisely. 
 
 - config halfNoMansLandWidth is the distance from zero to the edge of a hemisphere
-- when config useNorthSouthHemisphereDirection=true the valid <side> values are north and south otherwise they're east and west
+- when config useNorthSouthHemisphereDirection=true the valid SIDE values are north and south otherwise they're east and west
 - config tierForSelectHemi is the minimum tribe tier required to claim a hemisphere
 - config requireHemiAccess=false disables this feature
 - config rankToChooseHemi is the minimum rank in your tribe for a member to claim a hemisphere (defaults to vice leader)
@@ -114,11 +114,11 @@ Leader only. Deletes your tribe.
 
 ### /tribe deity list
 
-Displays all existing deities. Format is <key>: <display name> is the <label> of <domains>
+Displays all existing deities. Format is DisplayName is the Label of Domains
 
 - deity list is defined in deities/deities.json
 
-### /tribe deity choose deityKeyHere 
+### /tribe deity choose deity
 
 Choose a deity for your tribe to follow. It is just cosmetic. Changes the text in your deity book, the patten on your deity banner and the symbol displayed above your alters. 
 
@@ -134,15 +134,28 @@ Use while holding a banner to add your deity's symbol as a gold pattern
 
 - the banner pattern is defined in deities/deities.json and must use the special gold ones added by the tribes mod (not vanilla)
 
-### /tribe autoban set <deaths> <days>
+### /tribe autoban set int:deaths int:DAYS
 
-Leader only. If a player dies <deaths> (default: 3) times within <days> (default: 2) real life days, they will be banned from your tribe (you can unban them). 
+Leader only. If a player dies deaths (default: 3) times within DAYS (default: 2) real life days, they will be banned from your tribe (you can unban them). 
 This is useful to get rid of people dying too often and allowing your claimed land to be griefed. 
 To disable this feature, just make one of the number arguments really big (like 9999) so it never happens. 
 
-### /tribe autoban <boolean> <rank>
+### /tribe autoban boolean rank
 
 Leader only. sets whether the autoban mechanic above should apply to a certain rank (member, officer, vice leader)
+
+### /tribe invite toggle boolean
+
+true: make your tribe invite only. players cannot join without an invite sent by the command below.  
+false: default. players may join the tribe freely
+
+### /tribe invite send PlayerNameHere
+
+if your tribe is private, send an invite to the specified player. Pending invites are not saved when the sever restarts. Only usable by officers+
+
+### /tribe invite revoke PlayerNameHere
+
+if your tribe is private and the specified player has a pending invite, remove the invite. Only usable by officers+
 
 ## Other Config Options 
 

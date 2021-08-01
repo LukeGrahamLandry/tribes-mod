@@ -29,27 +29,27 @@ public class CreateTribeScreen extends TribeScreen {
 
     @Override
     protected void init() {
-        this.minecraft.keyboardListener.enableRepeatEvents(true);
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         // Setting positions based on background and window sizes
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
 
         //Setting title positions based on background, window, and text sizes
-        this.titleX = (this.width - this.font.getStringPropertyWidth(this.title)) / 2;
+        this.titleX = (this.width - this.font.width(this.title)) / 2;
         this.titleY = (this.height - this.ySize + 20) / 2;
 
         //Initialization of create tribe button
         this.btnCreateTribe = this.addButton(new Button(this.guiLeft + 13, (this.height - this.ySize + 110) / 2, 150, 20, new TranslationTextComponent(TribesMain.MOD_ID + ".createTribeButton"), (p_214318_1_) -> {
             NetworkHandler.INSTANCE.sendToServer(new PacketCreateTribe(this.tribeName));
-            this.closeScreen();
+            this.onClose();
         }));
 
         //Initialization of the textbox
         this.nameField = new TextFieldWidget(this.font, this.guiLeft + 13, (this.height - this.ySize + 50) / 2, 150, 20, this.nameField, new TranslationTextComponent("selectWorld.search"));
-        this.nameField.setMaxStringLength(TribesConfig.getMaxTribeNameLength());
+        this.nameField.setMaxLength(TribesConfig.getMaxTribeNameLength());
         this.children.add(this.nameField);
-        this.setFocusedDefault(this.nameField);
+        this.setInitialFocus(this.nameField);
         this.nameField.setResponder((tribeNameIn) -> {
             this.tribeName = tribeNameIn;
             this.btnCreateTribe.active = isValidName();
@@ -67,6 +67,6 @@ public class CreateTribeScreen extends TribeScreen {
 
     private boolean isValidName(){
         // max length check is handled by the text field
-        return !this.nameField.getText().isEmpty();
+        return !this.nameField.getValue().isEmpty();
     }
 }

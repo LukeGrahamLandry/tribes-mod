@@ -19,7 +19,7 @@ import net.minecraft.util.text.StringTextComponent;
 public class AutobanCommands {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("autoban")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.literal("set")
                         .then(Commands.argument("numDeaths", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                                 .then(Commands.argument("numDays", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
@@ -32,33 +32,33 @@ public class AutobanCommands {
     }
 
     public static int handleSet(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        PlayerEntity player = source.getSource().getPlayerOrException();
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         if (tribe != null){
-            if (tribe.getRankOf(player.getUniqueID().toString()) == Tribe.Rank.LEADER){
+            if (tribe.getRankOf(player.getUUID().toString()) == Tribe.Rank.LEADER){
                 int numDeaths = IntegerArgumentType.getInteger(source, "numDeaths");
                 int numDays = IntegerArgumentType.getInteger(source, "numDays");
 
                 tribe.autobanDeathThreshold = numDeaths;
                 tribe.autobanDaysThreshold = numDeaths;
 
-                source.getSource().sendFeedback(TribeSuccessType.AUTOBAN_NUMBERS.getText(numDeaths, numDays), true);
+                source.getSource().sendSuccess(TribeSuccessType.AUTOBAN_NUMBERS.getText(numDeaths, numDays), true);
             } else {
-                source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);
+                source.getSource().sendSuccess(TribeErrorType.LOW_RANK.getText(), true);
             }
 
         } else {
-            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;
     }
 
     public static int handleRankSettings(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        PlayerEntity player = source.getSource().getPlayerOrException();
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         if (tribe != null){
-            if (tribe.getRankOf(player.getUniqueID().toString()) == Tribe.Rank.LEADER){
+            if (tribe.getRankOf(player.getUUID().toString()) == Tribe.Rank.LEADER){
                 String rankName = StringArgumentType.getString(source, "rank");
                 Tribe.Rank rank = Tribe.Rank.fromString(rankName);
                 if (rank != null){
@@ -68,19 +68,19 @@ public class AutobanCommands {
 
                     String not = value ? "" : "not";
                     if (value){
-                        source.getSource().sendFeedback(TribeSuccessType.YES_AUTOBAN_RANK.getText(rankName), true);
+                        source.getSource().sendSuccess(TribeSuccessType.YES_AUTOBAN_RANK.getText(rankName), true);
                     } else {
-                        source.getSource().sendFeedback(TribeSuccessType.NO_AUTOBAN_RANK.getText(rankName), true);
+                        source.getSource().sendSuccess(TribeSuccessType.NO_AUTOBAN_RANK.getText(rankName), true);
                     }
                 } else {
-                    source.getSource().sendFeedback(TribeErrorType.INVALID_RANK.getText(), true);
+                    source.getSource().sendSuccess(TribeErrorType.INVALID_RANK.getText(), true);
                 }
             } else {
-                source.getSource().sendFeedback(TribeErrorType.LOW_RANK.getText(), true);
+                source.getSource().sendSuccess(TribeErrorType.LOW_RANK.getText(), true);
             }
 
         } else {
-            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

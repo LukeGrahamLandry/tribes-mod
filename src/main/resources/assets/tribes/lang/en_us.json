@@ -73,7 +73,7 @@
   "success.tribes.no_bans": "%s has not been banned from any tribes",
   "success.tribes.list_bans": "%s has been banned from: %s",
   "success.tribes.invite_sent": "%s has been invited to your tribe",
-  "success.tribe.invite_removed": "Any invites of %s to your tribe have been revoked",
-  "success.tribe.now_private": "Your tribe is now private. Players cannot join without an invitation",
-  "success.tribe.no_longer_private": "Your tribe is no longer private. Players may join freely without an invitation"
+  "success.tribes.invite_removed": "Any invites of %s to your tribe have been revoked",
+  "success.tribes.now_private": "Your tribe is now private. Players cannot join without an invitation",
+  "success.tribes.no_longer_private": "Your tribe is no longer private. Players may join freely without an invitation"
 }

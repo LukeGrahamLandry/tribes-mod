@@ -26,13 +26,13 @@ public class PacketOpenMyTribeGUI {
     private final List<String> badTribes;
 
     public PacketOpenMyTribeGUI(ServerPlayerEntity player) {
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         this.goodTribes = new ArrayList<>();
         this.badTribes = new ArrayList<>();
         if (tribe != null){
             this.tribeName = tribe.getName();
-            this.rank = tribe.getRankOf(player.getUniqueID().toString()).asString();
-            this.owner = player.getServerWorld().getPlayerByUuid(UUID.fromString(tribe.getOwner())).getScoreboardName();
+            this.rank = tribe.getRankOf(player.getUUID().toString()).asString();
+            this.owner = player.getLevel().getPlayerByUUID(UUID.fromString(tribe.getOwner())).getScoreboardName();
             this.members = tribe.getCount();
             this.tier = tribe.getTribeTier();
             tribe.relationToOtherTribes.forEach((name, relation) -> {
@@ -59,13 +59,13 @@ public class PacketOpenMyTribeGUI {
     }
 
     public static PacketOpenMyTribeGUI decode(PacketBuffer buf) {
-        return new PacketOpenMyTribeGUI(buf.readString(32767), buf.readString(32767), buf.readString(32767), buf.readInt(), buf.readInt(), PacketUtil.readStringList(buf), PacketUtil.readStringList(buf));
+        return new PacketOpenMyTribeGUI(buf.readUtf(32767), buf.readUtf(32767), buf.readUtf(32767), buf.readInt(), buf.readInt(), PacketUtil.readStringList(buf), PacketUtil.readStringList(buf));
     }
 
     public static void encode(PacketOpenMyTribeGUI packet, PacketBuffer buf) {
-        buf.writeString(packet.tribeName);
-        buf.writeString(packet.rank);
-        buf.writeString(packet.owner);
+        buf.writeUtf(packet.tribeName);
+        buf.writeUtf(packet.rank);
+        buf.writeUtf(packet.owner);
         buf.writeInt(packet.members);
         buf.writeInt(packet.tier);
         PacketUtil.writeStringList(buf, packet.goodTribes);
@@ -80,6 +80,6 @@ public class PacketOpenMyTribeGUI {
     @OnlyIn(Dist.CLIENT)
     private static void doOpen(PacketOpenMyTribeGUI packet) {
         Screen gui = new MyTribeScreen(packet.tribeName, packet.rank, packet.owner, packet.members, packet.tier, packet.goodTribes, packet.badTribes);
-        Minecraft.getInstance().displayGuiScreen(gui);
+        Minecraft.getInstance().setScreen(gui);
     }
 }

@@ -24,42 +24,42 @@ public class ShowLandOwnerUI {
     @SubscribeEvent
     public static void renderUI(RenderGameOverlayEvent.Post event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            PlayerController controller = Minecraft.getInstance().playerController;
+            PlayerController controller = Minecraft.getInstance().gameMode;
             PlayerEntity player = Minecraft.getInstance().player;
             if (controller == null || player == null ) {
                 return;
             }
 
-            String location = chunkOwnerDisplayForPlayer.get(player.getUniqueID());
-            int color = playerCanAccess.containsKey(player.getUniqueID()) && playerCanAccess.get(player.getUniqueID()) ? GREEN : RED;
+            String location = chunkOwnerDisplayForPlayer.get(player.getUUID());
+            int color = playerCanAccess.containsKey(player.getUUID()) && playerCanAccess.get(player.getUUID()) ? GREEN : RED;
 
-            if (!Minecraft.getInstance().gameSettings.showDebugInfo && location != null && !TribesConfig.getLandOwnerDisplayPosition().equals("none")) {  // && controller.shouldDrawHUD()
+            if (!Minecraft.getInstance().options.renderDebug && location != null && !TribesConfig.getLandOwnerDisplayPosition().equals("none")) {  // && controller.shouldDrawHUD()
                 int x = getX(location);
                 int y = getY();
-                Minecraft.getInstance().fontRenderer.drawString(event.getMatrixStack(), location, x, y, color);
+                Minecraft.getInstance().font.draw(event.getMatrixStack(), location, x, y, color);
             }
         }
     }
 
     private static int getX(String text){
-        int w = Minecraft.getInstance().getMainWindow().getScaledWidth();
+        int w = Minecraft.getInstance().getWindow().getGuiScaledWidth();
         switch (TribesConfig.getLandOwnerDisplayPosition()){
             case "top_left":
             case "bottom_left":
                 return 5;
             case "top_right":
             case "bottom_right":
-                return w - 5 - Minecraft.getInstance().fontRenderer.getStringWidth(text);
+                return w - 5 - Minecraft.getInstance().font.width(text);
             case "top_middle":
             case "bottom_middle":
-                return (w / 2) - (Minecraft.getInstance().fontRenderer.getStringWidth(text) / 2) - 5;
+                return (w / 2) - (Minecraft.getInstance().font.width(text) / 2) - 5;
         }
 
         return 0;
     }
 
     private static int getY(){
-        int h = Minecraft.getInstance().getMainWindow().getScaledHeight();
+        int h = Minecraft.getInstance().getWindow().getGuiScaledHeight();
         switch (TribesConfig.getLandOwnerDisplayPosition()){
             case "top_left":
             case "top_right":
@@ -67,9 +67,9 @@ public class ShowLandOwnerUI {
                 return 5;
             case "bottom_left":
             case "bottom_right":
-                return h - 5 - Minecraft.getInstance().fontRenderer.FONT_HEIGHT;
+                return h - 5 - Minecraft.getInstance().font.lineHeight;
             case "bottom_middle":
-                return h - 45 - Minecraft.getInstance().fontRenderer.FONT_HEIGHT;
+                return h - 45 - Minecraft.getInstance().font.lineHeight;
 
         }
 

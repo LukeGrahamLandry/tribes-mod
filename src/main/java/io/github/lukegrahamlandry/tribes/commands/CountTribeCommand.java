@@ -15,11 +15,11 @@ import net.minecraft.util.text.StringTextComponent;
 public class CountTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("count")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
                         .executes(CountTribeCommand::handleCount)
                 ).executes(ctx -> {
-                    ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
+                    ctx.getSource().sendSuccess(TribeErrorType.ARG_TRIBE.getText(), false);
                             return 0;
                         }
                 );
@@ -30,7 +30,7 @@ public class CountTribeCommand {
         Tribe tribe = TribeArgumentType.getTribe(source, "tribe");
 
         if (tribe != null) {
-            source.getSource().sendFeedback(TribeSuccessType.COUNT_TRIBE.getBlueText(tribe, tribe.getCount(), tribe.getTribeTier()), true);
+            source.getSource().sendSuccess(TribeSuccessType.COUNT_TRIBE.getBlueText(tribe, tribe.getCount(), tribe.getTribeTier()), true);
         }
 
         return Command.SINGLE_SUCCESS;

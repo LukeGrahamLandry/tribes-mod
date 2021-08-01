@@ -72,7 +72,7 @@ public class TribeScreen extends Screen {
         this.guiTop = (this.height - this.ySize) / 2;
 
         //Setting title positions based on background, window, and text sizes
-        this.titleX = (this.width - this.font.getStringPropertyWidth(this.title)) / 2;
+        this.titleX = (this.width - this.font.width(this.title)) / 2;
         this.titleY = (this.height - this.ySize + 20) / 2;
 
         super.init();
@@ -84,15 +84,15 @@ public class TribeScreen extends Screen {
         this.renderBackground(matrixStack);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if(largeGUI){
-            this.minecraft.getTextureManager().bindTexture(guiTexture);
+            this.minecraft.getTextureManager().bind(guiTexture);
             this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, 2*this.xSize, this.ySize);
-            this.minecraft.getTextureManager().bindTexture(guiTexture2);
+            this.minecraft.getTextureManager().bind(guiTexture2);
             this.blit(matrixStack, this.guiLeft+xSize, this.guiTop, 0, 0, 2*this.xSize, this.ySize);
         }else {
-            this.minecraft.getTextureManager().bindTexture(guiTexture);
+            this.minecraft.getTextureManager().bind(guiTexture);
             this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         }
-        if(renderTitle) this.font.func_243248_b(matrixStack, this.title, (float) this.titleX, (float) this.titleY, 4210752);
+        if(renderTitle) this.font.draw(matrixStack, this.title, (float) this.titleX, (float) this.titleY, 4210752);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 }

@@ -22,15 +22,15 @@ public class TribeServer {
 
     public static List<ServerPlayerEntity> getPlayers(){
         List<ServerPlayerEntity> allPlayers = new ArrayList<>();
-        server.getWorlds().forEach((world) -> {
-            allPlayers.addAll(world.getPlayers());
+        server.getAllLevels().forEach((world) -> {
+            allPlayers.addAll(world.players());
         });
         return allPlayers;
     }
 
     public static PlayerEntity getPlayerByUuid(UUID id){
-        for (ServerWorld world : server.getWorlds()){
-            if (world.getPlayerByUuid(id) != null) return world.getPlayerByUuid(id);
+        for (ServerWorld world : server.getAllLevels()){
+            if (world.getPlayerByUUID(id) != null) return world.getPlayerByUUID(id);
         }
         return null;
     }

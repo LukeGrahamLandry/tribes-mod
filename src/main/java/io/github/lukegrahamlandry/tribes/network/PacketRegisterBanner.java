@@ -14,11 +14,11 @@ public class PacketRegisterBanner {
     private String name;
 
     public PacketRegisterBanner(PacketBuffer buf) {
-        this.name = buf.readString(32767);
+        this.name = buf.readUtf(32767);
     }
 
     public void toBytes(PacketBuffer buf){
-        buf.writeString(this.name);
+        buf.writeUtf(this.name);
     }
 
     public PacketRegisterBanner(String name){

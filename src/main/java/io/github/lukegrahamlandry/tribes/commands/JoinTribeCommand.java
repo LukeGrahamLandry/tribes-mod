@@ -24,29 +24,29 @@ import static io.github.lukegrahamlandry.tribes.tribe_data.TribesManager.playerH
 public class JoinTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("join")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
                         .executes(JoinTribeCommand::handleJoin)
                 ).executes(ctx -> {
-                    ServerPlayerEntity player = ctx.getSource().asPlayer();
+                    ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
                     NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenJoinGUI(player));
                     return Command.SINGLE_SUCCESS;
                 });
     }
 
     public static int handleJoin(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
         Tribe tribe = TribeArgumentType.getTribe(source, "tribe");
         if (tribe == null) return 1;
 
         TribeErrorType response;
-        if (playerHasTribe(player.getUniqueID())) response = TribeErrorType.IN_TRIBE;
+        if (playerHasTribe(player.getUUID())) response = TribeErrorType.IN_TRIBE;
         else response = TribesManager.joinTribe(tribe.getName(), player);
 
         if (response == TribeErrorType.SUCCESS){
-            source.getSource().sendFeedback(TribeSuccessType.YOU_JOINED.getText(tribe), true);
+            source.getSource().sendSuccess(TribeSuccessType.YOU_JOINED.getText(tribe), true);
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

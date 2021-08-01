@@ -17,16 +17,16 @@ public class AltarTileEntity extends TileEntity {
     String bannerKey;
 
     @Override
-    public void markDirty() {
-        super.markDirty();
+    public void setChanged() {
+        super.setChanged();
         TribesMain.LOGGER.debug("display: " + this.bannerKey);
-        this.world.notifyBlockUpdate(this.pos, this.getBlockState(), this.getBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
+        this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), Constants.BlockFlags.BLOCK_UPDATE);
     }
 
     // use from block
     public void setBannerKey(String key){
         this.bannerKey = key;
-        this.markDirty();
+        this.setChanged();
     }
 
     // for render
@@ -36,15 +36,15 @@ public class AltarTileEntity extends TileEntity {
 
     // saving data
     @Override
-    public void read(BlockState state, CompoundNBT tag) {
-        super.read(state, tag);
+    public void load(BlockState state, CompoundNBT tag) {
+        super.load(state, tag);
         this.bannerKey = tag.contains("banner") ? tag.getString("banner") : null;
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
+    public CompoundNBT save(CompoundNBT tag) {
         if (this.bannerKey != null) tag.putString("banner", this.bannerKey);
-        return super.write(tag);
+        return super.save(tag);
     }
 
 
@@ -52,22 +52,22 @@ public class AltarTileEntity extends TileEntity {
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
         CompoundNBT nbt = new CompoundNBT();
-        this.write(nbt);
+        this.save(nbt);
 
-        return new SUpdateTileEntityPacket(this.pos, 1, nbt);
+        return new SUpdateTileEntityPacket(this.worldPosition, 1, nbt);
     }
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.read(this.getBlockState(), pkt.getNbtCompound());
+        this.load(this.getBlockState(), pkt.getTag());
     }
 
     // chunk load
     @Override
     public CompoundNBT getUpdateTag() {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        this.read(state, tag);
+        this.load(state, tag);
     }
 }

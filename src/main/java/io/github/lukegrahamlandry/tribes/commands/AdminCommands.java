@@ -14,7 +14,7 @@ public class AdminCommands {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("admin")
                 .requires(cs-> {
-                    String id = cs.getEntity().getUniqueID().toString();
+                    String id = cs.getEntity().getUUID().toString();
                     return TribesConfig.isAdmin(id);
                 })  // check  here
                 .then(Commands.literal("save").executes(AdminCommands::saveData))
@@ -23,7 +23,7 @@ public class AdminCommands {
                         .then(Commands.argument("name", StringArgumentType.greedyString())
                             .executes(AdminCommands::handleDelete))
                         .executes(ctx -> {
-                            ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
+                            ctx.getSource().sendSuccess(TribeErrorType.ARG_TRIBE.getText(), false);
                                 return 0;
                             }))
                 .then(Commands.literal("rename")
@@ -31,11 +31,11 @@ public class AdminCommands {
                                 .then(Commands.argument("newname", StringArgumentType.string())
                                         .executes(AdminCommands::handleRename))
                                 .executes(ctx -> {
-                                    ctx.getSource().sendFeedback(new StringTextComponent("choose a new name for " + StringArgumentType.getString(ctx, "name")), false);
+                                    ctx.getSource().sendSuccess(new StringTextComponent("choose a new name for " + StringArgumentType.getString(ctx, "name")), false);
                                     return 0;
                                 }))
                         .executes(ctx -> {
-                            ctx.getSource().sendFeedback(TribeErrorType.ARG_TRIBE.getText(), false);
+                            ctx.getSource().sendSuccess(TribeErrorType.ARG_TRIBE.getText(), false);
                             return 0;
                         }))
                 ;
@@ -46,12 +46,12 @@ public class AdminCommands {
         String newname = StringArgumentType.getString(source, "newname");
 
         if (TribesManager.isNameAvailable(name)){
-            source.getSource().sendFeedback(TribeErrorType.INVALID_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.INVALID_TRIBE.getText(), true);
         } else if (!TribesManager.isNameAvailable(newname)){
-            source.getSource().sendFeedback(TribeErrorType.NAME_TAKEN.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.NAME_TAKEN.getText(), true);
         }else {
             TribesManager.renameTribe(name, newname);
-            source.getSource().sendFeedback(new StringTextComponent("The tribe <" + name + "> is now called <" + newname + ">"), true);
+            source.getSource().sendSuccess(new StringTextComponent("The tribe <" + name + "> is now called <" + newname + ">"), true);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -61,10 +61,10 @@ public class AdminCommands {
         String name = StringArgumentType.getString(source, "name");
 
         if (TribesManager.isNameAvailable(name)){
-            source.getSource().sendFeedback(TribeErrorType.INVALID_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.INVALID_TRIBE.getText(), true);
         } else {
             TribesManager.forceDeleteTribe(name);
-            source.getSource().sendFeedback(new StringTextComponent("Tribe deleted: " + name), true);
+            source.getSource().sendSuccess(new StringTextComponent("Tribe deleted: " + name), true);
         }
 
         return Command.SINGLE_SUCCESS;
@@ -72,13 +72,13 @@ public class AdminCommands {
 
     public static int saveData(CommandContext<CommandSource> source) {
         SaveHandler.save(SaveHandler.tribeDataLocation);
-        source.getSource().sendFeedback(new StringTextComponent("tribe data has been saved in " + SaveHandler.tribeDataLocation), true);
+        source.getSource().sendSuccess(new StringTextComponent("tribe data has been saved in " + SaveHandler.tribeDataLocation), true);
         return Command.SINGLE_SUCCESS;
     }
 
     public static int loadData(CommandContext<CommandSource> source) {
         SaveHandler.load(SaveHandler.tribeDataLocation);
-        source.getSource().sendFeedback(new StringTextComponent("tribe data has been loaded from " + SaveHandler.tribeDataLocation), true);
+        source.getSource().sendSuccess(new StringTextComponent("tribe data has been loaded from " + SaveHandler.tribeDataLocation), true);
         return Command.SINGLE_SUCCESS;
     }
 

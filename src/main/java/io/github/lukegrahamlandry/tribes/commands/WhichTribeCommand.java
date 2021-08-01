@@ -19,11 +19,11 @@ import java.util.List;
 public class WhichTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("who")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(WhichTribeCommand::handleCheck)
                 ).executes(ctx -> {
-                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
+                    ctx.getSource().sendSuccess(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );
@@ -33,12 +33,12 @@ public class WhichTribeCommand {
     public static int handleCheck(CommandContext<CommandSource> source) throws CommandSyntaxException {
         PlayerEntity playerToCheck = EntityArgument.getPlayer(source, "player");
 
-        Tribe tribe = TribesManager.getTribeOf(playerToCheck.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(playerToCheck.getUUID());
 
         if (tribe == null){
-            source.getSource().sendFeedback(TribeSuccessType.WHICH_NO_TRIBE.getBlueText(playerToCheck), true);
+            source.getSource().sendSuccess(TribeSuccessType.WHICH_NO_TRIBE.getBlueText(playerToCheck), true);
         } else {
-            source.getSource().sendFeedback(TribeSuccessType.WHICH_TRIBE.getBlueText(playerToCheck, tribe), true);
+            source.getSource().sendSuccess(TribeSuccessType.WHICH_TRIBE.getBlueText(playerToCheck, tribe), true);
         }
 
         return Command.SINGLE_SUCCESS;

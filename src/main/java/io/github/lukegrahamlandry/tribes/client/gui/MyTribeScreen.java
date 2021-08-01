@@ -50,13 +50,13 @@ public class MyTribeScreen extends TribeScreen {
         this.effectsButton = this.addButton(new Button(this.guiLeft + 15, this.guiTop + 90, 75, 20, new StringTextComponent("Effects"), (p_214318_1_) -> {
             if (this.effectsButton.active){
                 NetworkHandler.INSTANCE.sendToServer(new PacketSendEffects());
-                this.closeScreen();
+                this.onClose();
             }
         }));
         this.effectsButton.active = this.rank.equals("leader");
 
         this.leaveButton = this.addButton(new Button(this.guiLeft + 15, this.guiTop + 125, 75, 20, new StringTextComponent("Leave Tribe"), (p_214318_1_) -> {
-            this.closeScreen();
+            this.onClose();
             NetworkHandler.INSTANCE.sendToServer(new PacketLeaveTribe());
         }));
 
@@ -94,6 +94,6 @@ public class MyTribeScreen extends TribeScreen {
     final int RED = 0xFF0000;
 
     private void write(MatrixStack matrixStack, String text, int x, int y, int color){
-        this.font.func_243248_b(matrixStack, new StringTextComponent(text), x, y, color);
+        this.font.draw(matrixStack, new StringTextComponent(text), x, y, color);
     }
 }

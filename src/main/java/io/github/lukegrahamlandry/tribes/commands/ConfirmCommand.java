@@ -23,17 +23,17 @@ public class ConfirmCommand {
     }
 
     public static void add(PlayerEntity player, IConfirmAction action){
-        player.sendStatusMessage(TribeSuccessType.MUST_CONFIRM.getBlueText(), false);
-        CONFIRM_ACTIONS.put(player.getUniqueID(), action);
+        player.displayClientMessage(TribeSuccessType.MUST_CONFIRM.getBlueText(), false);
+        CONFIRM_ACTIONS.put(player.getUUID(), action);
     }
 
     public static int handleConfirm(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
 
 
-        IConfirmAction action = CONFIRM_ACTIONS.get(player.getUniqueID());
+        IConfirmAction action = CONFIRM_ACTIONS.get(player.getUUID());
         if (action == null){
-            source.getSource().sendFeedback(TribeErrorType.NO_CONFIRM.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.NO_CONFIRM.getText(), true);
         } else {
             action.call();
         }

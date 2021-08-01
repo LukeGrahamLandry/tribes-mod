@@ -35,7 +35,7 @@ public class TribeArgumentType implements ArgumentType<Tribe> {
             return context.getArgument(name, Tribe.class);
         } catch (Exception e){
             if (context.getSource() instanceof CommandSource){
-                ((CommandSource)context.getSource()).sendFeedback(TribeErrorType.INVALID_TRIBE.getText(), true);
+                ((CommandSource)context.getSource()).sendSuccess(TribeErrorType.INVALID_TRIBE.getText(), true);
             }
             return null;
         }

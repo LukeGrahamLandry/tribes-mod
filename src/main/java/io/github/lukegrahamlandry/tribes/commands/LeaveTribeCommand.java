@@ -16,23 +16,23 @@ import net.minecraft.util.text.StringTextComponent;
 public class LeaveTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("leave")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .executes(LeaveTribeCommand::handleLeave);
 
     }
 
     public static int handleLeave(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
 
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         if (tribe != null){
             ConfirmCommand.add(player, () -> {
                 TribesManager.leaveTribe(player);
-                source.getSource().sendFeedback(TribeSuccessType.YOU_LEFT.getText(), true);
+                source.getSource().sendSuccess(TribeSuccessType.YOU_LEFT.getText(), true);
             });
             return Command.SINGLE_SUCCESS;
         } else {
-            source.getSource().sendFeedback(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

@@ -20,8 +20,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientEventHandler {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        ItemModelsProperties.registerProperty(ItemInit.TRIBE_COMPASS.get(), new ResourceLocation("angle"), TribeCompass::getAngle);
-        RenderTypeLookup.setRenderLayer(BlockInit.ALTER.get(), RenderType.getCutout());
+        ItemModelsProperties.register(ItemInit.TRIBE_COMPASS.get(), new ResourceLocation("angle"), TribeCompass::getAngle);
+        RenderTypeLookup.setRenderLayer(BlockInit.ALTER.get(), RenderType.cutout());
 
         ClientRegistry.bindTileEntityRenderer(TileEntityInit.ALTAR.get(), AltarRenderer::new);
     }

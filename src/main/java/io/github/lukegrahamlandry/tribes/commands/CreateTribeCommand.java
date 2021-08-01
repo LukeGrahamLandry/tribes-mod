@@ -17,11 +17,11 @@ import net.minecraft.util.text.StringTextComponent;
 public class CreateTribeCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("create")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(CreateTribeCommand::handleCreate)
                 ).executes(ctx -> {
-                    ctx.getSource().sendFeedback(TribeErrorType.ARG_MISSING.getText(), false);
+                    ctx.getSource().sendSuccess(TribeErrorType.ARG_MISSING.getText(), false);
                             return 0;
                         }
                 );
@@ -29,14 +29,14 @@ public class CreateTribeCommand {
     }
 
     public static int handleCreate(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
         String name = StringArgumentType.getString(source, "name");
 
         TribeErrorType response = TribesManager.createNewTribe(name, player);
         if (response == TribeErrorType.SUCCESS){
-            source.getSource().sendFeedback(TribeSuccessType.MADE_TRIBE.getText(name), true);
+            source.getSource().sendSuccess(TribeSuccessType.MADE_TRIBE.getText(name), true);
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
 

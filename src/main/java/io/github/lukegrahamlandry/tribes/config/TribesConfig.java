@@ -186,7 +186,7 @@ public class TribesConfig {
                     Effect toCheck = (Effect) field.get(null);
 
 
-                    if (toCheck.isBeneficial() && !toCheck.isInstant() && !disabledEffects.contains(toCheck)){
+                    if (toCheck.isBeneficial() && !toCheck.isInstantenous() && !disabledEffects.contains(toCheck)){
                         theEffects.add(toCheck);
                     }
                 }
@@ -208,7 +208,7 @@ public class TribesConfig {
             try {
                 if (field.get(null) instanceof Effect){
                     Effect toCheck = (Effect) field.get(null);
-                    if (!toCheck.isBeneficial() && !toCheck.isInstant() && !disabledEffects.contains(toCheck)){
+                    if (!toCheck.isBeneficial() && !toCheck.isInstantenous() && !disabledEffects.contains(toCheck)){
                         theEffects.add(toCheck);
                     }
                 }

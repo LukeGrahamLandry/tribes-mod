@@ -31,12 +31,12 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public class AlterBlock extends Block {
-    public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = HorizontalBlock.FACING;
     public static final EnumProperty<ChestType> TYPE = BlockStateProperties.CHEST_TYPE;
 
     public AlterBlock(AbstractBlock.Properties props) {
         super(props);
-        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(TYPE, ChestType.SINGLE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(TYPE, ChestType.SINGLE));
     }
 
     @Override
@@ -50,38 +50,38 @@ public class AlterBlock extends Block {
         return new AltarTileEntity();
     }
 
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(worldIn, pos, state, placer, stack);
         if (placer instanceof ServerPlayerEntity){
-            Tribe tribe = TribesManager.getTribeOf(placer.getUniqueID());
+            Tribe tribe = TribesManager.getTribeOf(placer.getUUID());
             if (tribe != null && tribe.deity != null){
                 DeitiesManager.DeityData deity = DeitiesManager.deities.get(tribe.deity);
-                AltarTileEntity tile = (AltarTileEntity) worldIn.getTileEntity(pos);
+                AltarTileEntity tile = (AltarTileEntity) worldIn.getBlockEntity(pos);
                 tile.setBannerKey(deity.bannerKey);
             }
         }
     }
 
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (facingState.isIn(this) && facing.getAxis().isHorizontal()) {
-            ChestType chesttype = facingState.get(TYPE);
-            if (stateIn.get(TYPE) == ChestType.SINGLE && chesttype != ChestType.SINGLE && stateIn.get(FACING) == facingState.get(FACING) && getDirectionToAttached(facingState) == facing.getOpposite()) {
-                return stateIn.with(TYPE, chesttype.opposite());
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+        if (facingState.is(this) && facing.getAxis().isHorizontal()) {
+            ChestType chesttype = facingState.getValue(TYPE);
+            if (stateIn.getValue(TYPE) == ChestType.SINGLE && chesttype != ChestType.SINGLE && stateIn.getValue(FACING) == facingState.getValue(FACING) && getDirectionToAttached(facingState) == facing.getOpposite()) {
+                return stateIn.setValue(TYPE, chesttype.getOpposite());
             }
         } else if (getDirectionToAttached(stateIn) == facing) {
-            return stateIn.with(TYPE, ChestType.SINGLE);
+            return stateIn.setValue(TYPE, ChestType.SINGLE);
         }
 
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
     // todo: export different ones for each facing direction. need the bbmodel file
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D);
+    protected static final VoxelShape SHAPE = Block.box(1.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D);
 
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return SHAPE;
@@ -111,32 +111,32 @@ public class AlterBlock extends Block {
      * Returns a facing pointing from the given state to its attached double chest
      */
     public static Direction getDirectionToAttached(BlockState state) {
-        Direction direction = state.get(FACING);
-        return state.get(TYPE) == ChestType.LEFT ? direction.rotateY() : direction.rotateYCCW();
+        Direction direction = state.getValue(FACING);
+        return state.getValue(TYPE) == ChestType.LEFT ? direction.getClockWise() : direction.getCounterClockWise();
     }
 
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         ChestType chesttype = ChestType.SINGLE;
-        Direction direction = context.getPlacementHorizontalFacing().getOpposite();
-        boolean flag = context.hasSecondaryUseForPlayer();
-        Direction direction1 = context.getFace();
+        Direction direction = context.getHorizontalDirection().getOpposite();
+        boolean flag = context.isSecondaryUseActive();
+        Direction direction1 = context.getClickedFace();
         if (direction1.getAxis().isHorizontal() && flag) {
             Direction direction2 = this.getDirectionToAttach(context, direction1.getOpposite());
             if (direction2 != null && direction2.getAxis() != direction1.getAxis()) {
                 direction = direction2;
-                chesttype = direction2.rotateYCCW() == direction1.getOpposite() ? ChestType.RIGHT : ChestType.LEFT;
+                chesttype = direction2.getCounterClockWise() == direction1.getOpposite() ? ChestType.RIGHT : ChestType.LEFT;
             }
         }
 
         if (chesttype == ChestType.SINGLE && !flag) {
-            if (direction == this.getDirectionToAttach(context, direction.rotateY())) {
+            if (direction == this.getDirectionToAttach(context, direction.getClockWise())) {
                 chesttype = ChestType.LEFT;
-            } else if (direction == this.getDirectionToAttach(context, direction.rotateYCCW())) {
+            } else if (direction == this.getDirectionToAttach(context, direction.getCounterClockWise())) {
                 chesttype = ChestType.RIGHT;
             }
         }
 
-        return this.getDefaultState().with(FACING, direction).with(TYPE, chesttype);
+        return this.defaultBlockState().setValue(FACING, direction).setValue(TYPE, chesttype);
     }
 
     /**
@@ -144,11 +144,11 @@ public class AlterBlock extends Block {
      */
     @Nullable
     private Direction getDirectionToAttach(BlockItemUseContext context, Direction direction) {
-        BlockState blockstate = context.getWorld().getBlockState(context.getPos().offset(direction));
-        return blockstate.isIn(this) && blockstate.get(TYPE) == ChestType.SINGLE ? blockstate.get(FACING) : null;
+        BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos().relative(direction));
+        return blockstate.is(this) && blockstate.getValue(TYPE) == ChestType.SINGLE ? blockstate.getValue(FACING) : null;
     }
 
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(FACING, TYPE);
     }
 }

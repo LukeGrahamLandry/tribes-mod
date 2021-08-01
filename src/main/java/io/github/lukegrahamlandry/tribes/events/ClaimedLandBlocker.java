@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ClaimedLandBlocker {
     @SubscribeEvent
     public static void onBlockInteract(PlayerInteractEvent.RightClickBlock event){
-        if (event.getPlayer().getEntityWorld().isRemote()) return;
+        if (event.getPlayer().getCommandSenderWorld().isClientSide()) return;
         if (!LandClaimHelper.canAccessLandAt(event.getPlayer(), event.getPos())){
             event.setCanceled(true);
             // TODO: return placed block to the player
@@ -19,7 +19,7 @@ public class ClaimedLandBlocker {
 
     @SubscribeEvent
     public static void onBlockLeftInteract(PlayerInteractEvent.LeftClickBlock event){
-        if (event.getPlayer().getEntityWorld().isRemote()) return;
+        if (event.getPlayer().getCommandSenderWorld().isClientSide()) return;
         if (!LandClaimHelper.canAccessLandAt(event.getPlayer(), event.getPos())){
             event.setCanceled(true);
         }

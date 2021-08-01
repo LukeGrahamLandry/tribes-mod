@@ -17,11 +17,11 @@ import net.minecraft.util.text.StringTextComponent;
 public class SetInitialsCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("initials")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("name", StringArgumentType.word())
                         .executes(SetInitialsCommand::handleCreate)
                 ).executes(ctx -> {
-                    ctx.getSource().sendFeedback(TribeErrorType.ARG_MISSING.getText(), false);
+                    ctx.getSource().sendSuccess(TribeErrorType.ARG_MISSING.getText(), false);
                             return 0;
                         }
                 );
@@ -29,15 +29,15 @@ public class SetInitialsCommand {
     }
 
     public static int handleCreate(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
         String str = StringArgumentType.getString(source, "name");
 
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
-        TribeErrorType response = tribe.trySetInitials(str, player.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
+        TribeErrorType response = tribe.trySetInitials(str, player.getUUID());
         if (response == TribeErrorType.SUCCESS){
             tribe.broadcastMessage(TribeSuccessType.SET_INITIALS, player, str);
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
 

@@ -39,7 +39,7 @@ public enum TribeErrorType {
     public TranslationTextComponent getText(){
         String langEntry = "error.tribes." + this.name().toLowerCase();
         TranslationTextComponent text = new TranslationTextComponent(langEntry);
-        Style style = text.getStyle().setColor(Color.fromInt(0xFF0000));
+        Style style = text.getStyle().withColor(Color.fromRgb(0xFF0000));
         text.setStyle(style);
         return text;
     }
@@ -47,7 +47,7 @@ public enum TribeErrorType {
     public static TranslationTextComponent getWaitText(long time){
         String langEntry = "error.tribes.wait";
         TranslationTextComponent text = new TranslationTextComponent(langEntry, time);
-        Style style = text.getStyle().setColor(Color.fromInt(0xFF0000));
+        Style style = text.getStyle().withColor(Color.fromRgb(0xFF0000));
         text.setStyle(style);
         return text;
     }

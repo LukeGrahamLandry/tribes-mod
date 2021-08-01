@@ -40,7 +40,7 @@ public class DeityArgumentType implements ArgumentType<DeitiesManager.DeityData>
             return context.getArgument(name, DeitiesManager.DeityData.class);
         } catch (Exception e){
             if (context.getSource() instanceof CommandSource){
-                ((CommandSource)context.getSource()).sendFeedback(TribeErrorType.INVALID_DEITY.getText(), true);
+                ((CommandSource)context.getSource()).sendSuccess(TribeErrorType.INVALID_DEITY.getText(), true);
             }
             return null;
         }

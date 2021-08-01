@@ -14,12 +14,12 @@ public class PacketCreateTribe {
 
     // Read tribe name from PacketBuffer
     public PacketCreateTribe(PacketBuffer buf) {
-        this.tribeName = buf.readString(32767);
+        this.tribeName = buf.readUtf(32767);
     }
 
     // Write tribe name to PacketBuffer
     public void toBytes(PacketBuffer buf){
-        buf.writeString(this.tribeName);
+        buf.writeUtf(this.tribeName);
     }
 
     public PacketCreateTribe(String tribeNameIn){
@@ -30,9 +30,9 @@ public class PacketCreateTribe {
         ctx.get().enqueueWork(() -> {
             TribeErrorType result = TribesManager.createNewTribe(tribeName, ctx.get().getSender());
             if (result == TribeErrorType.SUCCESS){
-                ctx.get().getSender().sendMessage(TribeSuccessType.MADE_TRIBE.getText(tribeName), ctx.get().getSender().getUniqueID());
+                ctx.get().getSender().sendMessage(TribeSuccessType.MADE_TRIBE.getText(tribeName), ctx.get().getSender().getUUID());
             } else {
-                ctx.get().getSender().sendMessage(result.getText(), ctx.get().getSender().getUniqueID());
+                ctx.get().getSender().sendMessage(result.getText(), ctx.get().getSender().getUUID());
             }
         });
         ctx.get().setPacketHandled(true);

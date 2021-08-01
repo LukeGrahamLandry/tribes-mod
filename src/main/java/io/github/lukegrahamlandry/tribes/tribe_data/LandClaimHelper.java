@@ -44,14 +44,14 @@ public class LandClaimHelper {
     }
 
     public static String getOwnerDisplayFor(PlayerEntity player){
-        long chunk = player.getEntityWorld().getChunkAt(player.getPosition()).getPos().asLong();
+        long chunk = player.getCommandSenderWorld().getChunkAt(player.blockPosition()).getPos().toLong();
         Tribe chunkOwner = getChunkOwner(chunk);
 
         if (chunkOwner != null){
             return chunkOwner.getName() + " claimed chunk";
         }
 
-        Hemi currentHemi = getHemiAt(player.getPosition());
+        Hemi currentHemi = getHemiAt(player.blockPosition());
         switch (currentHemi){
             case NEGATIVE:
                 return (TribesConfig.getUseNorthSouthHemisphereDirection() ? "Northern" : "Western") + " Hemisphere";
@@ -67,10 +67,10 @@ public class LandClaimHelper {
 
     // considers chunk claims, hemisphere, death punishments
     public static boolean canAccessLandAt(PlayerEntity player, BlockPos position){
-        Tribe interactingTribe = TribesManager.getTribeOf(player.getUniqueID());  // could be null
+        Tribe interactingTribe = TribesManager.getTribeOf(player.getUUID());  // could be null
 
         // claimed chunk
-        long chunk = player.getEntityWorld().getChunkAt(position).getPos().asLong();
+        long chunk = player.getCommandSenderWorld().getChunkAt(position).getPos().toLong();
         Tribe chunkOwner = getChunkOwner(chunk);
         if (chunkOwner != null && !chunkOwner.equals(interactingTribe)){
             return chunkOwner.claimDisableTime <= 0;  // respect pvp death penalties

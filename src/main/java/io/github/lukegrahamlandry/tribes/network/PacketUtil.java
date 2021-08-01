@@ -9,7 +9,7 @@ public class PacketUtil {
     public static void writeStringList(PacketBuffer buf, List<String> data){
         buf.writeInt(data.size());
         for (String s : data){
-            buf.writeString(s);
+            buf.writeUtf(s);
         }
     }
 
@@ -17,7 +17,7 @@ public class PacketUtil {
         List<String> data = new ArrayList<>();
         int size = buf.readInt();
         for (int i=0;i<size;i++){
-            data.add(buf.readString(32767));
+            data.add(buf.readUtf(32767));
         }
 
         return data;

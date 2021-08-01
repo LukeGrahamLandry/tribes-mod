@@ -11,5 +11,5 @@ public class TileEntityInit {
     public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, TribesMain.MOD_ID);
 
     public static final RegistryObject<TileEntityType<AltarTileEntity>> ALTAR
-            = TILE_ENTITY_TYPES.register("altar", () -> TileEntityType.Builder.create(AltarTileEntity::new, BlockInit.ALTER.get()).build(null));
+            = TILE_ENTITY_TYPES.register("altar", () -> TileEntityType.Builder.of(AltarTileEntity::new, BlockInit.ALTER.get()).build(null));
 }

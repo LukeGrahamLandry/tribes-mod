@@ -19,11 +19,11 @@ import java.util.List;
 public class ListBansCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("bans")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(ListBansCommand::handleListBans)
                 ).executes(ctx -> {
-                    ctx.getSource().sendFeedback(TribeErrorType.ARG_PLAYER.getText(), false);
+                    ctx.getSource().sendSuccess(TribeErrorType.ARG_PLAYER.getText(), false);
                             return 0;
                         }
                 );
@@ -40,9 +40,9 @@ public class ListBansCommand {
         }
 
         if (bannedIn.size() == 0){
-            source.getSource().sendFeedback(TribeSuccessType.NO_BANS.getBlueText(playerToCheck), true);
+            source.getSource().sendSuccess(TribeSuccessType.NO_BANS.getBlueText(playerToCheck), true);
         } else {
-            source.getSource().sendFeedback(TribeSuccessType.LIST_BANS.getBlueText(playerToCheck, output), true);
+            source.getSource().sendSuccess(TribeSuccessType.LIST_BANS.getBlueText(playerToCheck, output), true);
         }
 
         return Command.SINGLE_SUCCESS;

@@ -18,12 +18,12 @@ import net.minecraft.util.text.StringTextComponent;
 public class HemiAccessCommand {
     public static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("hemisphere")
-                .requires(cs->cs.hasPermissionLevel(0)) //permission
+                .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("side", StringArgumentType.word())
                         .executes(HemiAccessCommand::handleSelect)
                 ).executes(ctx -> {
                         String types = TribesConfig.getUseNorthSouthHemisphereDirection() ? "north / south" : "east / west";
-                        ctx.getSource().sendFeedback(new StringTextComponent("pick which hemi to access (" + types + ")"), false);
+                        ctx.getSource().sendSuccess(new StringTextComponent("pick which hemi to access (" + types + ")"), false);
                         return 0;
                     }
                 );
@@ -31,10 +31,10 @@ public class HemiAccessCommand {
     }
 
     public static int handleSelect(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().asPlayer();
+        PlayerEntity player = source.getSource().getPlayerOrException();
         String side = StringArgumentType.getString(source, "side");
 
-        Tribe tribe = TribesManager.getTribeOf(player.getUniqueID());
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         TribeErrorType response = tribe.validateSelectHemi(player, side);
 
         if (response == TribeErrorType.SUCCESS){
@@ -42,7 +42,7 @@ public class HemiAccessCommand {
                 tribe.selectHemi(player, side);
             });
         } else {
-            source.getSource().sendFeedback(response.getText(), true);
+            source.getSource().sendSuccess(response.getText(), true);
         }
 
         return Command.SINGLE_SUCCESS;

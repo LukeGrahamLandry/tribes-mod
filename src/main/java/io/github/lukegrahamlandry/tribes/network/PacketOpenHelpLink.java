@@ -1,5 +1,6 @@
 package io.github.lukegrahamlandry.tribes.network;
 
+import io.github.lukegrahamlandry.tribes.client.gui.HelpScreen;
 import io.github.lukegrahamlandry.tribes.client.gui.JoinTribeScreen;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
@@ -30,26 +31,13 @@ public class PacketOpenHelpLink {
     }
 
     public static void handle(PacketOpenHelpLink packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> doOpen(packet));
+        ctx.get().enqueueWork(PacketOpenHelpLink::doOpen);
         ctx.get().setPacketHandled(true);
     }
 
-    public static String helpLink = "https://github.com/LukeGrahamLandry/tribes-mod/blob/main/wiki.md";
-
     @OnlyIn(Dist.CLIENT)
-    private static void doOpen(PacketOpenHelpLink packet){
-        Minecraft.getInstance().displayGuiScreen(new ConfirmOpenLinkScreen(PacketOpenHelpLink::confirmLink, helpLink, true));
+    private static void doOpen(){
+        Minecraft.getInstance().setScreen(new HelpScreen());
     }
 
-    private static void confirmLink(boolean doOpen) {
-        if (doOpen) {
-            openLink(helpLink);
-        }
-
-        Minecraft.getInstance().displayGuiScreen(null);
-    }
-
-    private static void openLink(String uri) {
-        Util.getOSType().openURI(uri);
-    }
 }
