@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -81,14 +82,19 @@ public class TribeScreen extends Screen {
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        // RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         if(largeGUI){
-            this.minecraft.getTextureManager().bind(guiTexture);
+            RenderSystem.setShaderTexture(0, guiTexture);
+            // this.minecraft.getTextureManager().bind(guiTexture);
             this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, 2*this.xSize, this.ySize);
-            this.minecraft.getTextureManager().bind(guiTexture2);
+            // this.minecraft.getTextureManager().bind(guiTexture2);
+            RenderSystem.setShaderTexture(0, guiTexture2);
             this.blit(matrixStack, this.guiLeft+xSize, this.guiTop, 0, 0, 2*this.xSize, this.ySize);
         }else {
-            this.minecraft.getTextureManager().bind(guiTexture);
+            // this.minecraft.getTextureManager().bind(guiTexture);
+            RenderSystem.setShaderTexture(0, guiTexture);
             this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         }
         if(renderTitle) this.font.draw(matrixStack, this.title, (float) this.titleX, (float) this.titleY, 4210752);

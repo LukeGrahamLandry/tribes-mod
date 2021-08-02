@@ -13,7 +13,7 @@ import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 public class EffectsTribeCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register() {

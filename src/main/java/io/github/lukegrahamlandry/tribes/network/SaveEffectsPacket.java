@@ -7,7 +7,7 @@ import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;

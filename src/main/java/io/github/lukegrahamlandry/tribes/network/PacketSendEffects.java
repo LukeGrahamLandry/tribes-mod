@@ -2,8 +2,8 @@ package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import java.util.function.Supplier;
 

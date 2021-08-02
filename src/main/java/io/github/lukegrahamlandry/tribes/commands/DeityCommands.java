@@ -11,13 +11,13 @@ import io.github.lukegrahamlandry.tribes.tribe_data.*;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.*;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraft.util.Hand;
 
 public class DeityCommands {
     public static ArgumentBuilder<CommandSourceStack, ?> register() {
@@ -101,7 +101,7 @@ public class DeityCommands {
             if (deityName == null){
                 source.getSource().sendSuccess(TribeErrorType.NO_DEITY.getText(), true);
             } else {
-                ItemStack banner = player.getItemInHand(Hand.MAIN_HAND);
+                ItemStack banner = player.getItemInHand(InteractionHand.MAIN_HAND);
 
                 if (banner.getItem() instanceof BannerItem){
                     DeitiesManager.DeityData data = DeitiesManager.deities.get(deityName);
@@ -110,11 +110,11 @@ public class DeityCommands {
                     BannerPattern bannerpattern = BannarInit.get(data.bannerKey);
                     DyeColor dyecolor = DyeColor.WHITE;
                     CompoundTag compoundnbt = banner.getOrCreateTagElement("BlockEntityTag");
-                    ListNBT listnbt;
+                    ListTag listnbt;
                     if (compoundnbt.contains("Patterns", 9)) {
                         listnbt = compoundnbt.getList("Patterns", 10);
                     } else {
-                        listnbt = new ListNBT();
+                        listnbt = new ListTag();
                         compoundnbt.put("Patterns", listnbt);
                     }
 
@@ -123,7 +123,7 @@ public class DeityCommands {
                     compoundnbt1.putInt("Color", dyecolor.getId());
                     listnbt.add(compoundnbt1);
 
-                    player.setItemInHand(Hand.MAIN_HAND, banner);
+                    player.setItemInHand(InteractionHand.MAIN_HAND, banner);
 
                     source.getSource().sendSuccess(TribeSuccessType.MAKE_HOLY_BANNER.getText(), false);
                 } else {
@@ -146,7 +146,7 @@ public class DeityCommands {
             if (deityName == null){
                 source.getSource().sendSuccess(TribeErrorType.NO_DEITY.getText(), true);
             } else {
-                Item currentlyHeld = player.getItemInHand(Hand.MAIN_HAND).getItem();
+                Item currentlyHeld = player.getItemInHand(InteractionHand.MAIN_HAND).getItem();
 
                 if (currentlyHeld == Items.BOOK || currentlyHeld == Items.WRITABLE_BOOK || currentlyHeld == Items.BOOKSHELF){
                     DeitiesManager.DeityData data = DeitiesManager.deities.get(deityName);
@@ -158,16 +158,16 @@ public class DeityCommands {
                     tag.putString("title", data.bookTitle);
                     tag.putBoolean("resolved", true);
 
-                    ListNBT pages = new ListNBT();
+                    ListTag pages = new ListTag();
                     for (String content : data.bookPages){
-                        INBT page = StringNBT.valueOf("{\"text\": \"" + content + "\"}");
+                        Tag page = StringTag.valueOf("{\"text\": \"" + content + "\"}");
                         pages.add(page);
                     }
                     tag.put("pages", pages);
 
                     book.setTag(tag);
 
-                    player.getItemInHand(Hand.MAIN_HAND).shrink(1);
+                    player.getItemInHand(InteractionHand.MAIN_HAND).shrink(1);
                     player.drop(book, true);
 
                     if (currentlyHeld == Items.BOOKSHELF){

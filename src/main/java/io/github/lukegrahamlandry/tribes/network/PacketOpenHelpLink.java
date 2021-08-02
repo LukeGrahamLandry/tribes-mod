@@ -2,12 +2,10 @@ package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.client.gui.HelpScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConfirmOpenLinkScreen;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

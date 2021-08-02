@@ -12,10 +12,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.DirectionProperty;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.EnumProperty;
-import net.minecraft.world.level.block.state.StateContainer;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.core.BlockPos;
@@ -27,28 +26,23 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 import javax.annotation.Nullable;
 
-public class AlterBlock extends Block {
-    public static final DirectionProperty FACING = HorizontalBlock.FACING;
+public class AlterBlock extends Block implements EntityBlock{
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<ChestType> TYPE = BlockStateProperties.CHEST_TYPE;
 
-    public AlterBlock(AbstractBlock.Properties props) {
+    public AlterBlock(Block.Properties props) {
         super(props);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(TYPE, ChestType.SINGLE));
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
     @Nullable
     @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new AltarTileEntity();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new AltarTileEntity(pos, state);
     }
 
-    public BlockRenderType getRenderShape(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
@@ -145,7 +139,7 @@ public class AlterBlock extends Block {
         return blockstate.is(this) && blockstate.getValue(TYPE) == ChestType.SINGLE ? blockstate.getValue(FACING) : null;
     }
 
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, TYPE);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_48725_) {
+        p_48725_.add(FACING, TYPE);
     }
 }

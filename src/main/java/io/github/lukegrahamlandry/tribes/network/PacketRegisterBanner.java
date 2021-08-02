@@ -4,7 +4,7 @@ import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

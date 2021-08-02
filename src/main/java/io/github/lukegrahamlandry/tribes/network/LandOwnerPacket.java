@@ -3,7 +3,7 @@ package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.client.gui.ShowLandOwnerUI;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 import java.util.function.Supplier;

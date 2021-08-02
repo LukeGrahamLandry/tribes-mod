@@ -1,7 +1,7 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.chat.Color;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.Style;
 
 public enum TribeErrorType {
@@ -39,7 +39,7 @@ public enum TribeErrorType {
     public TranslatableComponent getText(){
         String langEntry = "error.tribes." + this.name().toLowerCase();
         TranslatableComponent text = new TranslatableComponent(langEntry);
-        Style style = text.getStyle().withColor(Color.fromRgb(0xFF0000));
+        Style style = text.getStyle().withColor(TextColor.fromRgb(0xFF0000));
         text.setStyle(style);
         return text;
     }
@@ -47,7 +47,7 @@ public enum TribeErrorType {
     public static TranslatableComponent getWaitText(long time){
         String langEntry = "error.tribes.wait";
         TranslatableComponent text = new TranslatableComponent(langEntry, time);
-        Style style = text.getStyle().withColor(Color.fromRgb(0xFF0000));
+        Style style = text.getStyle().withColor(TextColor.fromRgb(0xFF0000));
         text.setStyle(style);
         return text;
     }

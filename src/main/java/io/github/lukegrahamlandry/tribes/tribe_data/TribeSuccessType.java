@@ -55,7 +55,7 @@ public enum TribeSuccessType {
     public TranslatableComponent getText(){
         String langEntry = "success.tribes." + this.name().toLowerCase();
         TranslatableComponent text = new TranslatableComponent(langEntry);
-        Style style = text.getStyle().withColor(Color.fromRgb(0x00FF00));
+        Style style = text.getStyle().withColor(TextColor.fromRgb(0x00FF00));
         text.setStyle(style);
         return text;
     }
@@ -73,7 +73,7 @@ public enum TribeSuccessType {
 
         String langEntry = "success.tribes." + this.name().toLowerCase();
         TranslatableComponent text = new TranslatableComponent(langEntry, args);
-        Style style = text.getStyle().withColor(Color.fromRgb(0x00FF00));
+        Style style = text.getStyle().withColor(TextColor.fromRgb(0x00FF00));
         text.setStyle(style);
         return text;
     }
@@ -92,24 +92,24 @@ public enum TribeSuccessType {
 
         String langEntry = "success.tribes." + this.name().toLowerCase();
         TranslatableComponent text = new TranslatableComponent(langEntry, args);
-        Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
+        Style style = text.getStyle().withColor(TextColor.fromRgb(0x34e5eb));
         text.setStyle(style);
         TextComponent name = new TextComponent(player.getName().getContents() + " ");
-        Style namestyle = name.getStyle().withBold(true).withColor(Color.fromRgb(0xffbb00));
+        Style namestyle = name.getStyle().withBold(true).withColor(TextColor.fromRgb(0xffbb00));
         name.setStyle(namestyle);
         return name.append(text);
     }
 
     public Component getBlueText() {
-        TextComponent text = getText();
-        Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
+        TranslatableComponent text = getText();
+        Style style = text.getStyle().withColor(TextColor.fromRgb(0x34e5eb));
         text.setStyle(style);
         return text;
     }
 
     public Component getBlueText(Object... args) {
-        TextComponent text = getText(args);
-        Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
+        TranslatableComponent text = getText(args);
+        Style style = text.getStyle().withColor(TextColor.fromRgb(0x34e5eb));
         text.setStyle(style);
         return text;
     }

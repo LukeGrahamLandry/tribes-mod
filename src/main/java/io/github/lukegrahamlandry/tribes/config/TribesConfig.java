@@ -1,8 +1,8 @@
 package io.github.lukegrahamlandry.tribes.config;
 
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.potion.Effects;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -180,7 +180,7 @@ public class TribesConfig {
 
         ArrayList<MobEffect> theEffects = new ArrayList<>();
 
-        for (Field field : Effects.class.getFields()){
+        for (Field field : MobEffects.class.getFields()){
             try {
                 if (field.get(null) instanceof MobEffect){
                     MobEffect toCheck = (MobEffect) field.get(null);
@@ -204,7 +204,7 @@ public class TribesConfig {
 
         ArrayList<MobEffect> theEffects = new ArrayList<>();
 
-        for (Field field : Effects.class.getFields()){
+        for (Field field : MobEffects.class.getFields()){
             try {
                 if (field.get(null) instanceof MobEffect){
                     MobEffect toCheck = (MobEffect) field.get(null);

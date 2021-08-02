@@ -4,10 +4,13 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.lukegrahamlandry.tribes.tribe_data.*;
+import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.synchronization.EntityArgument;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.player.Player;
 
 public class InviteCommands {

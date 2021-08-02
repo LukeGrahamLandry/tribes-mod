@@ -1,26 +1,30 @@
 package io.github.lukegrahamlandry.tribes.item;
 
 import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemFrameEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.*;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class TribeCompass extends Item {
     public static HashMap<UUID, BlockPos> toLookAt = new HashMap<>();
@@ -30,7 +34,7 @@ public class TribeCompass extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(new TextComponent("Right click while holding this and standing in a chunk that hasn't been claimed to get a rough estimate of the distance to the nearest claimed chunk."));
         tooltip.add(new TextComponent("Right click while holding this in a chunk that *has* been claimed to exclude it from compass searches, which makes it easier to hunt for more claimed chunks. Right click again in excluded chunks to resume including them in compass searches."));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
@@ -58,7 +62,7 @@ public class TribeCompass extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> use(Level worldIn, Player playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
         if (!worldIn.isClientSide()){
             long chunk = worldIn.getChunkAt(playerIn.blockPosition()).getPos().toLong();
@@ -89,7 +93,7 @@ public class TribeCompass extends Item {
                 }
             }
         }
-        return ActionResult.success(stack);
+        return InteractionResultHolder.success(stack);
     }
 
     private static List<Long> getIgnoredChunks(CompoundTag tag){
@@ -126,14 +130,14 @@ public class TribeCompass extends Item {
     private static final Angle wobble = new Angle();
     private static final Angle wobbleRandom = new Angle();
 
-    public static float getAngle(ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity player) {
+    public static float getAngle(ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity player, int param) {
         Entity entity = (Entity)(player != null ? player : stack.getEntityRepresentation());
         if (world == null) return 0F;
         long i = world.getGameTime();
         if (!(entity instanceof Player)) return (Math.floorDiv(i, 20) % 40) * 0.25F;
 
-            if (world == null && entity.level instanceof ClientWorld) {
-                world = (ClientWorld)entity.level;
+            if (world == null && entity.level instanceof ClientLevel) {
+                world = (ClientLevel)entity.level;
             }
 
             BlockPos blockpos = getCloseClaimedChunk(entity);
@@ -141,13 +145,13 @@ public class TribeCompass extends Item {
                 boolean flag = player != null && ((Player)player).isLocalPlayer();
                 double d1 = 0.0D;
                 if (flag) {
-                    d1 = (double)player.yRot;
+                    d1 = (double)player.getYRot();
                 } else if (player != null) {
                     d1 = (double)player.yBodyRot;
                 }
 
-                d1 = MathHelper.positiveModulo(d1 / 360.0D, 1.0D);
-                double d2 = posToAngle(Vector3d.atCenterOf(blockpos), entity) / (double)((float)Math.PI * 2F);
+                d1 = Mth.positiveModulo(d1 / 360.0D, 1.0D);
+                double d2 = posToAngle(Vec3.atCenterOf(blockpos), entity) / (double)((float)Math.PI * 2F);
                 double d3;
                 if (flag) {
                     if (wobble.shouldUpdate(i)) {
@@ -159,7 +163,7 @@ public class TribeCompass extends Item {
                     d3 = 0.5D - (d1 - 0.25D - d2);
                 }
 
-                return MathHelper.positiveModulo((float)d3, 1.0F);
+                return Mth.positiveModulo((float)d3, 1.0F);
             } else {
                 // spin
                 return (float) (((i * 10) % 360)  / 360.0D);
@@ -173,7 +177,7 @@ public class TribeCompass extends Item {
         return pos;
     }
 
-    private static double posToAngle(Vector3d p_239443_1_, Entity p_239443_2_) {
+    private static double posToAngle(Vec3 p_239443_1_, Entity p_239443_2_) {
         return Math.atan2(p_239443_1_.z() - p_239443_2_.getZ(), p_239443_1_.x() - p_239443_2_.getX());
     }
 
@@ -192,10 +196,10 @@ public class TribeCompass extends Item {
         private void update(long p_239449_1_, double p_239449_3_) {
             this.lastUpdateTick = p_239449_1_;
             double d0 = p_239449_3_ - this.rotation;
-            d0 = MathHelper.positiveModulo(d0 + 0.5D, 1.0D) - 0.5D;
+            d0 = Mth.positiveModulo(d0 + 0.5D, 1.0D) - 0.5D;
             this.deltaRotation += d0 * 0.1D;
             this.deltaRotation *= 0.8D;
-            this.rotation = MathHelper.positiveModulo(this.rotation + this.deltaRotation, 1.0D);
+            this.rotation = Mth.positiveModulo(this.rotation + this.deltaRotation, 1.0D);
         }
     }
 }

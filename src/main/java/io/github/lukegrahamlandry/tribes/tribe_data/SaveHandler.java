@@ -2,21 +2,17 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.events.RemoveInactives;
-import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -31,7 +27,8 @@ public class SaveHandler {
     @SubscribeEvent
     public static void doLoad(WorldEvent.Load event){
         if (event.getWorld().isClientSide()) return;
-        File dataFile = ((ServerChunkProvider)event.getWorld().getChunkSource()).getDataStorage().dataFolder;
+
+        File dataFile = ((ServerChunkCache)event.getWorld().getChunkSource()).getDataStorage().dataFolder;
         load(dataFile);
     }
 
@@ -39,7 +36,7 @@ public class SaveHandler {
     @SubscribeEvent
     public static void doSave(WorldEvent.Unload event){
         if (event.getWorld().isClientSide()) return;
-        File dataFile = ((ServerChunkProvider)event.getWorld().getChunkSource()).getDataStorage().dataFolder;
+        File dataFile = ((ServerChunkCache)event.getWorld().getChunkSource()).getDataStorage().dataFolder;
         save(dataFile);
     }
 

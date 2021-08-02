@@ -10,9 +10,9 @@ import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.synchronization.EntityArgument;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
 
 public class PromotePlayerCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register() {

@@ -1,12 +1,12 @@
 package io.github.lukegrahamlandry.tribes.events;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class TribeServer {
     }
 
     public static Player getPlayerByUuid(UUID id){
-        for (ServerWorld world : server.getAllLevels()){
+        for (ServerLevel world : server.getAllLevels()){
             if (world.getPlayerByUUID(id) != null) return world.getPlayerByUUID(id);
         }
         return null;

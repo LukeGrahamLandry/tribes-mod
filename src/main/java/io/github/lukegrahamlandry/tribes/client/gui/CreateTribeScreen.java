@@ -6,12 +6,12 @@ import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketCreateTribe;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public class CreateTribeScreen extends TribeScreen {
     /** TextBox for name input. */
-    protected TextFieldWidget nameField;
+    protected EditBox nameField;
     /** Button for creating tribe. */
     private Button btnCreateTribe;
     /** Name of tribe to create taken from the TextBox */
@@ -40,15 +40,15 @@ public class CreateTribeScreen extends TribeScreen {
         this.titleY = (this.height - this.ySize + 20) / 2;
 
         //Initialization of create tribe button
-        this.btnCreateTribe = this.addButton(new Button(this.guiLeft + 13, (this.height - this.ySize + 110) / 2, 150, 20, new TranslatableComponent(TribesMain.MOD_ID + ".createTribeButton"), (p_214318_1_) -> {
+        this.btnCreateTribe = this.addRenderableWidget(new Button(this.guiLeft + 13, (this.height - this.ySize + 110) / 2, 150, 20, new TranslatableComponent(TribesMain.MOD_ID + ".createTribeButton"), (p_214318_1_) -> {
             NetworkHandler.INSTANCE.sendToServer(new PacketCreateTribe(this.tribeName));
             this.onClose();
         }));
 
         //Initialization of the textbox
-        this.nameField = new TextFieldWidget(this.font, this.guiLeft + 13, (this.height - this.ySize + 50) / 2, 150, 20, this.nameField, new TranslatableComponent("selectWorld.search"));
+        this.nameField = new EditBox(this.font, this.guiLeft + 13, (this.height - this.ySize + 50) / 2, 150, 20, this.nameField, new TranslatableComponent("selectWorld.search"));
         this.nameField.setMaxLength(TribesConfig.getMaxTribeNameLength());
-        this.children.add(this.nameField);
+        this.addRenderableWidget(this.nameField);
         this.setInitialFocus(this.nameField);
         this.nameField.setResponder((tribeNameIn) -> {
             this.tribeName = tribeNameIn;

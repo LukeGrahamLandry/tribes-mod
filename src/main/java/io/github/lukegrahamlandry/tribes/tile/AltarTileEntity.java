@@ -2,16 +2,17 @@ package io.github.lukegrahamlandry.tribes.tile;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.init.TileEntityInit;
-import net.minecraft.world.level.block.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Constants;
 
 public class AltarTileEntity extends BlockEntity {
-    public AltarTileEntity() {
-        super(TileEntityInit.ALTAR.get());
+    public AltarTileEntity(BlockPos pos, BlockState state) {
+        super(TileEntityInit.ALTAR.get(), pos, state);
     }
 
     String bannerKey;
@@ -36,8 +37,8 @@ public class AltarTileEntity extends BlockEntity {
 
     // saving data
     @Override
-    public void load(BlockState state, CompoundTag tag) {
-        super.load(state, tag);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         this.bannerKey = tag.contains("banner") ? tag.getString("banner") : null;
     }
 
@@ -50,24 +51,21 @@ public class AltarTileEntity extends BlockEntity {
 
     // block update
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
         CompoundTag nbt = new CompoundTag();
         this.save(nbt);
 
-        return new SUpdateTileEntityPacket(this.worldPosition, 1, nbt);
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 1, nbt);
     }
+
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.load(this.getBlockState(), pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        this.load(pkt.getTag());
     }
 
     // chunk load
     @Override
     public CompoundTag getUpdateTag() {
         return this.save(new CompoundTag());
-    }
-    @Override
-    public void handleUpdateTag(BlockState state, CompoundTag tag) {
-        this.load(state, tag);
     }
 }

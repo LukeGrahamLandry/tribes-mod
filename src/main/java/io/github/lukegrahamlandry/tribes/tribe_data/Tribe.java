@@ -6,7 +6,6 @@ import io.github.lukegrahamlandry.tribes.events.TribeServer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.server.ServerWorld;
 
 import java.util.*;
 
@@ -308,7 +307,7 @@ public class Tribe {
         if (obj.has("effects")){
             JsonObject effectMap = obj.get("effects").getAsJsonObject();
             for (Map.Entry<String, JsonElement> e : effectMap.entrySet()){
-                int id = new Integer(e.getKey());
+                int id = Integer.getInteger(e.getKey());
                 MobEffect effect = MobEffect.byId(id);
                 tribe.effects.put(effect, e.getValue().getAsInt());
             }

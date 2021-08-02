@@ -47,7 +47,7 @@ public class MyTribeScreen extends TribeScreen {
         this.guiTop = (this.height - this.ySize) / 2;
 
 
-        this.effectsButton = this.addButton(new Button(this.guiLeft + 15, this.guiTop + 90, 75, 20, new TextComponent("Effects"), (p_214318_1_) -> {
+        this.effectsButton = this.addRenderableWidget(new Button(this.guiLeft + 15, this.guiTop + 90, 75, 20, new TextComponent("Effects"), (p_214318_1_) -> {
             if (this.effectsButton.active){
                 NetworkHandler.INSTANCE.sendToServer(new PacketSendEffects());
                 this.onClose();
@@ -55,7 +55,7 @@ public class MyTribeScreen extends TribeScreen {
         }));
         this.effectsButton.active = this.rank.equals("leader");
 
-        this.leaveButton = this.addButton(new Button(this.guiLeft + 15, this.guiTop + 125, 75, 20, new TextComponent("Leave Tribe"), (p_214318_1_) -> {
+        this.leaveButton = this.addRenderableWidget(new Button(this.guiLeft + 15, this.guiTop + 125, 75, 20, new TextComponent("Leave Tribe"), (p_214318_1_) -> {
             this.onClose();
             NetworkHandler.INSTANCE.sendToServer(new PacketLeaveTribe());
         }));

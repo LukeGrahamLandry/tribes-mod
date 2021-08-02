@@ -5,13 +5,13 @@ import com.mojang.authlib.GameProfile;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -68,7 +68,7 @@ public class AttackHandler {
         // actually drop the head
         GameProfile gameprofile = ((Player)dead).getGameProfile();
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        stack.getOrCreateTag().put("SkullOwner", NBTUtil.writeGameProfile(new CompoundTag(), gameprofile));
+        stack.getOrCreateTag().put("SkullOwner", NbtUtils.writeGameProfile(new CompoundTag(), gameprofile));
         ItemEntity itementity = new ItemEntity(dead.getCommandSenderWorld(), dead.blockPosition().getX(), dead.blockPosition().getY(), dead.blockPosition().getZ(), stack);
         dead.getCommandSenderWorld().addFreshEntity(itementity);
     }

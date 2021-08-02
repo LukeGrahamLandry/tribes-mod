@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,8 +23,11 @@ public abstract class GuiButton extends AbstractButton {
     }
 
     public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        Minecraft.getInstance().getTextureManager().bind(screen.getGuiTexture());
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        // Minecraft.getInstance().getTextureManager().bind(screen.getGuiTexture());
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, screen.getGuiTexture());
+        // RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int j = 0;
         if (!this.active) {
             j += this.width * 2;
