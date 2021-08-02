@@ -9,7 +9,7 @@ import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,8 +34,8 @@ public class TribeArgumentType implements ArgumentType<Tribe> {
         try {
             return context.getArgument(name, Tribe.class);
         } catch (Exception e){
-            if (context.getSource() instanceof CommandSource){
-                ((CommandSource)context.getSource()).sendSuccess(TribeErrorType.INVALID_TRIBE.getText(), true);
+            if (context.getSource() instanceof CommandSourceStack){
+                ((CommandSourceStack)context.getSource()).sendSuccess(TribeErrorType.INVALID_TRIBE.getText(), true);
             }
             return null;
         }

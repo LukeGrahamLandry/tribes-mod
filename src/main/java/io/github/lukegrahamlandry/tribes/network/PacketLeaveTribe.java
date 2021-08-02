@@ -1,24 +1,22 @@
 package io.github.lukegrahamlandry.tribes.network;
 
-import com.mojang.brigadier.Command;
 import io.github.lukegrahamlandry.tribes.commands.ConfirmCommand;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 // client -> sever
 public class PacketLeaveTribe {
-    public PacketLeaveTribe(PacketBuffer buf) {
+    public PacketLeaveTribe(FriendlyByteBuf buf) {
 
     }
 
-    public void encode(PacketBuffer buf){
+    public void encode(FriendlyByteBuf buf){
 
     }
 

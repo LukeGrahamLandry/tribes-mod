@@ -2,8 +2,8 @@ package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -13,11 +13,11 @@ import java.util.function.Supplier;
 public class PacketRegisterBanner {
     private String name;
 
-    public PacketRegisterBanner(PacketBuffer buf) {
+    public PacketRegisterBanner(FriendlyByteBuf buf) {
         this.name = buf.readUtf(32767);
     }
 
-    public void toBytes(PacketBuffer buf){
+    public void toBytes(FriendlyByteBuf buf){
         buf.writeUtf(this.name);
     }
 

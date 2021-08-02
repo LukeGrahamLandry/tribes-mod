@@ -3,15 +3,14 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 import com.google.gson.*;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
-import io.github.lukegrahamlandry.tribes.events.TribeServer;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
 
 public class TribesManager {
     static Map<String, Tribe> tribes = new HashMap<>();
 
-    public static TribeErrorType createNewTribe(String name, PlayerEntity player){
+    public static TribeErrorType createNewTribe(String name, Player player){
         if (player.getCommandSenderWorld().isClientSide()){
             TribesMain.LOGGER.error("And the lord came down from the heavens and said 'thou shall not create a tribe on the render thread'");
             return TribeErrorType.CLIENT;
@@ -24,7 +23,7 @@ public class TribesManager {
         return addNewTribe(new Tribe(name, player.getUUID()));
     }
 
-    public static TribeErrorType joinTribe(String name, PlayerEntity player){
+    public static TribeErrorType joinTribe(String name, Player player){
         if (playerHasTribe(player.getUUID())) return TribeErrorType.IN_TRIBE;
         if (isNameAvailable(name)) return TribeErrorType.INVALID_TRIBE;
 
@@ -118,14 +117,14 @@ public class TribesManager {
         }
     }
 
-    public static TribeErrorType leaveTribe(PlayerEntity player) {
+    public static TribeErrorType leaveTribe(Player player) {
         if (!playerHasTribe(player.getUUID())) return TribeErrorType.YOU_NOT_IN_TRIBE;
         Tribe tribe = getTribeOf(player.getUUID());
         tribe.removeMember(player.getUUID());
         return TribeErrorType.SUCCESS;
     }
 
-    public static List<Tribe> getBans(PlayerEntity playerToCheck) {
+    public static List<Tribe> getBans(Player playerToCheck) {
         List<Tribe> bans = new ArrayList<>();
         for (Tribe tribe : getTribes()){
             if (tribe.isBanned(playerToCheck.getUUID())){
@@ -135,12 +134,12 @@ public class TribesManager {
         return bans;
     }
 
-    public static int getNumberOfGoodEffects(PlayerEntity player){
+    public static int getNumberOfGoodEffects(Player player){
         int tier = getTribeOf(player.getUUID()).getTribeTier();
         return TribesConfig.getTierPositiveEffects().get(tier - 1);
     }
 
-    public static int getNumberOfBadEffects(PlayerEntity player) {
+    public static int getNumberOfBadEffects(Player player) {
         int tier = getTribeOf(player.getUUID()).getTribeTier();
         return TribesConfig.getTierNegativeEffects().get(tier - 1);
     }

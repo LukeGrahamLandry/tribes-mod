@@ -1,7 +1,7 @@
 package io.github.lukegrahamlandry.tribes.events;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,15 +20,15 @@ public class TribeServer {
         server = event.getServer();
     }
 
-    public static List<ServerPlayerEntity> getPlayers(){
-        List<ServerPlayerEntity> allPlayers = new ArrayList<>();
+    public static List<ServerPlayer> getPlayers(){
+        List<ServerPlayer> allPlayers = new ArrayList<>();
         server.getAllLevels().forEach((world) -> {
             allPlayers.addAll(world.players());
         });
         return allPlayers;
     }
 
-    public static PlayerEntity getPlayerByUuid(UUID id){
+    public static Player getPlayerByUuid(UUID id){
         for (ServerWorld world : server.getAllLevels()){
             if (world.getPlayerByUUID(id) != null) return world.getPlayerByUUID(id);
         }

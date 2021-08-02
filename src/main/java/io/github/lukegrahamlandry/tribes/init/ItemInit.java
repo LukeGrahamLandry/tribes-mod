@@ -2,7 +2,7 @@ package io.github.lukegrahamlandry.tribes.init;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.item.TribeCompass;
-import net.minecraft.item.*;
+import net.minecraft.world.item.*;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

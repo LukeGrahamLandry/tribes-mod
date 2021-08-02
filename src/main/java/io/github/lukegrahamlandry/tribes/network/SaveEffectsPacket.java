@@ -4,9 +4,9 @@ import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.potion.Effect;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -15,27 +15,27 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SaveEffectsPacket {
-    private final Map<Effect, Integer> good;
-    private final Map<Effect, Integer> bad;
+    private final Map<MobEffect, Integer> good;
+    private final Map<MobEffect, Integer> bad;
 
     // send this from the client (effect screen) to save the chosen effects on the server
-    public SaveEffectsPacket(Map<Effect, Integer> good, Map<Effect, Integer> bad){
+    public SaveEffectsPacket(Map<MobEffect, Integer> good, Map<MobEffect, Integer> bad){
         this.good = good;
         this.bad = bad;
     }
 
-    public SaveEffectsPacket(PacketBuffer buf) {
+    public SaveEffectsPacket(FriendlyByteBuf buf) {
         good = new HashMap<>();
         bad = new HashMap<>();
 
         while (true){
             int type = buf.readInt();
             if (type == 0){
-                Effect effect = Effect.byId(buf.readInt());
+                MobEffect effect = MobEffect.byId(buf.readInt());
                 int level = buf.readInt();
                 good.put(effect, level);
             } else if (type == 1){
-                Effect effect = Effect.byId(buf.readInt());
+                MobEffect effect = MobEffect.byId(buf.readInt());
                 int level = buf.readInt();
                 bad.put(effect, level);
             } else {
@@ -44,15 +44,15 @@ public class SaveEffectsPacket {
         }
     }
 
-    public void toBytes(PacketBuffer buf){
+    public void toBytes(FriendlyByteBuf buf){
         good.forEach((effect, level) -> {
             buf.writeInt(0);  // good
-            buf.writeInt(Effect.getId(effect));
+            buf.writeInt(MobEffect.getId(effect));
             buf.writeInt(level);
         });
         bad.forEach((effect, level) -> {
             buf.writeInt(1);  // bad
-            buf.writeInt(Effect.getId(effect));
+            buf.writeInt(MobEffect.getId(effect));
             buf.writeInt(level);
         });
         buf.writeInt(2);  // done
@@ -60,7 +60,7 @@ public class SaveEffectsPacket {
 
     public void handle(Supplier<NetworkEvent.Context> ctx){
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity player = ctx.get().getSender();
+            ServerPlayer player = ctx.get().getSender();
             UUID playerID = player.getUUID();
             Tribe tribe = TribesManager.getTribeOf(playerID);
             if (tribe != null){

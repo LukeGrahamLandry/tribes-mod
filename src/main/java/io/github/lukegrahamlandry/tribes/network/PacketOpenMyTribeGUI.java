@@ -4,9 +4,9 @@ import io.github.lukegrahamlandry.tribes.client.gui.MyTribeScreen;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -25,7 +25,7 @@ public class PacketOpenMyTribeGUI {
     private final List<String> goodTribes;
     private final List<String> badTribes;
 
-    public PacketOpenMyTribeGUI(ServerPlayerEntity player) {
+    public PacketOpenMyTribeGUI(ServerPlayer player) {
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         this.goodTribes = new ArrayList<>();
         this.badTribes = new ArrayList<>();
@@ -58,11 +58,11 @@ public class PacketOpenMyTribeGUI {
         this.badTribes = badTribes;
     }
 
-    public static PacketOpenMyTribeGUI decode(PacketBuffer buf) {
+    public static PacketOpenMyTribeGUI decode(FriendlyByteBuf buf) {
         return new PacketOpenMyTribeGUI(buf.readUtf(32767), buf.readUtf(32767), buf.readUtf(32767), buf.readInt(), buf.readInt(), PacketUtil.readStringList(buf), PacketUtil.readStringList(buf));
     }
 
-    public static void encode(PacketOpenMyTribeGUI packet, PacketBuffer buf) {
+    public static void encode(PacketOpenMyTribeGUI packet, FriendlyByteBuf buf) {
         buf.writeUtf(packet.tribeName);
         buf.writeUtf(packet.rank);
         buf.writeUtf(packet.owner);

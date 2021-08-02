@@ -1,32 +1,26 @@
 package io.github.lukegrahamlandry.tribes.item;
 
-import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemFrameEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.*;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.*;
-
-import net.minecraft.item.Item.Properties;
 
 public class TribeCompass extends Item {
     public static HashMap<UUID, BlockPos> toLookAt = new HashMap<>();
@@ -36,13 +30,13 @@ public class TribeCompass extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new StringTextComponent("Right click while holding this and standing in a chunk that hasn't been claimed to get a rough estimate of the distance to the nearest claimed chunk."));
-        tooltip.add(new StringTextComponent("Right click while holding this in a chunk that *has* been claimed to exclude it from compass searches, which makes it easier to hunt for more claimed chunks. Right click again in excluded chunks to resume including them in compass searches."));
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, ITooltipFlag flagIn) {
+        tooltip.add(new TextComponent("Right click while holding this and standing in a chunk that hasn't been claimed to get a rough estimate of the distance to the nearest claimed chunk."));
+        tooltip.add(new TextComponent("Right click while holding this in a chunk that *has* been claimed to exclude it from compass searches, which makes it easier to hunt for more claimed chunks. Right click again in excluded chunks to resume including them in compass searches."));
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
 
-    public static BlockPos caclulateTargetPosition(ServerPlayerEntity player, ItemStack compass){
+    public static BlockPos caclulateTargetPosition(ServerPlayer player, ItemStack compass){
         BlockPos posToLook = null;
         ChunkPos start = new ChunkPos(player.blockPosition().getX() >> 4, player.blockPosition().getZ() >> 4);
 
@@ -64,23 +58,23 @@ public class TribeCompass extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> use(Level worldIn, Player playerIn, Hand handIn) {
         ItemStack stack = playerIn.getItemInHand(handIn);
         if (!worldIn.isClientSide()){
             long chunk = worldIn.getChunkAt(playerIn.blockPosition()).getPos().toLong();
             if (LandClaimHelper.getChunkOwner(chunk) != null){
                 if (isChunkIgnored(stack, chunk)){
                     removeIgnoredChunk(stack, chunk);
-                    playerIn.displayClientMessage(new StringTextComponent("This chunk will be included in tribe compass searches!"), false);
+                    playerIn.displayClientMessage(new TextComponent("This chunk will be included in tribe compass searches!"), false);
                 } else {
                     addIgnoredChunk(stack, chunk);
-                    playerIn.displayClientMessage(new StringTextComponent("This chunk will be excluded from tribe compass searches!"), false);
+                    playerIn.displayClientMessage(new TextComponent("This chunk will be excluded from tribe compass searches!"), false);
                 }
             } else {
-                BlockPos target = caclulateTargetPosition((ServerPlayerEntity) playerIn, stack);
+                BlockPos target = caclulateTargetPosition((ServerPlayer) playerIn, stack);
 
                 if (target == null){
-                    playerIn.displayClientMessage(new StringTextComponent("There are no claimed chunks to find."), false);
+                    playerIn.displayClientMessage(new TextComponent("There are no claimed chunks to find."), false);
                 } else {
                     double myX = playerIn.getX();
                     double myZ = playerIn.getZ();
@@ -91,14 +85,14 @@ public class TribeCompass extends Item {
                     for (int i=0;i<digits;i++){
                         x.append("x");
                     }
-                    playerIn.displayClientMessage(new StringTextComponent("The next claimed chunk is " + x.toString() + " blocks away."), false);
+                    playerIn.displayClientMessage(new TextComponent("The next claimed chunk is " + x.toString() + " blocks away."), false);
                 }
             }
         }
         return ActionResult.success(stack);
     }
 
-    private static List<Long> getIgnoredChunks(CompoundNBT tag){
+    private static List<Long> getIgnoredChunks(CompoundTag tag){
         long[] savedIgnoredChunks = tag.contains("ignore") ? tag.getLongArray("ignore") : new long[]{};
         List<Long> ignoredChunks = new ArrayList<>();
         for (long c : savedIgnoredChunks) ignoredChunks.add(c);
@@ -106,7 +100,7 @@ public class TribeCompass extends Item {
     }
 
     public static void addIgnoredChunk(ItemStack stack, long chunk){
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         List<Long> ignoredChunks = getIgnoredChunks(tag);
         if (!ignoredChunks.contains(chunk)){
             ignoredChunks.add(chunk);
@@ -116,7 +110,7 @@ public class TribeCompass extends Item {
     }
 
     public static void removeIgnoredChunk(ItemStack stack, long chunk){
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         List<Long> ignoredChunks = getIgnoredChunks(tag);
         ignoredChunks.remove(chunk);
         tag.putLongArray("ignore", ignoredChunks);
@@ -124,7 +118,7 @@ public class TribeCompass extends Item {
     }
 
     public static boolean isChunkIgnored(ItemStack stack, long chunk){
-        CompoundNBT tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         List<Long> ignoredChunks = getIgnoredChunks(tag);
         return ignoredChunks.contains(chunk);
     }
@@ -136,7 +130,7 @@ public class TribeCompass extends Item {
         Entity entity = (Entity)(player != null ? player : stack.getEntityRepresentation());
         if (world == null) return 0F;
         long i = world.getGameTime();
-        if (!(entity instanceof PlayerEntity)) return (Math.floorDiv(i, 20) % 40) * 0.25F;
+        if (!(entity instanceof Player)) return (Math.floorDiv(i, 20) % 40) * 0.25F;
 
             if (world == null && entity.level instanceof ClientWorld) {
                 world = (ClientWorld)entity.level;
@@ -144,7 +138,7 @@ public class TribeCompass extends Item {
 
             BlockPos blockpos = getCloseClaimedChunk(entity);
             if (blockpos != null) {
-                boolean flag = player != null && ((PlayerEntity)player).isLocalPlayer();
+                boolean flag = player != null && ((Player)player).isLocalPlayer();
                 double d1 = 0.0D;
                 if (flag) {
                     d1 = (double)player.yRot;

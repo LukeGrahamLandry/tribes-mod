@@ -1,12 +1,11 @@
 package io.github.lukegrahamlandry.tribes.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.lukegrahamlandry.tribes.TribesMain;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class TribeScreen extends Screen {
     /**
@@ -43,7 +42,7 @@ public class TribeScreen extends Screen {
     protected boolean largeGUI = false;
 
     protected TribeScreen(String translationKey, String guiTextureIn, int xSizeIn, int ySizeIn, boolean renderTitleIn) {
-        super(new TranslationTextComponent(TribesMain.MOD_ID + translationKey));
+        super(new TranslatableComponent(TribesMain.MOD_ID + translationKey));
         this.guiTexture = new ResourceLocation(TribesMain.MOD_ID, guiTextureIn);
         this.xSize = xSizeIn;
         this.ySize = ySizeIn;
@@ -51,7 +50,7 @@ public class TribeScreen extends Screen {
     }
 
     protected TribeScreen(String translationKey, String guiTexture1In, String guiTexture2In, int xSizeIn, int ySizeIn, boolean renderTitleIn) {
-        super(new TranslationTextComponent(TribesMain.MOD_ID + translationKey));
+        super(new TranslatableComponent(TribesMain.MOD_ID + translationKey));
         this.guiTexture = new ResourceLocation(TribesMain.MOD_ID, guiTexture1In);
         this.guiTexture2 = new ResourceLocation(TribesMain.MOD_ID, guiTexture2In);
         this.xSize = xSizeIn;
@@ -80,7 +79,7 @@ public class TribeScreen extends Screen {
 
     //Rendering of background, textbox, and title
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if(largeGUI){

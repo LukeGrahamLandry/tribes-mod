@@ -8,16 +8,15 @@ import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.synchronization.EntityArgument;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
 public class ListBansCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("bans")
                 .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
@@ -30,8 +29,8 @@ public class ListBansCommand {
 
     }
 
-    public static int handleListBans(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity playerToCheck = EntityArgument.getPlayer(source, "player");
+    public static int handleListBans(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player playerToCheck = EntityArgument.getPlayer(source, "player");
 
         List<Tribe> bannedIn = TribesManager.getBans(playerToCheck);
         String output = "";

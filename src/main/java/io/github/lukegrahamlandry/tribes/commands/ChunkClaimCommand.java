@@ -5,13 +5,13 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.*;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
 
 public class ChunkClaimCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("chunk")
                 .requires(cs->cs.hasPermission(0))
                 .then(claim())
@@ -19,23 +19,23 @@ public class ChunkClaimCommand {
                 // .then(who());  // done in ShowLandOwnerUI
     }
 
-    private static ArgumentBuilder<CommandSource, ?> claim() {
+    private static ArgumentBuilder<CommandSourceStack, ?> claim() {
         return Commands.literal("claim")
                 .executes(ChunkClaimCommand::handleClaim);
     }
 
-    private static ArgumentBuilder<CommandSource, ?> unclaim() {
+    private static ArgumentBuilder<CommandSourceStack, ?> unclaim() {
         return Commands.literal("unclaim")
                 .executes(ChunkClaimCommand::handleUnclaim);
     }
 
-    private static ArgumentBuilder<CommandSource, ?> who() {
+    private static ArgumentBuilder<CommandSourceStack, ?> who() {
         return Commands.literal("who")
                 .executes(ChunkClaimCommand::handleWho);
     }
 
-    public static int handleClaim(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().getPlayerOrException();
+    public static int handleClaim(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player player = source.getSource().getPlayerOrException();
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());
 
         if (tribe == null){
@@ -55,8 +55,8 @@ public class ChunkClaimCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    public static int handleUnclaim(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().getPlayerOrException();
+    public static int handleUnclaim(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player player = source.getSource().getPlayerOrException();
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());
 
         if (tribe == null){
@@ -77,23 +77,23 @@ public class ChunkClaimCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    public static int handleWho(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().getPlayerOrException();
+    public static int handleWho(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player player = source.getSource().getPlayerOrException();
 
         Tribe owner = LandClaimHelper.getChunkOwner(getChunk(player));
         int x = (int) getChunk(player);
         int z = (int) (getChunk(player) >> 32);
 
         if (owner == null){
-            source.getSource().sendSuccess(new StringTextComponent("chunk (" + x + ", " + z + ") is unclaimed"), true);
+            source.getSource().sendSuccess(new TextComponent("chunk (" + x + ", " + z + ") is unclaimed"), true);
         } else {
-            source.getSource().sendSuccess(new StringTextComponent("chunk (" + x + ", " + z + ") is claimed by " + owner.getName() + " (" + owner.getInitials() + ")"), true);
+            source.getSource().sendSuccess(new TextComponent("chunk (" + x + ", " + z + ") is claimed by " + owner.getName() + " (" + owner.getInitials() + ")"), true);
         }
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static long getChunk(PlayerEntity player){
+    private static long getChunk(Player player){
         return player.getCommandSenderWorld().getChunkAt(player.blockPosition()).getPos().toLong();
     }
 }

@@ -1,10 +1,9 @@
 package io.github.lukegrahamlandry.tribes.network;
 
 
-import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.item.TribeCompass;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.UUID;
@@ -20,12 +19,12 @@ public class CompassChunkPacket {
         this.pos = pos == null ? BlockPos.ZERO : pos;
     }
 
-    public static CompassChunkPacket decode(PacketBuffer buf) {
+    public static CompassChunkPacket decode(FriendlyByteBuf buf) {
         CompassChunkPacket packet = new CompassChunkPacket(buf.readUUID(), buf.readBlockPos());
         return packet;
     }
 
-    public static void encode(CompassChunkPacket packet, PacketBuffer buf) {
+    public static void encode(CompassChunkPacket packet, FriendlyByteBuf buf) {
         buf.writeUUID(packet.entityID);
         buf.writeBlockPos(packet.pos);
     }

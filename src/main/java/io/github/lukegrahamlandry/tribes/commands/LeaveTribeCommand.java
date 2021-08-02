@@ -8,21 +8,20 @@ import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
 
 public class LeaveTribeCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("leave")
                 .requires(cs->cs.hasPermission(0)) //permission
                 .executes(LeaveTribeCommand::handleLeave);
 
     }
 
-    public static int handleLeave(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().getPlayerOrException();
+    public static int handleLeave(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player player = source.getSource().getPlayerOrException();
 
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         if (tribe != null){

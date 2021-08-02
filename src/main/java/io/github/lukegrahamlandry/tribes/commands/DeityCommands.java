@@ -4,25 +4,23 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.commands.util.DeityArgumentType;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import io.github.lukegrahamlandry.tribes.tribe_data.*;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.*;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.StringTextComponent;
 
 public class DeityCommands {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("deity")
                 .then(Commands.literal("book").executes(DeityCommands::createBook))
                 .then(Commands.literal("list").executes(DeityCommands::handleList))
@@ -44,9 +42,9 @@ public class DeityCommands {
                 ;
     }
 
-    private static int handleChoose(CommandContext<CommandSource> source) throws CommandSyntaxException {
+    private static int handleChoose(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
         DeitiesManager.DeityData deity = DeityArgumentType.getDeity(source, "deity");
-        ServerPlayerEntity player = source.getSource().getPlayerOrException();
+        ServerPlayer player = source.getSource().getPlayerOrException();
 
         if (!TribesManager.playerHasTribe(player.getUUID())){
             source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
@@ -73,7 +71,7 @@ public class DeityCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int handleList(CommandContext<CommandSource> source) {
+    private static int handleList(CommandContext<CommandSourceStack> source) {
         DeitiesManager.deities.forEach((key, data) -> {
             StringBuilder domains = new StringBuilder();
             data.domains.forEach((s) -> domains.append(s).append(", "));
@@ -82,7 +80,7 @@ public class DeityCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int handleDescribe(CommandContext<CommandSource> source) {
+    private static int handleDescribe(CommandContext<CommandSourceStack> source) {
         DeitiesManager.DeityData data = DeityArgumentType.getDeity(source, "deity");
         if (data != null){
             StringBuilder domains = new StringBuilder();
@@ -93,8 +91,8 @@ public class DeityCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int createBanner(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getSource().getPlayerOrException();
+    private static int createBanner(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        ServerPlayer player = source.getSource().getPlayerOrException();
 
         if (!TribesManager.playerHasTribe(player.getUUID())){
             source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
@@ -111,7 +109,7 @@ public class DeityCommands {
                     // dont actually need the BannerPattern here, just hashname
                     BannerPattern bannerpattern = BannarInit.get(data.bannerKey);
                     DyeColor dyecolor = DyeColor.WHITE;
-                    CompoundNBT compoundnbt = banner.getOrCreateTagElement("BlockEntityTag");
+                    CompoundTag compoundnbt = banner.getOrCreateTagElement("BlockEntityTag");
                     ListNBT listnbt;
                     if (compoundnbt.contains("Patterns", 9)) {
                         listnbt = compoundnbt.getList("Patterns", 10);
@@ -120,7 +118,7 @@ public class DeityCommands {
                         compoundnbt.put("Patterns", listnbt);
                     }
 
-                    CompoundNBT compoundnbt1 = new CompoundNBT();
+                    CompoundTag compoundnbt1 = new CompoundTag();
                     compoundnbt1.putString("Pattern", bannerpattern.getHashname());
                     compoundnbt1.putInt("Color", dyecolor.getId());
                     listnbt.add(compoundnbt1);
@@ -138,8 +136,8 @@ public class DeityCommands {
     }
 
 
-    private static int createBook(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getSource().getPlayerOrException();
+    private static int createBook(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        ServerPlayer player = source.getSource().getPlayerOrException();
 
         if (!TribesManager.playerHasTribe(player.getUUID())){
             source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
@@ -154,7 +152,7 @@ public class DeityCommands {
                     DeitiesManager.DeityData data = DeitiesManager.deities.get(deityName);
                     ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
 
-                    CompoundNBT tag = new CompoundNBT();
+                    CompoundTag tag = new CompoundTag();
 
                     tag.putString("author", data.bookAuthor);
                     tag.putString("title", data.bookTitle);

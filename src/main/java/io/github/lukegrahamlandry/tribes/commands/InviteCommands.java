@@ -5,13 +5,13 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.tribe_data.*;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.synchronization.EntityArgument;
+import net.minecraft.world.entity.player.Player;
 
 public class InviteCommands {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("invite")
                 .then(Commands.literal("send").then(Commands.argument("player", EntityArgument.player()).executes(InviteCommands::invitePlayer))).executes(ctx -> {
                     ctx.getSource().sendSuccess(TribeErrorType.ARG_PLAYER.getText(), false);
@@ -29,9 +29,9 @@ public class InviteCommands {
                             }));
     }
 
-    private static int invitePlayer(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity leader = source.getSource().getPlayerOrException();
-        PlayerEntity toInvite = EntityArgument.getPlayer(source, "player");
+    private static int invitePlayer(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player leader = source.getSource().getPlayerOrException();
+        Player toInvite = EntityArgument.getPlayer(source, "player");
 
         Tribe tribe = TribesManager.getTribeOf(leader.getUUID());
 
@@ -54,9 +54,9 @@ public class InviteCommands {
         return 0;
     }
 
-    private static int uninvitePlayer(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity leader = source.getSource().getPlayerOrException();
-        PlayerEntity toInvite = EntityArgument.getPlayer(source, "player");
+    private static int uninvitePlayer(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player leader = source.getSource().getPlayerOrException();
+        Player toInvite = EntityArgument.getPlayer(source, "player");
 
         Tribe tribe = TribesManager.getTribeOf(leader.getUUID());
 
@@ -79,8 +79,8 @@ public class InviteCommands {
         return 0;
     }
 
-    private static int setPrivate(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity leader = source.getSource().getPlayerOrException();
+    private static int setPrivate(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player leader = source.getSource().getPlayerOrException();
         boolean flag = BoolArgumentType.getBool(source, "flag");
 
         Tribe tribe = TribesManager.getTribeOf(leader.getUUID());

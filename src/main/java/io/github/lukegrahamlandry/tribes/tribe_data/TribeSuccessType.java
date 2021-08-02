@@ -1,8 +1,11 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import io.github.lukegrahamlandry.tribes.events.TribeServer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.*;
 
 import java.util.UUID;
 
@@ -49,34 +52,34 @@ public enum TribeSuccessType {
     ALERT_VICE_LEADER,
     ALERT_JOIN;
 
-    public TranslationTextComponent getText(){
+    public TranslatableComponent getText(){
         String langEntry = "success.tribes." + this.name().toLowerCase();
-        TranslationTextComponent text = new TranslationTextComponent(langEntry);
+        TranslatableComponent text = new TranslatableComponent(langEntry);
         Style style = text.getStyle().withColor(Color.fromRgb(0x00FF00));
         text.setStyle(style);
         return text;
     }
 
-    public TranslationTextComponent getText(Object... args){
+    public TranslatableComponent getText(Object... args){
         // convert a passed in tribe to its name string so it can be formated in the lang
         for (int i=0;i<args.length;i++){
             if (args[i] instanceof Tribe){
                 args[i] = (Object) ((Tribe) args[i]).getName();
             }
-            if (args[i] instanceof PlayerEntity){
-                args[i] = ((PlayerEntity) args[i]).getName().getContents();
+            if (args[i] instanceof Player){
+                args[i] = ((Player) args[i]).getName().getContents();
             }
         }
 
         String langEntry = "success.tribes." + this.name().toLowerCase();
-        TranslationTextComponent text = new TranslationTextComponent(langEntry, args);
+        TranslatableComponent text = new TranslatableComponent(langEntry, args);
         Style style = text.getStyle().withColor(Color.fromRgb(0x00FF00));
         text.setStyle(style);
         return text;
     }
 
     // blue
-    public ITextComponent getTextPrefixPlayer(UUID causingPlayer, Object... args){
+    public Component getTextPrefixPlayer(UUID causingPlayer, Object... args){
         // convert a passed in tribe to its name string so it can be formated in the lang
         for (int i=0;i<args.length;i++){
             if (args[i] instanceof Tribe){
@@ -84,27 +87,27 @@ public enum TribeSuccessType {
             }
         }
 
-        PlayerEntity player = TribeServer.getPlayerByUuid(causingPlayer);
+        Player player = TribeServer.getPlayerByUuid(causingPlayer);
         if (player == null) return getText(args);
 
         String langEntry = "success.tribes." + this.name().toLowerCase();
-        TranslationTextComponent text = new TranslationTextComponent(langEntry, args);
+        TranslatableComponent text = new TranslatableComponent(langEntry, args);
         Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
         text.setStyle(style);
-        TextComponent name = new StringTextComponent(player.getName().getContents() + " ");
+        TextComponent name = new TextComponent(player.getName().getContents() + " ");
         Style namestyle = name.getStyle().withBold(true).withColor(Color.fromRgb(0xffbb00));
         name.setStyle(namestyle);
         return name.append(text);
     }
 
-    public ITextComponent getBlueText() {
+    public Component getBlueText() {
         TextComponent text = getText();
         Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
         text.setStyle(style);
         return text;
     }
 
-    public ITextComponent getBlueText(Object... args) {
+    public Component getBlueText(Object... args) {
         TextComponent text = getText(args);
         Style style = text.getStyle().withColor(Color.fromRgb(0x34e5eb));
         text.setStyle(style);

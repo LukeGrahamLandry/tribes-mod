@@ -2,7 +2,7 @@ package io.github.lukegrahamlandry.tribes.network;
 
 
 import io.github.lukegrahamlandry.tribes.client.gui.ShowLandOwnerUI;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.UUID;
@@ -20,12 +20,12 @@ public class LandOwnerPacket {
         this.access = access;
     }
 
-    public static LandOwnerPacket decode(PacketBuffer buf) {
+    public static LandOwnerPacket decode(FriendlyByteBuf buf) {
         LandOwnerPacket packet = new LandOwnerPacket(buf.readUUID(), buf.readUtf(32767), buf.readBoolean());
         return packet;
     }
 
-    public static void encode(LandOwnerPacket packet, PacketBuffer buf) {
+    public static void encode(LandOwnerPacket packet, FriendlyByteBuf buf) {
         buf.writeUUID(packet.entityID);
         buf.writeUtf(packet.toDisplay);
         buf.writeBoolean(packet.access);

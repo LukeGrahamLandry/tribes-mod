@@ -5,12 +5,12 @@ import com.mojang.authlib.GameProfile;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -26,7 +26,7 @@ public class AttackHandler {
         Entity source = event.getSource().getEntity();
         Entity target = event.getEntityLiving();
 
-        if (source instanceof PlayerEntity && !source.getCommandSenderWorld().isClientSide()){
+        if (source instanceof Player && !source.getCommandSenderWorld().isClientSide()){
             Tribe sourceTribe = TribesManager.getTribeOf(source.getUUID());
             Tribe targetTribe = TribesManager.getTribeOf(target.getUUID());
 
@@ -39,17 +39,17 @@ public class AttackHandler {
     @SubscribeEvent
     public static void punishDeath(LivingDeathEvent event){
         Entity dead = event.getEntity();
-        if (!(dead instanceof PlayerEntity) || dead.getCommandSenderWorld().isClientSide()) return;
+        if (!(dead instanceof Player) || dead.getCommandSenderWorld().isClientSide()) return;
 
         Entity killer = event.getSource().getEntity();
-        if (killer instanceof PlayerEntity){
+        if (killer instanceof Player){
             tryDropHead(dead, killer);
         }
 
         Tribe tribe = TribesManager.getTribeOf(event.getEntityLiving().getUUID());
         if (tribe == null) return;
 
-        if (event.getSource().getEntity() instanceof PlayerEntity) tribe.deathWasPVP = true;
+        if (event.getSource().getEntity() instanceof Player) tribe.deathWasPVP = true;
 
         tribe.claimDisableTime = TribesConfig.getDeathClaimDisableTime(tribe.deathIndex, tribe.deathWasPVP);
         tribe.deathIndex++;
@@ -66,9 +66,9 @@ public class AttackHandler {
 
 
         // actually drop the head
-        GameProfile gameprofile = ((PlayerEntity)dead).getGameProfile();
+        GameProfile gameprofile = ((Player)dead).getGameProfile();
         ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        stack.getOrCreateTag().put("SkullOwner", NBTUtil.writeGameProfile(new CompoundNBT(), gameprofile));
+        stack.getOrCreateTag().put("SkullOwner", NBTUtil.writeGameProfile(new CompoundTag(), gameprofile));
         ItemEntity itementity = new ItemEntity(dead.getCommandSenderWorld(), dead.blockPosition().getX(), dead.blockPosition().getY(), dead.blockPosition().getZ(), stack);
         dead.getCommandSenderWorld().addFreshEntity(itementity);
     }

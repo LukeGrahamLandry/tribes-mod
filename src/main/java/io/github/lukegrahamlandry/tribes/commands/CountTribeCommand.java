@@ -8,12 +8,11 @@ import io.github.lukegrahamlandry.tribes.commands.util.TribeArgumentType;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class CountTribeCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("count")
                 .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
@@ -26,7 +25,7 @@ public class CountTribeCommand {
 
     }
 
-    public static int handleCount(CommandContext<CommandSource> source) throws CommandSyntaxException {
+    public static int handleCount(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
         Tribe tribe = TribeArgumentType.getTribe(source, "tribe");
 
         if (tribe != null) {

@@ -4,8 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.PlayerController;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,8 +24,8 @@ public class ShowLandOwnerUI {
     @SubscribeEvent
     public static void renderUI(RenderGameOverlayEvent.Post event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            PlayerController controller = Minecraft.getInstance().gameMode;
-            PlayerEntity player = Minecraft.getInstance().player;
+            MultiPlayerGameMode controller = Minecraft.getInstance().gameMode;
+            Player player = Minecraft.getInstance().player;
             if (controller == null || player == null ) {
                 return;
             }

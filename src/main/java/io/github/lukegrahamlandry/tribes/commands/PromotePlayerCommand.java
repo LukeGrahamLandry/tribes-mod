@@ -8,14 +8,14 @@ import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.synchronization.EntityArgument;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.TextComponent;
 
 public class PromotePlayerCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("promote")
                 .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
@@ -28,9 +28,9 @@ public class PromotePlayerCommand {
 
     }
 
-    public static int handle(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity playerRunning = source.getSource().getPlayerOrException();
-        PlayerEntity playerTarget = EntityArgument.getPlayer(source, "player");
+    public static int handle(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player playerRunning = source.getSource().getPlayerOrException();
+        Player playerTarget = EntityArgument.getPlayer(source, "player");
 
         Tribe tribe = TribesManager.getTribeOf(playerRunning.getUUID());
 
@@ -41,7 +41,7 @@ public class PromotePlayerCommand {
 
         // require confirm to demote yourself
         if (tribe.isViceLeader(playerTarget.getUUID()) && tribe.isLeader(playerRunning.getUUID())){
-            source.getSource().sendSuccess(new StringTextComponent("make " + playerTarget.getName().getString() + " the leader of your tribe?"), true);
+            source.getSource().sendSuccess(new TextComponent("make " + playerTarget.getName().getString() + " the leader of your tribe?"), true);
 
             ConfirmCommand.add(playerRunning, () -> {
                 TribeErrorType response = tribe.promotePlayer(playerRunning.getUUID(), playerTarget.getUUID());

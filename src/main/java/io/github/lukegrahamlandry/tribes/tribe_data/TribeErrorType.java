@@ -1,8 +1,8 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Color;
+import net.minecraft.network.chat.Style;
 
 public enum TribeErrorType {
     SUCCESS,
@@ -36,17 +36,17 @@ public enum TribeErrorType {
     NOT_PRIVATE,
     IS_PRIVATE;
 
-    public TranslationTextComponent getText(){
+    public TranslatableComponent getText(){
         String langEntry = "error.tribes." + this.name().toLowerCase();
-        TranslationTextComponent text = new TranslationTextComponent(langEntry);
+        TranslatableComponent text = new TranslatableComponent(langEntry);
         Style style = text.getStyle().withColor(Color.fromRgb(0xFF0000));
         text.setStyle(style);
         return text;
     }
 
-    public static TranslationTextComponent getWaitText(long time){
+    public static TranslatableComponent getWaitText(long time){
         String langEntry = "error.tribes.wait";
-        TranslationTextComponent text = new TranslationTextComponent(langEntry, time);
+        TranslatableComponent text = new TranslatableComponent(langEntry, time);
         Style style = text.getStyle().withColor(Color.fromRgb(0xFF0000));
         text.setStyle(style);
         return text;

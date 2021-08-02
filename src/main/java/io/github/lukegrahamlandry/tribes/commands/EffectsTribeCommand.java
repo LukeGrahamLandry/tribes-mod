@@ -10,21 +10,21 @@ import io.github.lukegrahamlandry.tribes.network.PacketOpenEffectGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class EffectsTribeCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("effects")
                 .requires(cs->cs.hasPermission(0)) //permission
                 .executes(EffectsTribeCommand::handleeffects);
 
     }
 
-    public static int handleeffects(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getSource().getPlayerOrException();
+    public static int handleeffects(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        ServerPlayer player = source.getSource().getPlayerOrException();
 
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         if (tribe != null){

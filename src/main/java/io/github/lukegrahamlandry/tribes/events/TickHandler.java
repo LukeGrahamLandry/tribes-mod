@@ -10,8 +10,8 @@ import io.github.lukegrahamlandry.tribes.network.PacketOpenJoinGUI;
 import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraftforge.event.TickEvent;
@@ -28,15 +28,15 @@ public class TickHandler {
         if (event.player.getCommandSenderWorld().isClientSide() || timer % 10 != 0) return;
 
         // land owner display
-        NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
+        NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.player),
                 new LandOwnerPacket(event.player.getUUID(), LandClaimHelper.getOwnerDisplayFor(event.player), LandClaimHelper.canAccessLandAt(event.player, event.player.blockPosition())));
 
 
         // tribe compass direction
         ItemStack stack = event.player.getItemInHand(Hand.MAIN_HAND);
         if (stack.getItem() instanceof TribeCompass){
-            NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
-                    new CompassChunkPacket(event.player.getUUID(), TribeCompass.caclulateTargetPosition((ServerPlayerEntity) event.player, stack)));
+            NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.player),
+                    new CompassChunkPacket(event.player.getUUID(), TribeCompass.caclulateTargetPosition((ServerPlayer) event.player, stack)));
         }
 
 
@@ -50,7 +50,7 @@ public class TickHandler {
 
         if (tribe == null && TribesConfig.isTribeRequired()){
             // no tribe and force tribes
-            NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player), new PacketOpenJoinGUI((ServerPlayerEntity) event.player));
+            NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.player), new PacketOpenJoinGUI((ServerPlayer) event.player));
         }
     }
 

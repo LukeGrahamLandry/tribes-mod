@@ -8,14 +8,13 @@ import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.synchronization.EntityArgument;
+import net.minecraft.world.entity.player.Player;
 
 public class UnbanPlayerCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("unban")
                 .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("player", EntityArgument.player())
@@ -28,9 +27,9 @@ public class UnbanPlayerCommand {
 
     }
 
-    public static int handleBan(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity playerBanning = source.getSource().getPlayerOrException();
-        PlayerEntity playerToUnban = EntityArgument.getPlayer(source, "player");
+    public static int handleBan(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player playerBanning = source.getSource().getPlayerOrException();
+        Player playerToUnban = EntityArgument.getPlayer(source, "player");
 
         Tribe tribe = TribesManager.getTribeOf(playerBanning.getUUID());
         if (tribe == null){

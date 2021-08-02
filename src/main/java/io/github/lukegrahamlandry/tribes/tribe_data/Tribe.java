@@ -3,12 +3,9 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 import com.google.gson.*;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.events.TribeServer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.*;
@@ -37,7 +34,7 @@ public class Tribe {
     public boolean isPrivate = false;
     public List<String> pendingInvites = new ArrayList<>();
 
-    public HashMap<Effect, Integer> effects;
+    public HashMap<MobEffect, Integer> effects;
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
         this.initials = Character.toString(tribeName.charAt(0));
@@ -136,7 +133,7 @@ public class Tribe {
 
         this.initials = str;
         for (String uuid : this.getMembers()){
-            PlayerEntity toUpdate = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
+            Player toUpdate = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
             if (toUpdate != null) toUpdate.refreshDisplayName();
         }
 
@@ -169,10 +166,10 @@ public class Tribe {
 
     // CANNOT be called from the client side
     public void broadcastMessageNoCause(TribeSuccessType action, Object... args){
-        ITextComponent text = action.getBlueText(args);
+        Component text = action.getBlueText(args);
 
         for (String uuid : this.getMembers()){
-            PlayerEntity player = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
+            Player player = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
             if (player != null){
                 player.displayClientMessage(text, false);
             }
@@ -180,11 +177,11 @@ public class Tribe {
     }
 
     public void broadcastMessage(TribeSuccessType action, UUID causingPlayer, Object... args){
-        ITextComponent text = action.getTextPrefixPlayer(causingPlayer, args);
-        ITextComponent plainText = action.getText(args);
+        Component text = action.getTextPrefixPlayer(causingPlayer, args);
+        Component plainText = action.getText(args);
 
         for (String uuid : this.getMembers()){
-            PlayerEntity player = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
+            Player player = TribeServer.getPlayerByUuid(UUID.fromString(uuid));
             if (player != null){
                 boolean isCausingPlayer = uuid.equals(causingPlayer.toString());
                 player.displayClientMessage(isCausingPlayer ? plainText : text, false);
@@ -193,7 +190,7 @@ public class Tribe {
     }
 
 
-    public void broadcastMessage(TribeSuccessType action, PlayerEntity causingPlayer, Object... args){
+    public void broadcastMessage(TribeSuccessType action, Player causingPlayer, Object... args){
         this.broadcastMessage(action, causingPlayer.getUUID(), args);
     }
 
@@ -246,7 +243,7 @@ public class Tribe {
         }
         JsonObject effectMap = new JsonObject();
         this.effects.forEach((effect, level) -> {
-            String key = String.valueOf(Effect.getId(effect));
+            String key = String.valueOf(MobEffect.getId(effect));
             effectMap.addProperty(key, level);
         });
         obj.add("effects", effectMap);
@@ -312,7 +309,7 @@ public class Tribe {
             JsonObject effectMap = obj.get("effects").getAsJsonObject();
             for (Map.Entry<String, JsonElement> e : effectMap.entrySet()){
                 int id = new Integer(e.getKey());
-                Effect effect = Effect.byId(id);
+                MobEffect effect = MobEffect.byId(id);
                 tribe.effects.put(effect, e.getValue().getAsInt());
             }
         }
@@ -394,7 +391,7 @@ public class Tribe {
             this.effects.clear();
         }
 
-        PlayerEntity left = TribeServer.getPlayerByUuid(playerID);
+        Player left = TribeServer.getPlayerByUuid(playerID);
         if (left != null) this.broadcastMessageNoCause(TribeSuccessType.SOMEONE_LEFT, left);
     }
 
@@ -436,7 +433,7 @@ public class Tribe {
         return false;
     }
 
-    public TribeErrorType validateSelectHemi(PlayerEntity player, String side) {
+    public TribeErrorType validateSelectHemi(Player player, String side) {
         int runRank = this.getRankOf(player.getUUID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeErrorType.LOW_RANK;
         if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeErrorType.HAVE_HEMI;
@@ -449,7 +446,7 @@ public class Tribe {
         return TribeErrorType.SUCCESS;
     }
 
-    public TribeErrorType selectHemi(PlayerEntity player, String side) {
+    public TribeErrorType selectHemi(Player player, String side) {
         int runRank = this.getRankOf(player.getUUID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeErrorType.LOW_RANK;
         if (this.hemiAccess != LandClaimHelper.Hemi.NONE) return TribeErrorType.HAVE_HEMI;

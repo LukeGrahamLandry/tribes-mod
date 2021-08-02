@@ -1,11 +1,11 @@
 package io.github.lukegrahamlandry.tribes.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketLeaveTribe;
 import io.github.lukegrahamlandry.tribes.network.PacketSendEffects;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class MyTribeScreen extends TribeScreen {
         this.guiTop = (this.height - this.ySize) / 2;
 
 
-        this.effectsButton = this.addButton(new Button(this.guiLeft + 15, this.guiTop + 90, 75, 20, new StringTextComponent("Effects"), (p_214318_1_) -> {
+        this.effectsButton = this.addButton(new Button(this.guiLeft + 15, this.guiTop + 90, 75, 20, new TextComponent("Effects"), (p_214318_1_) -> {
             if (this.effectsButton.active){
                 NetworkHandler.INSTANCE.sendToServer(new PacketSendEffects());
                 this.onClose();
@@ -55,7 +55,7 @@ public class MyTribeScreen extends TribeScreen {
         }));
         this.effectsButton.active = this.rank.equals("leader");
 
-        this.leaveButton = this.addButton(new Button(this.guiLeft + 15, this.guiTop + 125, 75, 20, new StringTextComponent("Leave Tribe"), (p_214318_1_) -> {
+        this.leaveButton = this.addButton(new Button(this.guiLeft + 15, this.guiTop + 125, 75, 20, new TextComponent("Leave Tribe"), (p_214318_1_) -> {
             this.onClose();
             NetworkHandler.INSTANCE.sendToServer(new PacketLeaveTribe());
         }));
@@ -64,7 +64,7 @@ public class MyTribeScreen extends TribeScreen {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         int x = (this.width - this.xSize) / 2 + 15;
@@ -93,7 +93,7 @@ public class MyTribeScreen extends TribeScreen {
     final int GREEN = 0x00FF00;
     final int RED = 0xFF0000;
 
-    private void write(MatrixStack matrixStack, String text, int x, int y, int color){
-        this.font.draw(matrixStack, new StringTextComponent(text), x, y, color);
+    private void write(PoseStack matrixStack, String text, int x, int y, int color){
+        this.font.draw(matrixStack, new TextComponent(text), x, y, color);
     }
 }

@@ -1,7 +1,7 @@
 package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -9,11 +9,11 @@ import java.util.function.Supplier;
 
 // client -> server
 public class PacketSendEffects {
-    public PacketSendEffects(PacketBuffer buf) {
+    public PacketSendEffects(FriendlyByteBuf buf) {
 
     }
 
-    public void encode(PacketBuffer buf){
+    public void encode(FriendlyByteBuf buf){
 
     }
 

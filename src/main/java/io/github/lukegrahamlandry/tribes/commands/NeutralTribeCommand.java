@@ -9,13 +9,12 @@ import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
 
 public class NeutralTribeCommand {
-    public static ArgumentBuilder<CommandSource, ?> register() {
+    public static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("neutral")
                 .requires(cs->cs.hasPermission(0)) //permission
                 .then(Commands.argument("tribe", TribeArgumentType.tribe())
@@ -28,8 +27,8 @@ public class NeutralTribeCommand {
 
     }
 
-    public static int handleJoin(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        PlayerEntity player = source.getSource().getPlayerOrException();
+    public static int handleJoin(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        Player player = source.getSource().getPlayerOrException();
         Tribe otherTribe = TribeArgumentType.getTribe(source, "tribe");
         if (otherTribe == null) return 1;
 

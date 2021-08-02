@@ -8,7 +8,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.tribe_data.DeitiesManager;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,8 +39,8 @@ public class DeityArgumentType implements ArgumentType<DeitiesManager.DeityData>
         try {
             return context.getArgument(name, DeitiesManager.DeityData.class);
         } catch (Exception e){
-            if (context.getSource() instanceof CommandSource){
-                ((CommandSource)context.getSource()).sendSuccess(TribeErrorType.INVALID_DEITY.getText(), true);
+            if (context.getSource() instanceof CommandSourceStack){
+                ((CommandSourceStack)context.getSource()).sendSuccess(TribeErrorType.INVALID_DEITY.getText(), true);
             }
             return null;
         }

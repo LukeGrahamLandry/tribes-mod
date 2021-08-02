@@ -1,7 +1,7 @@
 package io.github.lukegrahamlandry.tribes.init;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
-import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.world.level.block.entity.BannerPattern;
 
 import java.util.*;
 import java.util.List;

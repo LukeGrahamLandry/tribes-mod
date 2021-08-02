@@ -3,8 +3,7 @@ package io.github.lukegrahamlandry.tribes.network;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeErrorType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -13,12 +12,12 @@ public class PacketCreateTribe {
     private String tribeName;
 
     // Read tribe name from PacketBuffer
-    public PacketCreateTribe(PacketBuffer buf) {
+    public PacketCreateTribe(FriendlyByteBuf buf) {
         this.tribeName = buf.readUtf(32767);
     }
 
     // Write tribe name to PacketBuffer
-    public void toBytes(PacketBuffer buf){
+    public void toBytes(FriendlyByteBuf buf){
         buf.writeUtf(this.tribeName);
     }
 

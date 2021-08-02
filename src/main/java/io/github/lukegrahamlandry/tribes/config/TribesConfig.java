@@ -1,8 +1,8 @@
 package io.github.lukegrahamlandry.tribes.config;
 
-import net.minecraft.potion.Effect;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -172,18 +172,18 @@ public class TribesConfig {
         return punishments.get(index);
     }
 
-    public static List<Effect> getGoodEffects(){
-        ArrayList<Effect> disabledEffects = new ArrayList<>();
+    public static List<MobEffect> getGoodEffects(){
+        ArrayList<MobEffect> disabledEffects = new ArrayList<>();
         for (String key : ignoredEffects.get()){
             disabledEffects.add(ForgeRegistries.POTIONS.getValue(new ResourceLocation(key)));
         }
 
-        ArrayList<Effect> theEffects = new ArrayList<>();
+        ArrayList<MobEffect> theEffects = new ArrayList<>();
 
         for (Field field : Effects.class.getFields()){
             try {
-                if (field.get(null) instanceof Effect){
-                    Effect toCheck = (Effect) field.get(null);
+                if (field.get(null) instanceof MobEffect){
+                    MobEffect toCheck = (MobEffect) field.get(null);
 
 
                     if (toCheck.isBeneficial() && !toCheck.isInstantenous() && !disabledEffects.contains(toCheck)){
@@ -196,18 +196,18 @@ public class TribesConfig {
         return theEffects;
     }
 
-    public static List<Effect> getBadEffects(){
-        ArrayList<Effect> disabledEffects = new ArrayList<>();
+    public static List<MobEffect> getBadEffects(){
+        ArrayList<MobEffect> disabledEffects = new ArrayList<>();
         for (String key : ignoredEffects.get()){
             disabledEffects.add(ForgeRegistries.POTIONS.getValue(new ResourceLocation(key)));
         }
 
-        ArrayList<Effect> theEffects = new ArrayList<>();
+        ArrayList<MobEffect> theEffects = new ArrayList<>();
 
         for (Field field : Effects.class.getFields()){
             try {
-                if (field.get(null) instanceof Effect){
-                    Effect toCheck = (Effect) field.get(null);
+                if (field.get(null) instanceof MobEffect){
+                    MobEffect toCheck = (MobEffect) field.get(null);
                     if (!toCheck.isBeneficial() && !toCheck.isInstantenous() && !disabledEffects.contains(toCheck)){
                         theEffects.add(toCheck);
                     }

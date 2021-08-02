@@ -1,13 +1,12 @@
 package io.github.lukegrahamlandry.tribes.network;
 
 import io.github.lukegrahamlandry.tribes.client.gui.JoinTribeScreen;
-import io.github.lukegrahamlandry.tribes.client.gui.TribeEffectScreen;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -19,7 +18,7 @@ public class PacketOpenJoinGUI {
     private final HashMap<String, Integer> tribes;
     boolean allowClose;
 
-    public PacketOpenJoinGUI(ServerPlayerEntity player) {
+    public PacketOpenJoinGUI(ServerPlayer player) {
         this.tribes = new HashMap<>();
         TribesManager.getTribes().forEach((tribe) -> {
             this.tribes.put(tribe.getName(), tribe.getCount());
@@ -33,7 +32,7 @@ public class PacketOpenJoinGUI {
         this.allowClose = allowClose;
     }
 
-    public static PacketOpenJoinGUI decode(PacketBuffer buf) {
+    public static PacketOpenJoinGUI decode(FriendlyByteBuf buf) {
         HashMap<String, Integer> tribes = new HashMap<>();
         while (!buf.readBoolean()){
             tribes.put(buf.readUtf(32767), buf.readInt());
@@ -42,7 +41,7 @@ public class PacketOpenJoinGUI {
         return new PacketOpenJoinGUI(tribes, buf.readBoolean());
     }
 
-    public static void encode(PacketOpenJoinGUI packet, PacketBuffer buf) {
+    public static void encode(PacketOpenJoinGUI packet, FriendlyByteBuf buf) {
         packet.tribes.forEach((name, members) -> {
             buf.writeBoolean(false);
             buf.writeUtf(name);

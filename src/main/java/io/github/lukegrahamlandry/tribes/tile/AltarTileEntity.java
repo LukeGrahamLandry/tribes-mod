@@ -2,14 +2,14 @@ package io.github.lukegrahamlandry.tribes.tile;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.init.TileEntityInit;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.block.BlockState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.Constants;
 
-public class AltarTileEntity extends TileEntity {
+public class AltarTileEntity extends BlockEntity {
     public AltarTileEntity() {
         super(TileEntityInit.ALTAR.get());
     }
@@ -36,13 +36,13 @@ public class AltarTileEntity extends TileEntity {
 
     // saving data
     @Override
-    public void load(BlockState state, CompoundNBT tag) {
+    public void load(BlockState state, CompoundTag tag) {
         super.load(state, tag);
         this.bannerKey = tag.contains("banner") ? tag.getString("banner") : null;
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
+    public CompoundTag save(CompoundTag tag) {
         if (this.bannerKey != null) tag.putString("banner", this.bannerKey);
         return super.save(tag);
     }
@@ -51,7 +51,7 @@ public class AltarTileEntity extends TileEntity {
     // block update
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         this.save(nbt);
 
         return new SUpdateTileEntityPacket(this.worldPosition, 1, nbt);
@@ -63,11 +63,11 @@ public class AltarTileEntity extends TileEntity {
 
     // chunk load
     @Override
-    public CompoundNBT getUpdateTag() {
-        return this.save(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
     }
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+    public void handleUpdateTag(BlockState state, CompoundTag tag) {
         this.load(state, tag);
     }
 }

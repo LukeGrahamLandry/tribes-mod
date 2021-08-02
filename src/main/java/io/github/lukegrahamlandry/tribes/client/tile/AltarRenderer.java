@@ -1,15 +1,11 @@
 package io.github.lukegrahamlandry.tribes.client.tile;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mojang.datafixers.util.Pair;
-import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.blocks.AlterBlock;
 import io.github.lukegrahamlandry.tribes.init.BannarInit;
 import io.github.lukegrahamlandry.tribes.tile.AltarTileEntity;
-import net.minecraft.block.BannerBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.WallBannerBlock;
+import net.minecraft.world.level.block.BlockState;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -18,11 +14,10 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.DyeColor;
-import net.minecraft.state.properties.ChestType;
-import net.minecraft.tileentity.BannerPattern;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.state.properties.ChestType;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.core.Direction;
 import net.minecraft.util.math.vector.Vector3f;
 
 import static io.github.lukegrahamlandry.tribes.blocks.AlterBlock.TYPE;
@@ -39,7 +34,7 @@ public class AltarRenderer extends TileEntityRenderer<AltarTileEntity> {
         super(p_i226002_1_);
     }
 
-    public void render(AltarTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(AltarTileEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         BlockState state = tileEntityIn.getBlockState();
         if (state.getValue(TYPE) == ChestType.LEFT) return;
 

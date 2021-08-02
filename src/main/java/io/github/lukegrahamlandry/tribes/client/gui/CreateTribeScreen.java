@@ -1,13 +1,13 @@
 package io.github.lukegrahamlandry.tribes.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketCreateTribe;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class CreateTribeScreen extends TribeScreen {
     /** TextBox for name input. */
@@ -40,13 +40,13 @@ public class CreateTribeScreen extends TribeScreen {
         this.titleY = (this.height - this.ySize + 20) / 2;
 
         //Initialization of create tribe button
-        this.btnCreateTribe = this.addButton(new Button(this.guiLeft + 13, (this.height - this.ySize + 110) / 2, 150, 20, new TranslationTextComponent(TribesMain.MOD_ID + ".createTribeButton"), (p_214318_1_) -> {
+        this.btnCreateTribe = this.addButton(new Button(this.guiLeft + 13, (this.height - this.ySize + 110) / 2, 150, 20, new TranslatableComponent(TribesMain.MOD_ID + ".createTribeButton"), (p_214318_1_) -> {
             NetworkHandler.INSTANCE.sendToServer(new PacketCreateTribe(this.tribeName));
             this.onClose();
         }));
 
         //Initialization of the textbox
-        this.nameField = new TextFieldWidget(this.font, this.guiLeft + 13, (this.height - this.ySize + 50) / 2, 150, 20, this.nameField, new TranslationTextComponent("selectWorld.search"));
+        this.nameField = new TextFieldWidget(this.font, this.guiLeft + 13, (this.height - this.ySize + 50) / 2, 150, 20, this.nameField, new TranslatableComponent("selectWorld.search"));
         this.nameField.setMaxLength(TribesConfig.getMaxTribeNameLength());
         this.children.add(this.nameField);
         this.setInitialFocus(this.nameField);
@@ -60,7 +60,7 @@ public class CreateTribeScreen extends TribeScreen {
 
     //Rendering of background, textbox, and title
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.nameField.render(matrixStack, mouseX, mouseY, partialTicks);
     }

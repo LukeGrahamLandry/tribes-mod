@@ -2,11 +2,9 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 import java.util.*;
@@ -43,7 +41,7 @@ public class LandClaimHelper {
         //TODO cant claim chunk in hemi you cant access
     }
 
-    public static String getOwnerDisplayFor(PlayerEntity player){
+    public static String getOwnerDisplayFor(Player player){
         long chunk = player.getCommandSenderWorld().getChunkAt(player.blockPosition()).getPos().toLong();
         Tribe chunkOwner = getChunkOwner(chunk);
 
@@ -66,7 +64,7 @@ public class LandClaimHelper {
 
 
     // considers chunk claims, hemisphere, death punishments
-    public static boolean canAccessLandAt(PlayerEntity player, BlockPos position){
+    public static boolean canAccessLandAt(Player player, BlockPos position){
         Tribe interactingTribe = TribesManager.getTribeOf(player.getUUID());  // could be null
 
         // claimed chunk

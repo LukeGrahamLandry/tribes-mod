@@ -1,10 +1,10 @@
 package io.github.lukegrahamlandry.tribes.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -16,12 +16,12 @@ public abstract class GuiButton extends AbstractButton {
     private int ySize;
 
     protected GuiButton(TribeScreen screenIn, int x, int y, int ySizeIn) {
-        super(x, y, 22, 22, StringTextComponent.EMPTY);
+        super(x, y, 22, 22, TextComponent.EMPTY);
         screen = screenIn;
         ySize = ySizeIn;
     }
 
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         Minecraft.getInstance().getTextureManager().bind(screen.getGuiTexture());
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int j = 0;
@@ -37,7 +37,7 @@ public abstract class GuiButton extends AbstractButton {
         this.renderIcon(matrixStack);
     }
 
-    protected abstract void renderIcon(MatrixStack p_230454_1_);
+    protected abstract void renderIcon(PoseStack p_230454_1_);
 
     public boolean isSelected() {
         return this.selected;
@@ -59,7 +59,7 @@ public abstract class GuiButton extends AbstractButton {
             this.v = v;
         }
 
-        protected void renderIcon(MatrixStack p_230454_1_) {
+        protected void renderIcon(PoseStack p_230454_1_) {
             this.blit(p_230454_1_, this.x + 2, this.y + 2, this.u, this.v, 18, 18);
         }
     }

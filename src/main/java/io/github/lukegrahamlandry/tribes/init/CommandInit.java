@@ -6,9 +6,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.commands.*;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenMyTribeGUI;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -53,8 +53,8 @@ public class CommandInit {
         TribesMain.LOGGER.debug("Tribe commands registered");
     }
 
-    public static int openMyTribeGUI(CommandContext<CommandSource> source) throws CommandSyntaxException {
-        ServerPlayerEntity player = source.getSource().getPlayerOrException();
+    public static int openMyTribeGUI(CommandContext<CommandSourceStack> source) throws CommandSyntaxException {
+        ServerPlayer player = source.getSource().getPlayerOrException();
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new PacketOpenMyTribeGUI(player));
         return Command.SINGLE_SUCCESS;
     }
