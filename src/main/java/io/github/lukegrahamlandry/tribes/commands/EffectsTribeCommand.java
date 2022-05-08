@@ -26,6 +26,12 @@ public class EffectsTribeCommand {
     public static int handleeffects(CommandContext<CommandSource> source) throws CommandSyntaxException {
         ServerPlayerEntity player = source.getSource().getPlayerOrException();
 
+        if (!TribesConfig.areEffectsEnabled()){
+            source.getSource().sendSuccess(TribeErrorType.CONFIG.getText(), true);
+            return Command.SINGLE_SUCCESS;
+        }
+
+
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());
         if (tribe != null){
             long timePassed = System.currentTimeMillis() - tribe.lastEffectsChangeTime;

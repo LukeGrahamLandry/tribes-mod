@@ -30,6 +30,11 @@ public class LandClaimHelper {
         }
     }
 
+    public static Tribe getChunkOwner(World world, BlockPos pos){
+        long chunk = world.getChunkAt(pos).getPos().toLong();
+        return getChunkOwner(chunk);
+    }
+
     public static Tribe getChunkOwner(Long chunk){
         return claimedChunks.get(chunk);
     }

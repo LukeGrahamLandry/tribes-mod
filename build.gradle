@@ -165,3 +165,5 @@ apply plugin: 'org.spongepowered.mixin'
 mixin {
     add sourceSets.main, "tribes.refmap.json"
 }
+
+apply from: "https://moddingtutorials.org/applesilicon.gradle"

@@ -6,5 +6,8 @@
   "refmap": "tribes.refmap.json",
   "mixins": [
   ],
-  "minVersion": "0.8"
+  "minVersion": "0.8",
+  "client": [
+    "M1Fix"
+  ]
 }

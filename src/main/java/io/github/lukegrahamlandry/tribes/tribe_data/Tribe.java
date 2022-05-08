@@ -470,6 +470,13 @@ public class Tribe {
 
     }
 
+    public Relation getRelationTo(Tribe other){
+        if (other == null || !this.relationToOtherTribes.containsKey(other.name)){
+            return Relation.NONE;
+        }
+        return this.relationToOtherTribes.get(other.name);
+    }
+
     public String getOwner() {
         for (String m : this.members.keySet()){
             if (this.getRankOf(m) == Rank.LEADER){

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.*;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -37,6 +38,11 @@ public class ChunkClaimCommand {
     public static int handleClaim(CommandContext<CommandSource> source) throws CommandSyntaxException {
         PlayerEntity player = source.getSource().getPlayerOrException();
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());
+
+        if (TribesConfig.getBannerClaimRadius() > 0){
+            source.getSource().sendSuccess(TribeErrorType.USE_BANNER_CLAIM.getText(), true);
+            return Command.SINGLE_SUCCESS;
+        }
 
         if (tribe == null){
             source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);

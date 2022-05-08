@@ -34,7 +34,8 @@ public enum TribeErrorType {
     ARG_MISSING,
     INVALID_RANK,
     NOT_PRIVATE,
-    IS_PRIVATE;
+    IS_PRIVATE,
+    USE_BANNER_CLAIM;
 
     public TranslationTextComponent getText(){
         String langEntry = "error.tribes." + this.name().toLowerCase();

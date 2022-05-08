@@ -41,6 +41,9 @@ public class TribesConfig {
 
     private static ForgeConfigSpec.ConfigValue<String> landOwnerDisplayPosition;
 
+    private static ForgeConfigSpec.IntValue bannerClaimRadius;
+    private static ForgeConfigSpec.BooleanValue enemyAllowsBlockInteractions;
+    private static ForgeConfigSpec.BooleanValue allyAllowsBlockInteractions;
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
@@ -103,6 +106,8 @@ public class TribesConfig {
                 .comment("Players who haven't logged on in this many days will automatically be removed from the tribe they're in. Setting this value to 0 will disable this feature: ")
                 .defineInRange("removeInactiveAfterDays", 10, 0, Integer.MAX_VALUE);
 
+        spiderkingAddonConfigs(server);
+
         server.pop();
 
         client.push("client");
@@ -112,6 +117,27 @@ public class TribesConfig {
                 .define("landOwnerDisplayPosition", "top_left");
 
         client.pop();
+    }
+
+    private static void spiderkingAddonConfigs(ForgeConfigSpec.Builder server){
+        bannerClaimRadius = server
+                .comment("How many chunks will be claimed around a placed banner. If this is greater than 0, the claim command will be disabled and maxChunksClaimed will be measured in placed banners instead of chunks")
+                .defineInRange("bannerClaimRadius", 0, 0, Integer.MAX_VALUE);
+        enemyAllowsBlockInteractions = server
+                .comment("Whether tribes that have declared you as an enemy should be able to interact with your claimed blocks (ie doors, chests, use flint and steel etc) NOT including spawn points. Even when true, cannot place or break blocks")
+                .define("enemyAllowsBlockInteractions", false);
+        allyAllowsBlockInteractions = server
+                .comment("Whether tribes that have you have declared as an ally should be able to interact with your claimed blocks (ie doors, beds) NOT including containers like chests. Even when true, cannot place or break blocks")
+                .define("allyAllowsBlockInteractions", false);
+    }
+
+
+    public static boolean canEnemiesInteract(){
+        return enemyAllowsBlockInteractions.get();
+    }
+
+    public static boolean canAlliesInteract(){
+        return allyAllowsBlockInteractions.get();
     }
 
     public static int getMaxNumberOfTribes(){
@@ -166,6 +192,10 @@ public class TribesConfig {
         return rankToChooseHemi.get();
     }
 
+    public static int getBannerClaimRadius(){
+        return bannerClaimRadius.get();
+    }
+
     public static int getDeathClaimDisableTime(int index, boolean deathWasPVP) {
         List<Integer> punishments = (List<Integer>) (deathWasPVP ? pvpDeathPunishTimes.get() : nonpvpDeathPunishTimes.get());
         index = Math.min(index, punishments.size() - 1);
@@ -216,6 +246,12 @@ public class TribesConfig {
         }
 
         return theEffects;
+    }
+
+    public static boolean areEffectsEnabled(){
+        // if all tiers allow you to choose no effects, then they're not enabled
+        return getTierNegativeEffects().stream().reduce(0, Integer::sum) != 0 || getTierPositiveEffects().stream().reduce(0, Integer::sum) != 0;
+
     }
 
     public static boolean isAdmin(String id) {

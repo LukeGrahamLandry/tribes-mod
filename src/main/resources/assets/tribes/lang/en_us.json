@@ -36,6 +36,7 @@
   "error.tribes.invalid_rank": "That is not a valid rank. Options: [member, officer, vice leader, leader]",
   "error.tribes.not_private": "Your tribe is not private",
   "error.tribes.is_private": "That tribe is private. Cannot be joined without an invitation",
+  "error.tribes.use_banner_claim": "Command claim disabled by the current config. Use a banner to claim land instead.",
 
   "success.tribes.made_tribe": "The tribe %s has been created",
   "success.tribes.ally_tribe": "The tribe %s is now your ally",
