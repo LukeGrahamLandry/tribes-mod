@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.*;
+import io.github.lukegrahamlandry.tribes.tribe_data.claim.LandClaimWrapper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,7 +50,7 @@ public class ChunkClaimCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        TribeErrorType response = tribe.claimChunk(getChunk(player), player.getUUID());
+        TribeErrorType response = tribe.commandClaimChunk(getChunk(player), player.getUUID());
         if (response == TribeErrorType.SUCCESS){
             int x = (int) getChunk(player);
             int z = (int) (getChunk(player) >> 32);
@@ -70,7 +71,7 @@ public class ChunkClaimCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        TribeErrorType response = tribe.unclaimChunk(getChunk(player), player.getUUID());
+        TribeErrorType response = tribe.bannerUnclaimChunk(getChunk(player), player.getUUID());
         if (response == TribeErrorType.SUCCESS){
             int x = (int) getChunk(player);
             int z = (int) (getChunk(player) >> 32);
@@ -86,7 +87,7 @@ public class ChunkClaimCommand {
     public static int handleWho(CommandContext<CommandSource> source) throws CommandSyntaxException {
         PlayerEntity player = source.getSource().getPlayerOrException();
 
-        Tribe owner = LandClaimHelper.getChunkOwner(getChunk(player));
+        Tribe owner = LandClaimWrapper.getChunkOwner(getChunk(player));
         int x = (int) getChunk(player);
         int z = (int) (getChunk(player) >> 32);
 

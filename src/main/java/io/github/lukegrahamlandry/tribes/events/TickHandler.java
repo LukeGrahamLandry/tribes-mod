@@ -7,7 +7,7 @@ import io.github.lukegrahamlandry.tribes.network.CompassChunkPacket;
 import io.github.lukegrahamlandry.tribes.network.LandOwnerPacket;
 import io.github.lukegrahamlandry.tribes.init.NetworkHandler;
 import io.github.lukegrahamlandry.tribes.network.PacketOpenJoinGUI;
-import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
+import io.github.lukegrahamlandry.tribes.tribe_data.claim.LandClaimWrapper;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -29,7 +29,7 @@ public class TickHandler {
 
         // land owner display
         NetworkHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.player),
-                new LandOwnerPacket(event.player.getUUID(), LandClaimHelper.getOwnerDisplayFor(event.player), LandClaimHelper.canAccessLandAt(event.player, event.player.blockPosition())));
+                new LandOwnerPacket(event.player.getUUID(), LandClaimWrapper.getOwnerDisplayFor(event.player), LandClaimWrapper.canAccessLandAt(event.player, event.player.blockPosition())));
 
 
         // tribe compass direction

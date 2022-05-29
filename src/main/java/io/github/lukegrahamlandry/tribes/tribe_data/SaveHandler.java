@@ -2,11 +2,11 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.events.RemoveInactives;
+import io.github.lukegrahamlandry.tribes.tribe_data.claim.LandClaimWrapper;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.fml.loading.FMLLoader;
 
 import java.io.*;
@@ -91,7 +91,7 @@ public class SaveHandler {
         } else {
             TribesManager.readFromString("[]");
         }
-        LandClaimHelper.setup();
+        LandClaimWrapper.setup();
 
         // read deities
         File deitiesBooksLocation = new File(worldDir, "deities");

@@ -1,18 +1,14 @@
 package io.github.lukegrahamlandry.tribes.item;
 
-import io.github.lukegrahamlandry.tribes.TribesMain;
-import io.github.lukegrahamlandry.tribes.tribe_data.LandClaimHelper;
+import io.github.lukegrahamlandry.tribes.tribe_data.claim.LandClaimWrapper;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -21,12 +17,9 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
 
 import javax.annotation.Nullable;
 import java.util.*;
-
-import net.minecraft.item.Item.Properties;
 
 public class TribeCompass extends Item {
     public static HashMap<UUID, BlockPos> toLookAt = new HashMap<>();
@@ -46,7 +39,7 @@ public class TribeCompass extends Item {
         BlockPos posToLook = null;
         ChunkPos start = new ChunkPos(player.blockPosition().getX() >> 4, player.blockPosition().getZ() >> 4);
 
-        List<Long> chunks = LandClaimHelper.getClaimedChunksOrdered(start);  // closest first
+        List<Long> chunks = LandClaimWrapper.getClaimedChunksOrdered(start);  // closest first
         if (chunks.size() > 0){
             for (long chunk : chunks){
                 if (TribeCompass.isChunkIgnored(compass, chunk)) continue;
@@ -68,7 +61,7 @@ public class TribeCompass extends Item {
         ItemStack stack = playerIn.getItemInHand(handIn);
         if (!worldIn.isClientSide()){
             long chunk = worldIn.getChunkAt(playerIn.blockPosition()).getPos().toLong();
-            if (LandClaimHelper.getChunkOwner(chunk) != null){
+            if (LandClaimWrapper.getChunkOwner(chunk) != null){
                 if (isChunkIgnored(stack, chunk)){
                     removeIgnoredChunk(stack, chunk);
                     playerIn.displayClientMessage(new StringTextComponent("This chunk will be included in tribe compass searches!"), false);

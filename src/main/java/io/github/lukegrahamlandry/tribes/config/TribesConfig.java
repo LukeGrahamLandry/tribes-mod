@@ -44,6 +44,7 @@ public class TribesConfig {
     private static ForgeConfigSpec.IntValue bannerClaimRadius;
     private static ForgeConfigSpec.BooleanValue enemyAllowsBlockInteractions;
     private static ForgeConfigSpec.BooleanValue allyAllowsBlockInteractions;
+    private static ForgeConfigSpec.IntValue maxBannerClaims;
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
@@ -106,7 +107,7 @@ public class TribesConfig {
                 .comment("Players who haven't logged on in this many days will automatically be removed from the tribe they're in. Setting this value to 0 will disable this feature: ")
                 .defineInRange("removeInactiveAfterDays", 10, 0, Integer.MAX_VALUE);
 
-        spiderkingAddonConfigs(server);
+        bannerSystemAddonConfigs(server);
 
         server.pop();
 
@@ -119,9 +120,9 @@ public class TribesConfig {
         client.pop();
     }
 
-    private static void spiderkingAddonConfigs(ForgeConfigSpec.Builder server){
+    private static void bannerSystemAddonConfigs(ForgeConfigSpec.Builder server){
         bannerClaimRadius = server
-                .comment("How many chunks will be claimed around a placed banner. If this is greater than 0, the claim command will be disabled and maxChunksClaimed will be measured in placed banners instead of chunks")
+                .comment("How many chunks will be claimed around a placed banner. set to 0 to disable")
                 .defineInRange("bannerClaimRadius", 0, 0, Integer.MAX_VALUE);
         enemyAllowsBlockInteractions = server
                 .comment("Whether tribes that have declared you as an enemy should be able to interact with your claimed blocks (ie doors, chests, use flint and steel etc) NOT including spawn points. Even when true, cannot place or break blocks")
@@ -129,8 +130,19 @@ public class TribesConfig {
         allyAllowsBlockInteractions = server
                 .comment("Whether tribes that have you have declared as an ally should be able to interact with your claimed blocks (ie doors, beds) NOT including containers like chests. Even when true, cannot place or break blocks")
                 .define("allyAllowsBlockInteractions", false);
+
+        maxBannerClaims = server
+                .comment("How many times you may use tribe talisman on a banner to claim a radius around it. set to 0 to disable")
+                .defineInRange("maxBannerClaims", 0, 0, Integer.MAX_VALUE);
     }
 
+    public static boolean bannerClaimsEnabled(){
+        return maxBannerClaims.get() > 0 && bannerClaimRadius.get() > 0;
+    }
+
+    public static boolean commandClaimsEnabled(){
+        return getMaxChunksClaimed().stream().reduce(0, Integer::sum) != 0;
+    }
 
     public static boolean canEnemiesInteract(){
         return enemyAllowsBlockInteractions.get();

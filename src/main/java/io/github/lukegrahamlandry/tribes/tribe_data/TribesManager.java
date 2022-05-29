@@ -3,7 +3,7 @@ package io.github.lukegrahamlandry.tribes.tribe_data;
 import com.google.gson.*;
 import io.github.lukegrahamlandry.tribes.TribesMain;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
-import io.github.lukegrahamlandry.tribes.events.TribeServer;
+import io.github.lukegrahamlandry.tribes.tribe_data.claim.LandClaimWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.*;
@@ -42,16 +42,18 @@ public class TribesManager {
 
         if (!getTribe(name).isLeader(playerID)) return TribeErrorType.LOW_RANK;
 
-        LandClaimHelper.forgetTribe(tribes.get(name));
         getTribe(name).broadcastMessage(TribeSuccessType.DELETE_TRIBE, playerID);
-        tribes.remove(name);
+        forceDeleteTribe(name);
 
         return TribeErrorType.SUCCESS;
     }
 
     public static void forceDeleteTribe(String name){
         if (!isNameAvailable(name)) {
-            LandClaimHelper.forgetTribe(tribes.get(name));
+            LandClaimWrapper.forgetTribe(tribes.get(name));
+            TribesManager.getTribes().forEach((aTribe) -> {
+                aTribe.relationToOtherTribes.remove(name);
+            });
             tribes.remove(name);
         }
     }
