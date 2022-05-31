@@ -1,17 +1,23 @@
 package io.github.lukegrahamlandry.tribes.tribe_data;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import io.github.lukegrahamlandry.tribes.commands.ConfirmCommand;
 import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.events.TribeServer;
+import io.github.lukegrahamlandry.tribes.tribe_data.claim.HemiAccessManager;
 import io.github.lukegrahamlandry.tribes.tribe_data.claim.LandClaimWrapper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.*;
 
 public class Tribe {
-    public LandClaimWrapper.Hemi hemiAccess;
+    public HemiAccessManager.Hemi hemiAccess;
     String name;
     String initials;
     public String deity;
@@ -35,6 +41,8 @@ public class Tribe {
     public List<String> pendingInvites = new ArrayList<>();
 
     public HashMap<Effect, Integer> effects;
+    private List<BlockPos> bannerPositions = new ArrayList<>();
+
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
         this.initials = Character.toString(tribeName.charAt(0));
@@ -44,7 +52,7 @@ public class Tribe {
         this.chunks = new ArrayList<>();
         this.effects = new HashMap<>();
         this.addMember(creater, Rank.LEADER);
-        this.hemiAccess = LandClaimWrapper.Hemi.NONE;
+        this.hemiAccess = HemiAccessManager.Hemi.NONE;
 
         autobanRank.put(Rank.MEMBER, true);
         autobanRank.put(Rank.OFFICER, true);
@@ -234,11 +242,16 @@ public class Tribe {
         this.chunks.forEach(chunksList::add);
         obj.add("chunks", chunksList);
 
-        if (this.hemiAccess == LandClaimWrapper.Hemi.NEGATIVE){
+
+        JsonArray bannerList = new JsonArray();
+        this.bannerPositions.forEach((pos) -> bannerList.add(pos.asLong()));
+        obj.add("bannerClaims", bannerList);
+
+        if (this.hemiAccess == HemiAccessManager.Hemi.NEGATIVE){
             obj.addProperty("hemi", 0);
-        } else if (this.hemiAccess == LandClaimWrapper.Hemi.NONE || this.hemiAccess == null){
+        } else if (this.hemiAccess == HemiAccessManager.Hemi.NONE || this.hemiAccess == null){
             obj.addProperty("hemi", 1);
-        } else if (this.hemiAccess == LandClaimWrapper.Hemi.POSITIVE){
+        } else if (this.hemiAccess == HemiAccessManager.Hemi.POSITIVE){
             obj.addProperty("hemi", 2);
         }
         JsonObject effectMap = new JsonObject();
@@ -296,13 +309,20 @@ public class Tribe {
             tribe.chunks.add(e.getAsLong());
         }
 
+        if (obj.has("bannerClaims")){
+            JsonArray bannerdata = obj.get("chunks").getAsJsonArray();
+            for (JsonElement e : bannerdata){
+                tribe.bannerPositions.add(new BlockPos(BlockPos.of(bannerdata.getAsLong())));
+            }
+        }
+
         int hemi = obj.get("hemi").getAsInt();
         if (hemi == 0){
-            tribe.hemiAccess = LandClaimWrapper.Hemi.NEGATIVE;
+            tribe.hemiAccess = HemiAccessManager.Hemi.NEGATIVE;
         } else if (hemi == 1){
-            tribe.hemiAccess = LandClaimWrapper.Hemi.NONE;
+            tribe.hemiAccess = HemiAccessManager.Hemi.NONE;
         } else if (hemi == 2){
-            tribe.hemiAccess = LandClaimWrapper.Hemi.POSITIVE;
+            tribe.hemiAccess = HemiAccessManager.Hemi.POSITIVE;
         }
 
         if (obj.has("effects")){
@@ -401,7 +421,7 @@ public class Tribe {
 
     public TribeErrorType commandClaimChunk(long chunk, UUID player) {
         if (!this.isOfficer(player)) return TribeErrorType.LOW_RANK;
-        if (LandClaimWrapper.getChunkOwner(chunk) != null) return TribeErrorType.ALREADY_CLAIMED;
+        if (LandClaimWrapper.getCommandManager().getChunkOwner(chunk) != null) return TribeErrorType.ALREADY_CLAIMED;
 
         if (this.getClaimedChunks().size() >= TribesConfig.getMaxChunksClaimed().get(this.getTribeTier()-1)) return TribeErrorType.CONFIG;
 
@@ -411,12 +431,31 @@ public class Tribe {
         return TribeErrorType.SUCCESS;
     }
 
-    public TribeErrorType bannerUnclaimChunk(long chunk, UUID player) {
+    public TribeErrorType commandUnclaimChunk(long chunk, UUID player) {
         if (!this.isOfficer(player)) return TribeErrorType.LOW_RANK;
-        if (!LandClaimWrapper.getChunkOwner(chunk).equals(this)) return TribeErrorType.ALREADY_CLAIMED;
+        if (!LandClaimWrapper.getCommandManager().getChunkOwner(chunk).equals(this)) return TribeErrorType.ALREADY_CLAIMED;
 
         this.chunks.remove(chunk);
         LandClaimWrapper.getCommandManager().setChunkOwner(chunk, null);
+
+        return TribeErrorType.SUCCESS;
+    }
+
+    public TribeErrorType bannerClaim(PlayerEntity player, BlockPos pos) {
+        if (!this.isOfficer(player.getUUID())) return TribeErrorType.LOW_RANK;
+        if (!LandClaimWrapper.getBannerManager().canClaim(player, pos)) return TribeErrorType.ALREADY_CLAIMED;
+
+        if (this.bannerPositions.size() >= TribesConfig.getMaxBannerClaims().get(this.getTribeTier()-1)) return TribeErrorType.CONFIG;
+
+        this.bannerPositions.add(pos);
+        LandClaimWrapper.getBannerManager().claim(this, pos);
+
+        return TribeErrorType.SUCCESS;
+    }
+
+    public TribeErrorType bannerUnclaim(BlockPos pos) {
+        this.bannerPositions.remove(pos);
+        LandClaimWrapper.getBannerManager().unclaim(pos);
 
         return TribeErrorType.SUCCESS;
     }
@@ -436,7 +475,7 @@ public class Tribe {
     public TribeErrorType validateSelectHemi(PlayerEntity player, String side) {
         int runRank = this.getRankOf(player.getUUID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeErrorType.LOW_RANK;
-        if (this.hemiAccess != LandClaimWrapper.Hemi.NONE) return TribeErrorType.HAVE_HEMI;
+        if (this.hemiAccess != HemiAccessManager.Hemi.NONE) return TribeErrorType.HAVE_HEMI;
         if (this.getTribeTier() < TribesConfig.getMinTierToSelectHemi()) return TribeErrorType.WEAK_TRIBE;
         if (TribesConfig.getUseNorthSouthHemisphereDirection()){
             if (!side.equals("north") && !side.equals("west")) return TribeErrorType.INVALID_HEMI;
@@ -449,7 +488,7 @@ public class Tribe {
     public TribeErrorType selectHemi(PlayerEntity player, String side) {
         int runRank = this.getRankOf(player.getUUID().toString()).asInt();
         if (runRank < TribesConfig.rankToChooseHemi()) return TribeErrorType.LOW_RANK;
-        if (this.hemiAccess != LandClaimWrapper.Hemi.NONE) return TribeErrorType.HAVE_HEMI;
+        if (this.hemiAccess != HemiAccessManager.Hemi.NONE) return TribeErrorType.HAVE_HEMI;
         if (this.getTribeTier() < TribesConfig.getMinTierToSelectHemi()) return TribeErrorType.WEAK_TRIBE;
         if (TribesConfig.getUseNorthSouthHemisphereDirection()){
             if (!side.equals("north") && !side.equals("west")) return TribeErrorType.INVALID_HEMI;
@@ -457,8 +496,8 @@ public class Tribe {
             if (!side.equals("east") && !side.equals("south")) return TribeErrorType.INVALID_HEMI;
         }
 
-        if (side.equals("east") || side.equals("south")) this.hemiAccess = LandClaimWrapper.Hemi.POSITIVE;
-        else this.hemiAccess = LandClaimWrapper.Hemi.NEGATIVE;
+        if (side.equals("east") || side.equals("south")) this.hemiAccess = HemiAccessManager.Hemi.POSITIVE;
+        else this.hemiAccess = HemiAccessManager.Hemi.NEGATIVE;
         LandClaimWrapper.getHemisphereManager().hemispheres.get(this.hemiAccess).add(this);
 
         broadcastMessage(TribeSuccessType.CHOOSE_HEMI, player, side);

@@ -1,9 +1,8 @@
 package io.github.lukegrahamlandry.tribes.tribe_data.claim;
 
 import io.github.lukegrahamlandry.tribes.TribesMain;
-import io.github.lukegrahamlandry.tribes.config.Config;
-import io.github.lukegrahamlandry.tribes.config.TribesConfig;
 import io.github.lukegrahamlandry.tribes.tribe_data.Tribe;
+import io.github.lukegrahamlandry.tribes.tribe_data.TribeSuccessType;
 import io.github.lukegrahamlandry.tribes.tribe_data.TribesManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -44,11 +43,11 @@ public class LandClaimWrapper {
         return null;
     }
 
-    public static AccessManager getCommandManager(){
+    public static ChunkAccessManager getCommandManager(){
         return commandManager;
     }
 
-    public static AccessManager getBannerManager(){
+    public static BannerAccessManager getBannerManager(){
         return bannerManager;
     }
 
@@ -74,23 +73,17 @@ public class LandClaimWrapper {
         return hemisphereManager;
     }
 
-    public enum Hemi {
-        POSITIVE, // south or east
-        NEGATIVE,  // north or west
-        NONE;
-    }
-
     public static List<Long> getClaimedChunksOrdered(ChunkPos start){
         List<Long> chunks = new ArrayList<>();
         for (AccessManager manager : managers){
             chunks.addAll(manager.getClaimedChunksOrdered(start));
         }
-        chunks.sort(chunkComparator(start));
+        chunks.sort(makeChunkComparator(start));
 
         return chunks;
     }
 
-    public static Comparator<Long> chunkComparator(ChunkPos start){
+    public static Comparator<Long> makeChunkComparator(ChunkPos start){
         return (o1, o2) -> {
             ChunkPos a = new ChunkPos(o1);
             ChunkPos b = new ChunkPos(o2);
@@ -111,5 +104,14 @@ public class LandClaimWrapper {
         }
 
         TribesMain.LOGGER.debug("forge tribe: " + tribe.getName());
+    }
+
+    public static void onBannerBrokenAt(BlockPos pos){
+        Tribe tribe = bannerManager.getChunkOwner(null, pos);
+        if (tribe != null){
+            tribe.broadcastMessageNoCause(TribeSuccessType.BANNER_BROKEN, pos.getX(), pos.getY(), pos.getZ());
+            tribe.bannerUnclaim(pos);
+        }
+        bannerManager.unclaim(pos);
     }
 }

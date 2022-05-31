@@ -3,6 +3,9 @@
   "tribes.createTribeButton": "Create Tribe",
 
   "item.tribes.tribe_compass": "Tribe Compass",
+  "item.tribes.talisman": "Tribe Talisman",
+
+  "item.tribes.talisman.desc": "Right click on a banner to claim land (depending on config)",
 
   "block.tribes.alter": "Altar",
 
@@ -36,7 +39,11 @@
   "error.tribes.invalid_rank": "That is not a valid rank. Options: [member, officer, vice leader, leader]",
   "error.tribes.not_private": "Your tribe is not private",
   "error.tribes.is_private": "That tribe is private. Cannot be joined without an invitation",
-  "error.tribes.use_banner_claim": "Command claim disabled by the current config. Use a banner to claim land instead.",
+  "error.tribes.cant_claim_in_hemi": "Your tribe cannot claim in this hemisphere (use /tribe hemisphere <direction> to claim one)",
+  "error.tribes.must_click_banner": "Right click on a banner to claim",
+  "error.tribes.banner_claim_disabled": "Banner claiming is disabled by config, sorry :(",
+  "error.tribes.command_claim_disabled": "Command chunk claiming is disabled by config, sorry :(",
+  "error.tribes.overlapping_claim": "Cannot claim here, it is too near another claim",
 
   "success.tribes.made_tribe": "The tribe %s has been created",
   "success.tribes.ally_tribe": "The tribe %s is now your ally",
@@ -76,5 +83,8 @@
   "success.tribes.invite_sent": "%s has been invited to your tribe",
   "success.tribes.invite_removed": "Any invites of %s to your tribe have been revoked",
   "success.tribes.now_private": "Your tribe is now private. Players cannot join without an invitation",
-  "success.tribes.no_longer_private": "Your tribe is no longer private. Players may join freely without an invitation"
+  "success.tribes.no_longer_private": "Your tribe is no longer private. Players may join freely without an invitation",
+  "success.tribes.banner_claim": "Your tribe has claimed the %d block circle around (%d, %d, %d)",
+
+  "success.tribes.banner_broken": "Your tribe's claiming banner at (%d, %d, %d) has been broken! Your claim of that area is disabled."
 }

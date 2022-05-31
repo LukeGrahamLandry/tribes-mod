@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class TribesConfig {
     //Declaration of config variables
@@ -44,7 +45,9 @@ public class TribesConfig {
     private static ForgeConfigSpec.IntValue bannerClaimRadius;
     private static ForgeConfigSpec.BooleanValue enemyAllowsBlockInteractions;
     private static ForgeConfigSpec.BooleanValue allyAllowsBlockInteractions;
-    private static ForgeConfigSpec.IntValue maxBannerClaims;
+    private static ForgeConfigSpec.IntValue nearBannerClaimRadius;
+    private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> maxBannerClaims;
+    private static ForgeConfigSpec.BooleanValue allowRespawnOnOtherClaimedLand;
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
@@ -71,16 +74,16 @@ public class TribesConfig {
                 .comment("Minimum tribe tier to access a hemisphere: ")
                 .defineInRange("tierForSelectHemi", 2, 0, 10);
         requireHemiAccess = server
-                .comment("Whether player's tribe must select a hemisphere to access it: ")
+                .comment("Whether player's tribe must select a hemisphere (with /tribe hemisphere) to access it. (when disabled tribes will still be unable to claim land within no mans land based on halfNoMansLandWidth): ")
                 .define("requireHemiAccess", true);
         maxChunksClaimed = server
-                .comment("I:Maximum number of chunks able to be claimed at each tribe rank: ")
+                .comment("I:Maximum number of chunks able to be claimed (with /tribe claim) at each tribe rank. set to [0] to disable: ")
                 .defineList("max_claimed_chunks", Arrays.asList(1,4,10,20,30),i -> (int)i>=0);
         useNorthSouthHemisphereDirection = server
                 .comment("true for north/south or false for east/west: ")
                 .define("useNorthSouthHemisphereDirection", true);
         halfNoMansLandWidth = server
-                .comment("The distance from zero to the edge of a hemisphere, half the width of no mans land : ")
+                .comment("The distance from zero to the edge of a hemisphere, half the width of no mans land. tribes may not claim land within this area. set to 0 to disable: ")
                 .defineInRange("halfNoMansLandWidth", 500, 0, Integer.MAX_VALUE);
         nonpvpDeathPunishTimes = server
                 .comment("I:How long your chunk claims will be disabled by how many times people have died (out of PVP) in the interval: ")
@@ -121,23 +124,30 @@ public class TribesConfig {
     }
 
     private static void bannerSystemAddonConfigs(ForgeConfigSpec.Builder server){
+        server.push("banner_claim_add_on_settings");
         bannerClaimRadius = server
-                .comment("How many chunks will be claimed around a placed banner. set to 0 to disable")
+                .comment("How many blocks will be claimed around a placed banner (limited to maxBannerClaims). set to 0 to disable")
                 .defineInRange("bannerClaimRadius", 0, 0, Integer.MAX_VALUE);
+        nearBannerClaimRadius = server
+                .comment("How many blocks out from a banner claim before another tribe can claim. if set to 0, the banners will still be 2*bannerClaimRadius apart so the circles dont overlap")
+                .defineInRange("nearBannerClaimRadius", 0, 0, Integer.MAX_VALUE);
         enemyAllowsBlockInteractions = server
                 .comment("Whether tribes that have declared you as an enemy should be able to interact with your claimed blocks (ie doors, chests, use flint and steel etc) NOT including spawn points. Even when true, cannot place or break blocks")
                 .define("enemyAllowsBlockInteractions", false);
         allyAllowsBlockInteractions = server
                 .comment("Whether tribes that have you have declared as an ally should be able to interact with your claimed blocks (ie doors, beds) NOT including containers like chests. Even when true, cannot place or break blocks")
                 .define("allyAllowsBlockInteractions", false);
-
         maxBannerClaims = server
-                .comment("How many times you may use tribe talisman on a banner to claim a radius around it. set to 0 to disable")
-                .defineInRange("maxBannerClaims", 0, 0, Integer.MAX_VALUE);
+                .comment("I:How many times you may use tribe talisman on a banner to claim a radius around it at each tribe level. set to [0] to disable")
+                .defineList("maxBannerClaims", Arrays.asList(1,2, 3,4),i -> (int)i>=0);
+        allowRespawnOnOtherClaimedLand = server
+                .comment("Whether to block someone respawning on a non-allied tribe's claimed land. even when allowed, you'll generally be unable to set your spawn point on claimed land")
+                .define("allowRespawnOnOtherClaimedLand", false);
+        server.pop();
     }
 
     public static boolean bannerClaimsEnabled(){
-        return maxBannerClaims.get() > 0 && bannerClaimRadius.get() > 0;
+        return ((List<Integer>)maxBannerClaims.get()).stream().reduce(0, Integer::sum) != 0 && bannerClaimRadius.get() > 0;
     }
 
     public static boolean commandClaimsEnabled(){
@@ -206,6 +216,10 @@ public class TribesConfig {
 
     public static int getBannerClaimRadius(){
         return bannerClaimRadius.get();
+    }
+
+    public static int getBannerSafeRadius(){
+        return nearBannerClaimRadius.get();
     }
 
     public static int getDeathClaimDisableTime(int index, boolean deathWasPVP) {
@@ -283,11 +297,19 @@ public class TribesConfig {
         return removeInactiveAfterDays.get() * 24 * 60 * 60 * 1000;
     }
 
+    public static boolean allowRespawnOnClaimed() {
+        return allowRespawnOnOtherClaimedLand.get();
+    }
 
     // CLIENT
 
     public static String getLandOwnerDisplayPosition(){
         return landOwnerDisplayPosition.get();
     }
+
+    public static List<Integer> getMaxBannerClaims() {
+        return  (List<Integer>) maxBannerClaims.get();
+    }
+
 
 }

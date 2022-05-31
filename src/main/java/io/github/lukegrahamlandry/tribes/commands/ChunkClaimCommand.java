@@ -40,13 +40,18 @@ public class ChunkClaimCommand {
         PlayerEntity player = source.getSource().getPlayerOrException();
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());
 
-        if (TribesConfig.getBannerClaimRadius() > 0){
-            source.getSource().sendSuccess(TribeErrorType.USE_BANNER_CLAIM.getText(), true);
+        if (!TribesConfig.commandClaimsEnabled()){
+            source.getSource().sendSuccess(TribeErrorType.COMMAND_CLAIM_DISABLED.getText(), true);
             return Command.SINGLE_SUCCESS;
         }
 
         if (tribe == null){
             source.getSource().sendSuccess(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), true);
+            return Command.SINGLE_SUCCESS;
+        }
+
+        if (!LandClaimWrapper.getHemisphereManager().canClaim(player, player.blockPosition())){
+            player.sendMessage(TribeErrorType.CANT_CLAIM_IN_HEMI.getText(), player.getUUID());
             return Command.SINGLE_SUCCESS;
         }
 
@@ -71,7 +76,7 @@ public class ChunkClaimCommand {
             return Command.SINGLE_SUCCESS;
         }
 
-        TribeErrorType response = tribe.bannerUnclaimChunk(getChunk(player), player.getUUID());
+        TribeErrorType response = tribe.commandUnclaimChunk(getChunk(player), player.getUUID());
         if (response == TribeErrorType.SUCCESS){
             int x = (int) getChunk(player);
             int z = (int) (getChunk(player) >> 32);

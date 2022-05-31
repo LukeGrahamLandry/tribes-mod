@@ -32,4 +32,6 @@ public interface AccessManager {
     void forgetTribe(Tribe tribe);
 
     boolean isActive();
+
+    boolean canClaim(PlayerEntity player, BlockPos pos);
 }

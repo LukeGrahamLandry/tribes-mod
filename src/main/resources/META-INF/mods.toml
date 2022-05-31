@@ -70,3 +70,8 @@ A Factions like experience that allows players to form tribes.
     versionRange="[1.16.5,1.17)"
     ordering="NONE"
     side="BOTH"
+
+
+[modproperties.tribes]
+
+configuredBackground="minecraft:textures/block/stone.png"

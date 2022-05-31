@@ -47,7 +47,10 @@ public enum TribeSuccessType {
     ALERT_EFFECTS,
     ALERT_DEITY,
     ALERT_VICE_LEADER,
-    ALERT_JOIN;
+    ALERT_JOIN,
+
+    BANNER_BROKEN,
+    BANNER_CLAIM;
 
     public TranslationTextComponent getText(){
         String langEntry = "success.tribes." + this.name().toLowerCase();

@@ -19,7 +19,6 @@ public class ChunkAccessManager implements AccessManager {
 
     // important to call this whenever tribes load
     public ChunkAccessManager(){
-        claimedChunks.clear();
         for (Tribe tribe : TribesManager.getTribes()){
             for (Long chunk : tribe.getClaimedChunks()){
                 claimedChunks.put(chunk, tribe);
@@ -93,5 +92,11 @@ public class ChunkAccessManager implements AccessManager {
     @Override
     public boolean isActive() {
         return TribesConfig.commandClaimsEnabled();
+    }
+
+    @Override
+    public boolean canClaim(PlayerEntity player, BlockPos pos) {
+        if (!LandClaimWrapper.getHemisphereManager().canClaim(player, pos)) return false;
+        return getChunkOwner(player.level, pos) == null;
     }
 }

@@ -100,6 +100,16 @@ public class HemiAccessManager implements AccessManager {
 
     @Override
     public boolean isActive() {
-        return TribesConfig.getRequireHemiAccess() && TribesConfig.getHalfNoMansLandWidth() > 0;
+        return TribesConfig.getHalfNoMansLandWidth() > 0;
+    }
+
+    @Override
+    public boolean canClaim(PlayerEntity player, BlockPos pos) {
+        if (!this.isActive()) return true;
+        if (getHemiAt(pos) == Hemi.NONE) return false;
+
+        if (!TribesConfig.getRequireHemiAccess()) return true;
+        Tribe tribe = TribesManager.getTribeOf(player.getUUID());
+        return tribe != null && tribe.hemiAccess == getHemiAt(pos);
     }
 }
