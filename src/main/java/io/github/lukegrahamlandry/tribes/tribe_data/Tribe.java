@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 
 import java.util.*;
 
@@ -446,12 +447,27 @@ public class Tribe {
         if (!this.isOfficer(player.getUUID())) return TribeErrorType.LOW_RANK;
         if (!LandClaimWrapper.getBannerManager().canClaim(player, pos)) return TribeErrorType.ALREADY_CLAIMED;
 
+        if (!checkAroundBanner(player.level, pos)) return TribeErrorType.BANNER_NEEDS_AREA;
+
+
         if (this.bannerPositions.size() >= TribesConfig.getMaxBannerClaims().get(this.getTribeTier()-1)) return TribeErrorType.CONFIG;
 
         this.bannerPositions.add(pos);
         LandClaimWrapper.getBannerManager().claim(this, pos);
 
         return TribeErrorType.SUCCESS;
+    }
+
+    private boolean checkAroundBanner(World level, BlockPos pos){
+        int r = TribesConfig.bannerOpenAreaRadius.get();
+        for (int x=-r;x<r+1;x++){
+            for (int z=-r;z<r+1;z++){
+                if (!level.canSeeSky(pos.east(x).north(z))){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public TribeErrorType bannerUnclaim(BlockPos pos) {

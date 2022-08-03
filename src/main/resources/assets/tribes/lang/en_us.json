@@ -44,6 +44,7 @@
   "error.tribes.banner_claim_disabled": "Banner claiming is disabled by config, sorry :(",
   "error.tribes.command_claim_disabled": "Command chunk claiming is disabled by config, sorry :(",
   "error.tribes.overlapping_claim": "Cannot claim here, it is too near another claim",
+  "error.tribes.banner_needs_area": "To activate a claim, the banner must be in a three block radius with access to the sky",
 
   "success.tribes.made_tribe": "The tribe %s has been created",
   "success.tribes.ally_tribe": "The tribe %s is now your ally",

@@ -49,6 +49,7 @@ public class TribesConfig {
     private static ForgeConfigSpec.IntValue nearBannerClaimRadius;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> maxBannerClaims;
     private static ForgeConfigSpec.BooleanValue allowRespawnOnOtherClaimedLand;
+    public static ForgeConfigSpec.IntValue bannerOpenAreaRadius;
 
     //Initialization of the config files and their respective variables
     public static void init(ForgeConfigSpec.Builder server, ForgeConfigSpec.Builder client){
@@ -147,6 +148,9 @@ public class TribesConfig {
         allowRespawnOnOtherClaimedLand = server
                 .comment("Whether to block someone respawning on a non-allied tribe's claimed land. even when allowed, you'll generally be unable to set your spawn point on claimed land")
                 .define("allowRespawnOnOtherClaimedLand", false);
+        bannerOpenAreaRadius = server
+                .comment("radius around a banner that must be exposed to sky to allow claim: ")
+                .defineInRange("bannerOpenAreaRadius", 3, 0, 100);
         server.pop();
     }
 
