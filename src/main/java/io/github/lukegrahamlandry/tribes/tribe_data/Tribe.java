@@ -41,7 +41,7 @@ public class Tribe {
     public List<String> pendingInvites = new ArrayList<>();
 
     public HashMap<Effect, Integer> effects;
-    private List<BlockPos> bannerPositions = new ArrayList<>();
+    public List<BlockPos> bannerPositions = new ArrayList<>();
 
     public Tribe(String tribeName, UUID creater){
         this.name = tribeName;
@@ -310,9 +310,10 @@ public class Tribe {
         }
 
         if (obj.has("bannerClaims")){
-            JsonArray bannerdata = obj.get("chunks").getAsJsonArray();
+            JsonArray bannerdata = obj.get("bannerClaims").getAsJsonArray();
             for (JsonElement e : bannerdata){
-                tribe.bannerPositions.add(new BlockPos(BlockPos.of(bannerdata.getAsLong())));
+                BlockPos bannerPos = new BlockPos(BlockPos.of(e.getAsLong()));
+                tribe.bannerPositions.add(bannerPos);
             }
         }
 

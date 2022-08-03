@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "tribes.refmap.json",
   "mixins": [
+    "AbstractBlockMixin",
+    "BlockMixin"
   ],
   "minVersion": "0.8",
   "client": [

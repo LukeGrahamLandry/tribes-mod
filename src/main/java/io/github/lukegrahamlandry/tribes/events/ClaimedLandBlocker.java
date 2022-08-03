@@ -11,6 +11,10 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -76,12 +80,17 @@ public class ClaimedLandBlocker {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event){
         if (event.getPlayer().getCommandSenderWorld().isClientSide()) return;
-        if (event.getState().is(BlockTags.BANNERS)){
+        onBlockBreakCheckBanner(event.getWorld(), event.getPos(), event.getState());
+    }
+
+    // since state is only used for the tag check, it can be the default state of the block
+    public static void onBlockBreakCheckBanner(IWorld level, BlockPos pos, BlockState state){
+        if (state.is(BlockTags.BANNERS) && !level.isClientSide()){
             BlockPos[] possiblePositions = new BlockPos[]{
-                    event.getPos(), event.getPos().above(), event.getPos().below()
+                    pos, pos.above(), pos.below()
             };
-            for (BlockPos pos : possiblePositions){
-                LandClaimWrapper.onBannerBrokenAt(pos);
+            for (BlockPos checkPos : possiblePositions){
+                LandClaimWrapper.onBannerBrokenAt(checkPos);
             }
         }
     }
@@ -90,13 +99,18 @@ public class ClaimedLandBlocker {
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event){
         if (event.getPlayer().getCommandSenderWorld().isClientSide()) return;
         if (!TribesConfig.allowRespawnOnClaimed()){
-            BlockPos pos = ((ServerPlayerEntity)event.getPlayer()).getRespawnPosition();
+            // would be null if no bed set
+            // BlockPos pos = ((ServerPlayerEntity)event.getPlayer()).getRespawnPosition();
+            ServerWorld world = ((ServerWorld)event.getPlayer().level);
+            BlockPos pos = event.getPlayer().blockPosition();  // moving the player to spawn point has already happened when event fires
             Tribe tribe = TribesManager.getTribeOf(event.getPlayer().getUUID());
             Tribe ownerTribe = LandClaimWrapper.getChunkOwner(event.getPlayer().level, pos);
             if (ownerTribe != null){
-                boolean notAllies = tribe == null || tribe.getRelationTo(ownerTribe) != Tribe.Relation.ALLY;
+                boolean notAllies = tribe == null || (!tribe.equals(ownerTribe) && tribe.getRelationTo(ownerTribe) != Tribe.Relation.ALLY);
                 if (notAllies){
-                    event.getPlayer().displayClientMessage(new StringTextComponent("spawning on claimed land. todo: block this"), false);
+                    BlockPos defaultSpawn = world.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING, world.getSharedSpawnPos());
+                    event.getPlayer().teleportToWithTicket(defaultSpawn.getX(), defaultSpawn.getY(), defaultSpawn.getZ());
+                    event.getPlayer().displayClientMessage(new StringTextComponent("your spawn point is on claimed land"), false);
                 }
             }
         }

@@ -47,7 +47,7 @@ public class ChunkAccessManager implements AccessManager {
         Tribe chunkOwner = getChunkOwner(chunk);
 
         if (chunkOwner != null){
-            return chunkOwner.getName() + " claimed chunk";
+            return chunkOwner.getName() + "'s territory'";
         }
 
         return LandClaimWrapper.WILDERNESS;

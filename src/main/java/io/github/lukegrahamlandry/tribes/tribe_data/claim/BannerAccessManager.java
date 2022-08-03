@@ -14,6 +14,13 @@ import java.util.List;
 
 public class BannerAccessManager implements AccessManager {
     List<ClaimedCircle> claims = new ArrayList<>();
+    public BannerAccessManager(){
+        for (Tribe tribe : TribesManager.getTribes()){
+            for (BlockPos banner : tribe.bannerPositions){
+                claim(tribe, banner);
+            }
+        }
+    }
 
     public void claim(Tribe tribe, BlockPos pos) {
         claims.add(new ClaimedCircle(tribe.getName(), pos.getX(), pos.getZ()));
@@ -110,7 +117,7 @@ public class BannerAccessManager implements AccessManager {
         for (ClaimedCircle circle : this.claims){
             if (circle.isWithin(position, TribesConfig.getBannerClaimRadius())){
                 if (interactingTribe == null) return false;
-                if (!interactingTribe.getName().equals(circle.tribe)) return TribesManager.getTribe(circle.tribe).claimDisableTime <= 0;  // respect pvp death penalties;
+                if (!interactingTribe.getName().equals(circle.tribe)) return true; //TribesManager.getTribe(circle.tribe).claimDisableTime <= 0;  // does NOT respect pvp death penalties;
             }
         }
         return true;

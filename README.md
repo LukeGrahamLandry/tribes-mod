@@ -9,6 +9,8 @@ Many features are configurable.
 
 ## Commands
 
+THIS IS TRUE FOR VERSION 1.75
+
 ### /tribe join
 
 Opens a gui that shows a list of existing tribes. hover over one to see member count and click to join.

@@ -106,7 +106,7 @@ public class HemiAccessManager implements AccessManager {
     @Override
     public boolean canClaim(PlayerEntity player, BlockPos pos) {
         if (!this.isActive()) return true;
-        if (getHemiAt(pos) == Hemi.NONE) return false;
+        if (getHemiAt(pos) == Hemi.NONE) return TribesConfig.allowClaimInNoMansLand.get();
 
         if (!TribesConfig.getRequireHemiAccess()) return true;
         Tribe tribe = TribesManager.getTribeOf(player.getUUID());

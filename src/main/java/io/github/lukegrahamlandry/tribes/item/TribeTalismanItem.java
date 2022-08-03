@@ -52,7 +52,11 @@ public class TribeTalismanItem extends Item {
                 }
 
                 Tribe tribe = TribesManager.getTribeOf(ctx.getPlayer().getUUID());
-                if (tribe != null && LandClaimWrapper.getBannerManager().canClaim(ctx.getPlayer(), pos)){
+                if (tribe == null){
+                    ctx.getPlayer().sendMessage(TribeErrorType.YOU_NOT_IN_TRIBE.getText(), ctx.getPlayer().getUUID());
+                    return super.useOn(ctx);
+                }
+                if (LandClaimWrapper.getBannerManager().canClaim(ctx.getPlayer(), pos)){
                     TribeErrorType result = tribe.bannerClaim(ctx.getPlayer(), pos);
                     if (result == TribeErrorType.SUCCESS){
                         tribe.broadcastMessage(TribeSuccessType.BANNER_CLAIM, ctx.getPlayer().getUUID(), TribesConfig.getBannerClaimRadius(), pos.getX(), pos.getY(), pos.getZ());

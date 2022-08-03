@@ -16,6 +16,7 @@ public class TribesConfig {
     //Declaration of config variables
     private static ForgeConfigSpec.IntValue numTribes;
     private static ForgeConfigSpec.BooleanValue tribeRequired;
+    public static ForgeConfigSpec.BooleanValue allowClaimInNoMansLand;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierThresholds;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierNegEffects;
     private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> tierPosEffects;
@@ -74,8 +75,11 @@ public class TribesConfig {
                 .comment("Minimum tribe tier to access a hemisphere: ")
                 .defineInRange("tierForSelectHemi", 2, 0, 10);
         requireHemiAccess = server
-                .comment("Whether player's tribe must select a hemisphere (with /tribe hemisphere) to access it. (when disabled tribes will still be unable to claim land within no mans land based on halfNoMansLandWidth): ")
+                .comment("Whether player's tribe must select a hemisphere (with /tribe hemisphere) to access it: ")
                 .define("requireHemiAccess", true);
+        allowClaimInNoMansLand = server
+                .comment("Can players claim in the area between hemispheres")
+                .define("allowClaimInNoMansLand", true);
         maxChunksClaimed = server
                 .comment("I:Maximum number of chunks able to be claimed (with /tribe claim) at each tribe rank. set to [0] to disable: ")
                 .defineList("max_claimed_chunks", Arrays.asList(1,4,10,20,30),i -> (int)i>=0);
